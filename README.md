@@ -4,9 +4,11 @@ emoji: 🌍
 colorFrom: blue
 colorTo: slate
 sdk: gradio
-sdk_version: 5.17.1
+sdk_version: 6.32.0
+python_version: '3.12'
 app_file: app.py
 pinned: false
+license: mit
 ---
 
 # EARTHPULSE AI — NILE DELTA EDITION
