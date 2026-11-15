@@ -271,12 +271,18 @@ export const AnalysisPage: React.FC = () => {
     : displayRegion;
 
   const significanceBadge = (
-    <span className="inline-flex items-center gap-2 text-xs font-mono text-[#a3a9b8] px-2.5 py-1 rounded-md bg-[#11141c] border border-[#eef0f5]/[0.08]">
-      <span
-        className={`w-1.5 h-1.5 rounded-full ${
-          isSig ? 'bg-[#4cc38a]' : 'bg-[#e5484d]'
-        }`}
-      />
+    <span
+      className={`inline-flex items-center gap-2 text-xs sm:text-[13px] font-semibold font-sans px-3.5 py-1.5 rounded-full border transition-colors ${
+        isSig
+          ? 'bg-[#4cc38a]/15 text-[#4cc38a] border-[#4cc38a]/45 shadow-[0_0_18px_rgba(76,195,138,0.18)]'
+          : 'bg-[#e5484d]/15 text-[#f26368] border-[#e5484d]/45 shadow-[0_0_18px_rgba(229,72,77,0.18)]'
+      }`}
+    >
+      {isSig ? (
+        <CheckCircle2 className="w-4 h-4 text-[#4cc38a] shrink-0" strokeWidth={2} />
+      ) : (
+        <AlertCircle className="w-4 h-4 text-[#f26368] shrink-0" strokeWidth={2} />
+      )}
       <span>{isSig ? t('analysis.summary.significant') : t('analysis.summary.notSignificant')}</span>
     </span>
   );
@@ -860,7 +866,11 @@ export const AnalysisPage: React.FC = () => {
         />
 
         {/* 4. P-Value + 95% CI, Samples & Spatial Coverage */}
-        <div className="p-5 rounded-xl border border-[#eef0f5]/[0.08] bg-[#11141c] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-between gap-2 text-xs font-sans text-[#a3a9b8]">
+        <div
+          className={`p-5 rounded-xl border bg-[#11141c] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-between gap-2 text-xs font-sans text-[#a3a9b8] ${
+            isSig ? 'border-[#4cc38a]/35' : 'border-[#e5484d]/35'
+          }`}
+        >
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-normal text-[#a3a9b8]">
               {activeAggregation === 'monthly' && statistics.sampleCount >= 24
@@ -873,8 +883,14 @@ export const AnalysisPage: React.FC = () => {
             <span className="text-[28px] leading-none font-medium font-mono text-[#eef0f5] tabular-nums">
               {formatScientificPValue(statistics.pValue, lang)}
             </span>
-            <span className="text-xs font-mono tabular-nums text-[#4cc38a]">
-              {statistics.pValue < 0.05 ? 'p < 0.05' : 'p ≥ 0.05'}
+            <span
+              className={`inline-flex items-center text-xs font-mono font-semibold tabular-nums px-2 py-0.5 rounded-md border ${
+                isSig
+                  ? 'bg-[#4cc38a]/15 text-[#4cc38a] border-[#4cc38a]/35'
+                  : 'bg-[#e5484d]/15 text-[#f26368] border-[#e5484d]/35'
+              }`}
+            >
+              {isSig ? 'p < 0.05' : 'p ≥ 0.05'}
             </span>
           </div>
           <div className="flex items-center justify-between gap-2 border-t border-[#eef0f5]/[0.07] pt-2 text-xs font-mono tabular-nums text-[#7a8296]">
