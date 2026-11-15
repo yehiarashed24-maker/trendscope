@@ -86,10 +86,11 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
   ];
 
   const latitudes = [
-    { label: '60°N', top: '18%' },
-    { label: '30°N', top: '36%' },
-    { label: '0°', top: '54%' },
-    { label: '30°S', top: '72%' },
+    { label: '60°N', top: '16.67%' },
+    { label: '30°N', top: '33.33%' },
+    { label: '0°', top: '50%' },
+    { label: '30°S', top: '66.67%' },
+    { label: '60°S', top: '83.33%' },
   ];
 
   return (
@@ -114,22 +115,14 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
         </div>
       ) : (
         <div className="absolute inset-0 overflow-hidden bg-[#070709]">
-          {/* Local High-Res NASA Blue Marble Satellite Layer */}
+          {/* Local High-Res NASA Blue Marble Satellite Layer (Exact Equirectangular 2:1 Projection) */}
           <img
             src="/earth-blue-marble.jpg"
             alt="NASA Earth Satellite Map"
-            className="absolute inset-0 w-full h-full object-cover object-[center_40%] pointer-events-none"
+            className="absolute inset-0 w-full h-full object-fill pointer-events-none"
             style={{
-              filter: 'brightness(0.82) contrast(1.1) saturate(0.82)',
+              filter: 'brightness(0.86) contrast(1.12) saturate(0.88)',
             }}
-          />
-
-          {/* Crisp Country Boundaries Overlay */}
-          <img
-            src="/world-borders.svg"
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover object-[center_40%] opacity-75 pointer-events-none"
           />
 
           {/* Subtle Obsidian Vignette */}
@@ -154,14 +147,14 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
             </div>
           ))}
 
-          {/* Dashed Graticule Longitude Lines */}
-          <div className="absolute inset-0 grid grid-cols-11 pointer-events-none">
+          {/* Dashed Graticule Longitude Lines (Exact 30° Equirectangular Intervals) */}
+          <div className="absolute inset-0 grid grid-cols-12 pointer-events-none">
             {longitudes.map((lng) => (
               <div
                 key={lng}
-                className="h-full border-r border-dashed border-white/[0.1] relative flex items-end justify-center pb-2.5"
+                className="h-full border-r border-dashed border-white/[0.1] relative flex items-end justify-end pb-2.5"
               >
-                <span className="text-[10px] font-mono text-zinc-400/80">
+                <span className="translate-x-1/2 text-[10px] font-mono text-zinc-400/80">
                   {lng}
                 </span>
               </div>
@@ -177,7 +170,7 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
               const dotElement = (
                 <span
                   className={cn(
-                    'w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border border-[#0b0d14]',
+                    'w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border border-[#0b0d14] shadow-[0_0_10px_rgba(0,0,0,0.65)]',
                     isInc ? 'bg-[#e5484d]' : 'bg-[#38bdf8]'
                   )}
                 >
@@ -199,7 +192,12 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
                     left: `${sig.xPercent}%`,
                     top: `${sig.yPercent}%`,
                   }}
-                  className="absolute -translate-x-1/2 -translate-y-1/2 z-20"
+                  className={cn(
+                    'absolute -translate-y-1/2 z-20',
+                    sig.dotPosition === 'left'
+                      ? '-translate-x-[7px]'
+                      : '-translate-x-[calc(100%-7px)]'
+                  )}
                 >
                   <button
                     type="button"

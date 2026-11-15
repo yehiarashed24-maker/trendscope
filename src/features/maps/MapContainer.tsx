@@ -206,7 +206,7 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       style: getActiveStyle(gisStyleMode),
       center: region?.coordinates || [31.05, 30.85],
       zoom: 8.1,
-      minZoom: 6.2,
+      minZoom: 1.4,
       maxZoom: 14.5,
       pitch: 0,
       attributionControl: false,
@@ -268,6 +268,9 @@ export const MapContainer: React.FC<MapContainerProps> = ({
         if (clickedId) {
           setRegion(clickedId);
         }
+      } else {
+        const customWorldId = `world_lat_${lngLat[1].toFixed(2)}_lon_${lngLat[0].toFixed(2)}`;
+        setRegion(customWorldId);
       }
 
       // Inspect real pixel value at click coordinates via backend `/api/raster/inspect`
@@ -308,9 +311,13 @@ export const MapContainer: React.FC<MapContainerProps> = ({
             </div>
           `
           : `
-            <div style="font-family: ui-monospace, monospace; font-size: 11px; color: #FCA5A5; background: #0B0F17; padding: 8px 10px; border-radius: 8px; border: 1px solid #7F1D1D;">
-              <strong>Outside Valid Nile Delta Mask</strong><br/>
-              <span style="color: #94A3B8;">${info.message || 'No valid satellite retrieval at this coordinate.'}</span>
+            <div style="font-family: ui-monospace, monospace; font-size: 11px; color: #E2E8F0; background: #0B0F17; padding: 8px 10px; border-radius: 8px; border: 1px solid #1E293B;">
+              <div style="font-weight: 700; color: #4CC38A; margin-bottom: 4px;">
+                NASA POWER / MODIS Global Acquisition
+              </div>
+              <div style="color: #CBD5E1;">Selected custom Earth coordinate region</div>
+              <div style="color: #38BDF8; font-size: 11px; margin-top: 3px;">Lat ${lngLat[1].toFixed(2)}°, Lon ${lngLat[0].toFixed(2)}°</div>
+              <div style="color: #94A3B8; font-size: 10px; margin-top: 2px;">Click Analyze Trend to run regional vs. global comparison.</div>
             </div>
           `;
 
@@ -394,6 +401,16 @@ export const MapContainer: React.FC<MapContainerProps> = ({
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !mapLoaded || !region?.bbox) return;
+    if (region.id === 'global_mean') {
+      map.fitBounds(
+        [
+          [-140, -50],
+          [150, 65],
+        ],
+        { padding: 30, duration: 900 }
+      );
+      return;
+    }
     map.fitBounds(
       [
         [region.bbox[0], region.bbox[1]],
