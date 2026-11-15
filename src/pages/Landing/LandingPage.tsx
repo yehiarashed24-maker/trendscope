@@ -11,14 +11,6 @@ export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const { openOnboardingIfAllowed } = useAppStore();
 
-  const footerLinks = [
-    { path: '/explorer', label: t('nav.explorer') },
-    { path: '/analysis', label: t('nav.analysis') },
-    { path: '/intelligence', label: t('nav.intelligence') },
-    { path: '/workspace', label: t('nav.workspace') },
-    { path: '/reports', label: t('nav.reports') },
-  ];
-
   return (
     <div className="bg-[#0a0608] min-h-screen text-white selection:bg-white/20">
       {/* SECTION 1: Full-Screen Serene Luxury Hero with Video & Feature Navbar */}
@@ -66,19 +58,6 @@ export const LandingPage: React.FC = () => {
             </span>
             <span>•</span>
             <span className="font-mono text-white/80">NASA EARTH OBSERVATION</span>
-          </div>
-
-          <div className="flex items-center gap-6 flex-wrap justify-center">
-            {footerLinks.map((link) => (
-              <button
-                key={link.path}
-                type="button"
-                onClick={() => navigate(link.path)}
-                className="hover:text-white transition-colors"
-              >
-                {link.label}
-              </button>
-            ))}
           </div>
 
           <div>{t('common.allRightsReserved')}</div>

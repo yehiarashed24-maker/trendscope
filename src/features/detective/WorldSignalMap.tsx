@@ -99,7 +99,7 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
         'relative w-full overflow-hidden bg-[#070709] transition-all duration-300 select-none',
         highlightTour && 'ring-2 ring-white/40'
       )}
-      style={{ minHeight: '540px', height: 'calc(100vh - 230px)' }}
+      style={{ minHeight: '480px', height: 'calc(100vh - 300px)' }}
     >
       {mapMode === 'gis' ? (
         <div className="absolute inset-0">

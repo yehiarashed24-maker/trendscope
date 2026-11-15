@@ -84,7 +84,7 @@ export const Hero: React.FC = () => {
       </header>
 
       {/* 4. Center Hero Content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 -mt-[80px] z-10 pointer-events-none">
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 pt-16 sm:pt-20 z-10 pointer-events-none">
         <p className="text-xs sm:text-sm uppercase tracking-[0.25em] text-[#38BDF8] font-medium mb-4 pointer-events-auto font-sans">
           {t('landing.hero.eyebrow')} · MODIS MOD13Q1 · MOD11C3
         </p>

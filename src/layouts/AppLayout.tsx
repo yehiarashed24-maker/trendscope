@@ -57,11 +57,11 @@ export const AppLayout: React.FC = () => {
       />
 
       {isExplorer ? (
-        <main className="flex-1 w-full flex flex-col overflow-hidden pb-20">
+        <main className="flex-1 w-full flex flex-col overflow-hidden pb-24">
           <Outlet context={{ tourStep, setTourStep }} />
         </main>
       ) : (
-        <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24">
+        <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-32 sm:pb-36">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -73,6 +73,7 @@ export const AppLayout: React.FC = () => {
               <Outlet context={{ tourStep, setTourStep }} />
             </motion.div>
           </AnimatePresence>
+          <div className="h-10 w-full shrink-0" aria-hidden="true" />
         </main>
       )}
 
