@@ -737,7 +737,7 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
           </div>
         </div>
 
-        {/* Hidden CSV input shared by dropdown and sub-variable bar */}
+        {/* Hidden CSV input triggered from Variable dropdown */}
         <input
           ref={csvInputRef}
           type="file"
@@ -815,19 +815,8 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0 flex-wrap">
-            <button
-              type="button"
-              disabled={csvUploading}
-              onClick={() => csvInputRef.current?.click()}
-              className="h-8 px-3 rounded-lg bg-emerald-950/60 hover:bg-emerald-900/70 text-emerald-300 border border-emerald-700/60 text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
-              title="Upload your own CSV file with date and value columns"
-            >
-              <Upload className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{csvUploading ? sourceLabels.uploadingCsv : sourceLabels.uploadCsv}</span>
-            </button>
-
-            {customCsvFileName && (
+          {customCsvFileName && (
+            <div className="flex items-center gap-2 shrink-0 flex-wrap">
               <button
                 type="button"
                 onClick={() => {
@@ -839,8 +828,8 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
                 <RefreshCw className="w-3.5 h-3.5 text-sky-400" />
                 <span>{sourceLabels.resetNasa}</span>
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* LST Measurement Sub-Selector (Appears ONLY when Land Surface Temperature is active) */}
