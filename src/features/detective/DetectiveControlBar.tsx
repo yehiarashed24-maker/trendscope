@@ -326,9 +326,7 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
                   {customCsvFileName
                     ? `CSV: ${customCsvFileName}`
                     : hasInteractedVar || activeConfig.variableId === 'lst'
-                    ? activeConfig.variableId === 'lst'
-                      ? `${t('variables.lst.name')} · ${t(`lstModes.${lstMode}` as any)}`
-                      : t(`variables.${activeConfig.variableId}.name` as any)
+                    ? t(`variables.${activeConfig.variableId}.name` as any)
                     : labels.step1Placeholder}
                 </div>
               </div>

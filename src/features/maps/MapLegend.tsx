@@ -38,7 +38,7 @@ export const MapLegend: React.FC<MapLegendProps> = ({
           high: '30°C',
         }
       : {
-          title: `${t('variables.lst.name')} (${t('lstModes.day')})`,
+          title: t('variables.lst.name'),
           resolution: 'Source: NASA Terra MODIS (MOD11C3.061) • 0.05° Day',
           gradient: 'from-sky-400 via-yellow-400 via-orange-600 to-red-800',
           low: '12°C',

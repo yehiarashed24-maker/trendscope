@@ -209,8 +209,6 @@ export const AnalysisPage: React.FC = () => {
       : '0.05° CMG (~5.5 km, MOD11C3.061)';
   const displayVariable = customFileLoaded
     ? customFileLoaded.replace(/\.[^/.]+$/, '')
-    : activeConfig.variableId === 'lst'
-    ? `${t('variables.lst.name')} (${t(`lstModes.${lstMode}` as any)})`
     : t(`variables.${activeConfig.variableId}.name` as any);
   const displayRegion = customFileLoaded
     ? 'Custom CSV Upload'

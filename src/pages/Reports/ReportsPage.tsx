@@ -150,9 +150,6 @@ export const ReportsPage: React.FC = () => {
                 <span className="text-[#7a8296] text-xs">Variable: </span>
                 <strong className="text-[#eef0f5] font-mono font-medium">
                   {t(`variables.${activeConfig.variableId}.name` as any)}
-                  {activeConfig.variableId === 'lst'
-                    ? ` · ${t(`lstModes.${activeConfig.lstMode || 'day'}` as any)}`
-                    : ''}
                 </strong>
               </div>
               <div className="border-s border-[#eef0f5]/[0.08] ps-4">

@@ -14,7 +14,7 @@ interface DockNavItem {
   id: string;
   to: string;
   exact?: boolean;
-  icon: React.ComponentType<{ className?: string; strokeWidth?: string | number }>;
+  icon: React.ComponentType<{ className?: string }>;
   labelKey: string;
   defaultLabel: string;
 }
@@ -69,13 +69,15 @@ export const FeaturesBottomDock: React.FC = () => {
       className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none select-none"
     >
       <div className="relative pointer-events-auto">
+        {/* Main Dock Container */}
         <div
           className={cn(
-            'flex items-center gap-1 p-1.5',
+            'flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-4 sm:py-2.5',
             'rounded-2xl',
-            'bg-[#11141c]/95 backdrop-blur-md',
-            'border border-[#eef0f5]/[0.09]',
-            'shadow-[0_12px_32px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)]'
+            'bg-[#08080A]/85 backdrop-blur-xl',
+            'border border-sky-500/25',
+            'shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_24px_rgba(56,189,248,0.18)]',
+            'transition-all duration-300 ease-out'
           )}
         >
           {items.map((item) => {
@@ -89,7 +91,7 @@ export const FeaturesBottomDock: React.FC = () => {
             return (
               <div
                 key={item.id}
-                className="relative"
+                className="relative group"
                 onMouseEnter={() => setHoveredId(item.id)}
                 onMouseLeave={() => setHoveredId(null)}
               >
@@ -97,49 +99,62 @@ export const FeaturesBottomDock: React.FC = () => {
                   type="button"
                   onClick={() => navigate(item.to)}
                   className={cn(
-                    'relative flex items-center justify-center gap-2',
-                    'h-9 px-3 rounded-[10px]',
-                    'text-xs font-sans transition-[background-color,border-color,color,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] cursor-pointer',
+                    'relative flex items-center justify-center',
+                    'w-10 h-10 sm:w-11 sm:h-11 rounded-xl',
+                    'transition-all duration-300 ease-out cursor-pointer',
                     isActive
-                      ? 'bg-[#1a1e28] border-[#eef0f5]/[0.12] text-[#eef0f5] font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]'
-                      : 'bg-transparent border-transparent text-[#7a8296] hover:text-[#eef0f5] hover:bg-[#1a1e28]/60',
-                    'border'
+                      ? 'bg-sky-500/20 border-sky-400/60 text-sky-300 shadow-[0_0_16px_rgba(56,189,248,0.4)]'
+                      : 'bg-white/[0.04] border-white/10 text-zinc-400 hover:text-white hover:bg-white/[0.08] hover:border-white/20',
+                    'border',
+                    isHovered && '-translate-y-1.5 scale-110 shadow-lg',
+                    isHovered && isActive && 'shadow-[0_0_24px_rgba(56,189,248,0.6)]',
+                    isHovered && !isActive && 'shadow-[0_4px_20px_rgba(255,255,255,0.12)]'
                   )}
                   title={label}
                 >
                   <Icon
                     className={cn(
-                      'w-4 h-4 shrink-0 transition-colors duration-150',
-                      isActive ? 'text-[#38bdf8]' : 'text-[#7a8296]'
+                      'w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300',
+                      isHovered && 'scale-110',
+                      isActive && 'text-sky-300'
                     )}
-                    strokeWidth={1.5}
                   />
-                  <span className="hidden sm:inline whitespace-nowrap">{label}</span>
 
+                  {/* Active Indicator Pip */}
                   {isActive && (
-                    <span className="sm:hidden absolute bottom-1 w-1 h-1 rounded-full bg-[#38bdf8]" />
+                    <span className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-sky-400 shadow-[0_0_6px_rgba(56,189,248,0.9)]" />
                   )}
                 </button>
 
-                {/* Mobile Tooltip */}
+                {/* Floating Tooltip */}
                 <div
                   className={cn(
-                    'sm:hidden absolute -top-9 left-1/2 -translate-x-1/2',
+                    'absolute -top-10 left-1/2 -translate-x-1/2',
                     'px-2.5 py-1 rounded-md',
-                    'bg-[#11141c] border border-[#eef0f5]/[0.1]',
-                    'text-[#eef0f5] text-xs font-sans font-normal',
-                    'shadow-[0_8px_24px_rgba(0,0,0,0.5)]',
-                    'transition-[opacity,transform] duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none whitespace-nowrap',
+                    'bg-[#0a0a0e]/95 backdrop-blur-md',
+                    'text-zinc-200 text-xs font-sans font-medium tracking-normal',
+                    'border border-sky-500/30',
+                    'shadow-[0_4px_16px_rgba(0,0,0,0.6)]',
+                    'transition-all duration-200 pointer-events-none whitespace-nowrap',
                     isHovered
                       ? 'opacity-100 translate-y-0'
                       : 'opacity-0 translate-y-1'
                   )}
                 >
                   <span>{label}</span>
+                  {/* Arrow pip */}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
+                    <div className="w-2 h-2 bg-[#0a0a0e]/95 rotate-45 border-r border-b border-sky-500/30" />
+                  </div>
                 </div>
               </div>
             );
           })}
+        </div>
+
+        {/* Subtle Bottom Reflection Effect */}
+        <div className="absolute top-full left-0 right-0 h-4 overflow-hidden pointer-events-none opacity-25">
+          <div className="w-full h-full bg-gradient-to-b from-sky-500/20 to-transparent blur-sm" />
         </div>
       </div>
     </nav>
