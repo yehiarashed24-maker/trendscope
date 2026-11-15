@@ -2,7 +2,7 @@
 title: TrendScope Nile Delta
 emoji: 🌍
 colorFrom: blue
-colorTo: slate
+colorTo: indigo
 sdk: gradio
 sdk_version: 6.32.0
 python_version: '3.12'
