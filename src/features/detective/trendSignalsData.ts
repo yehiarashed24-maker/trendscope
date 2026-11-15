@@ -319,6 +319,7 @@ export const DETECTIVE_UI_LABELS: Record<
     step2Label: string;
     step2Placeholder: string;
     step3Label: string;
+    step3Placeholder: string;
     analyzeBtn: string;
     myCases: string;
     signIn: string;
@@ -342,8 +343,9 @@ export const DETECTIVE_UI_LABELS: Record<
     step1Label: 'Variable',
     step1Placeholder: 'Choose a variable',
     step2Label: 'Nile Delta Region',
-    step2Placeholder: 'Choose Nile Delta subregion',
+    step2Placeholder: 'Choose a region',
     step3Label: 'Period',
+    step3Placeholder: 'Choose a period',
     analyzeBtn: 'Analyze trend',
     myCases: 'My cases',
     signIn: 'Sign in',
@@ -366,8 +368,9 @@ export const DETECTIVE_UI_LABELS: Record<
     step1Label: 'المتغير البيئي',
     step1Placeholder: 'اختر متغير',
     step2Label: 'منطقة دلتا النيل',
-    step2Placeholder: 'اختر محافظة في الدلتا',
+    step2Placeholder: 'اختر منطقة',
     step3Label: 'الفترة الزمنية',
+    step3Placeholder: 'اختر مدة',
     analyzeBtn: 'تحليل الاتجاه',
     myCases: 'حالاتي البحثية',
     signIn: 'تسجيل الدخول',
@@ -390,8 +393,9 @@ export const DETECTIVE_UI_LABELS: Record<
     step1Label: 'Variable',
     step1Placeholder: 'Variable wählen',
     step2Label: 'Nildelta-Region',
-    step2Placeholder: 'Teilregion im Nildelta wählen',
+    step2Placeholder: 'Region wählen',
     step3Label: 'Zeitraum',
+    step3Placeholder: 'Zeitraum wählen',
     analyzeBtn: 'Trend analysieren',
     myCases: 'Meine Fälle',
     signIn: 'Anmelden',
@@ -414,8 +418,9 @@ export const DETECTIVE_UI_LABELS: Record<
     step1Label: 'Variable',
     step1Placeholder: 'Choisir une variable',
     step2Label: 'Sous-région du Delta',
-    step2Placeholder: 'Choisir une zone du Delta',
+    step2Placeholder: 'Choisir une région',
     step3Label: 'Période',
+    step3Placeholder: 'Choisir une période',
     analyzeBtn: 'Analyser la tendance',
     myCases: 'Mes études',
     signIn: 'Connexion',

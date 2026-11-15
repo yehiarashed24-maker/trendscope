@@ -73,6 +73,7 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
   >(null);
   const [hasInteractedVar, setHasInteractedVar] = useState(false);
   const [hasInteractedReg, setHasInteractedReg] = useState(false);
+  const [hasInteractedPeriod, setHasInteractedPeriod] = useState(false);
   const [csvUploading, setCsvUploading] = useState(false);
   const [csvError, setCsvError] = useState<string | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
@@ -120,6 +121,7 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
       startDate: `${startYear}-01-01`,
       endDate: `${endYear}-12-31`,
     });
+    setHasInteractedPeriod(true);
     setOpenMenu(null);
     if (tourStep === 3) setTourStep(4);
   };
@@ -599,8 +601,15 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
                 <div className="text-xs text-[#7a8296] truncate">
                   {labels.step3Label}
                 </div>
-                <div className="font-mono tabular-nums text-[13px] font-medium text-[#eef0f5] truncate mt-0.5">
-                  {startYear} – {endYear}
+                <div
+                  className={cn(
+                    'text-[13px] font-medium text-[#eef0f5] truncate mt-0.5',
+                    hasInteractedPeriod && 'font-mono tabular-nums'
+                  )}
+                >
+                  {hasInteractedPeriod
+                    ? `${startYear} – ${endYear}`
+                    : labels.step3Placeholder}
                 </div>
               </div>
 
@@ -685,12 +694,13 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
                         <button
                           key={agg}
                           type="button"
-                          onClick={() =>
+                          onClick={() => {
                             setTimeRange({
                               ...activeConfig.timeRange,
                               aggregation: agg,
-                            })
-                          }
+                            });
+                            setHasInteractedPeriod(true);
+                          }}
                           className={cn(
                             'h-8 rounded-lg text-xs font-mono capitalize transition-colors duration-150 border cursor-pointer',
                             activeConfig.timeRange.aggregation === agg
