@@ -10,11 +10,27 @@
   box-sizing: border-box;
 }
 
+html {
+  color-scheme: dark;
+}
+
 body {
-  font-family: 'Inter', sans-serif;
-  background: #0a0a0c;
-  color: #F1F5F9;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #0b0d14;
+  color: #eef0f5;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(56, 189, 248, 0.22);
+  color: #eef0f5;
+}
+
+input[type="date"],
+select {
+  color-scheme: dark;
 }
 
 html[dir="rtl"],
@@ -121,23 +137,23 @@ html[dir="rtl"] [class*="tracking-"] {
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 40px rgba(255, 255, 255, 0.1);
 }
 
-/* Custom sleek scrollbars */
+/* Custom quiet scrollbars (Ink ramp) */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #060913;
+  background: #07080d;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1E2942;
-  border-radius: 9999px;
+  background: #1a1e28;
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3B82F6;
+  background: #282e3d;
 }
 
 /* Subtle pulsing rings for trend signals */
@@ -182,17 +198,18 @@ html[dir="rtl"] [class*="tracking-"] {
   }
 }
 
-/* MapLibre dark theme */
+/* MapLibre dark theme (Ink ramp) */
 .maplibregl-canvas {
   outline: none !important;
 }
 
 .maplibregl-ctrl-group {
-  background: rgba(12, 18, 34, 0.9) !important;
-  border: 1px solid #1E2942 !important;
-  border-radius: 10px !important;
+  background: rgba(17, 20, 28, 0.92) !important;
+  border: 1px solid rgba(238, 240, 245, 0.1) !important;
+  border-radius: 8px !important;
   backdrop-filter: blur(12px);
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
 }
 
 .maplibregl-ctrl-group button {
@@ -200,19 +217,19 @@ html[dir="rtl"] [class*="tracking-"] {
 }
 
 .maplibregl-popup-content {
-  background: rgba(16, 24, 45, 0.95) !important;
-  color: #F1F5F9 !important;
-  border: 1px solid #2E4482 !important;
-  border-radius: 12px !important;
+  background: rgba(17, 20, 28, 0.96) !important;
+  color: #eef0f5 !important;
+  border: 1px solid rgba(238, 240, 245, 0.12) !important;
+  border-radius: 10px !important;
   padding: 12px 14px !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65) !important;
   backdrop-filter: blur(12px);
   font-family: 'Inter', sans-serif !important;
   font-size: 12px !important;
 }
 
 .maplibregl-popup-tip {
-  border-top-color: #2E4482 !important;
+  border-top-color: rgba(238, 240, 245, 0.12) !important;
 }
 
 /* ========================================================

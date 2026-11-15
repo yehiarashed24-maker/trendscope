@@ -633,47 +633,53 @@ export const MapContainer: React.FC<MapContainerProps> = ({
 
   return (
     <div
-      className="relative rounded-xl border border-slate-800 overflow-hidden bg-obsidian-950 flex flex-col"
+      className="relative border-t border-[#eef0f5]/[0.08] overflow-hidden bg-[#07080d] flex flex-col"
       style={{ height }}
     >
       {/* Top Map Controls */}
       <div className="absolute top-3 start-3 z-10 flex flex-wrap items-center gap-2 max-w-[calc(100%-64px)]">
-        <DemoDataBadge status="VERIFIED" size="sm" />
+        <div className="h-8 px-3 rounded-lg bg-[#11141c]/95 border border-[#eef0f5]/[0.1] backdrop-blur-md flex items-center shadow-[0_8px_24px_rgba(0,0,0,0.45)]">
+          <DemoDataBadge status="VERIFIED" size="sm" />
+        </div>
 
         <button
           type="button"
           onClick={handleResetBounds}
-          title="Fit Nile Delta Study Area"
-          className="p-1.5 rounded bg-obsidian-900/90 hover:bg-slate-800 text-slate-300 border border-slate-700 backdrop-blur shadow cursor-pointer"
+          title="Fit Nile Delta study area"
+          className="w-8 h-8 rounded-lg bg-[#11141c]/95 hover:bg-[#1a1e28] text-[#a3a9b8] hover:text-[#eef0f5] border border-[#eef0f5]/[0.1] backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.45)] flex items-center justify-center transition-colors duration-150 cursor-pointer"
         >
-          <RefreshCw className="w-3.5 h-3.5" />
+          <RefreshCw className="w-4 h-4" strokeWidth={1.5} />
         </button>
 
         {showLayerSelect && onLayerChange && (
-          <div className="inline-flex items-center gap-1">
-            <div className="inline-flex rounded bg-obsidian-900/90 border border-slate-700 p-0.5 backdrop-blur text-[10px] font-mono">
+          <div className="inline-flex items-center gap-1.5">
+            <div className="h-8 inline-flex items-center rounded-lg bg-[#11141c]/95 border border-[#eef0f5]/[0.1] p-0.5 backdrop-blur-md text-xs font-mono shadow-[0_8px_24px_rgba(0,0,0,0.45)]">
               {(['ndvi', 'lst'] as VariableId[]).map((v) => (
                 <button
                   key={v}
                   type="button"
                   onClick={() => onLayerChange(v)}
-                  className={`px-2 py-0.5 rounded uppercase font-semibold cursor-pointer ${
-                    variableId === v ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'
+                  className={`h-7 px-2.5 rounded-md transition-colors duration-150 cursor-pointer ${
+                    variableId === v
+                      ? 'bg-[#1a1e28] text-[#eef0f5] font-medium'
+                      : 'text-[#7a8296] hover:text-[#eef0f5]'
                   }`}
                 >
-                  {v === 'ndvi' ? 'NDVI (250m)' : 'LST (0.05°)'}
+                  {v === 'ndvi' ? 'NDVI (250 m)' : 'LST (0.05°)'}
                 </button>
               ))}
             </div>
             {variableId === 'lst' && (
-              <div className="inline-flex rounded bg-obsidian-900/90 border border-slate-700 p-0.5 backdrop-blur text-[10px] font-mono">
+              <div className="h-8 inline-flex items-center rounded-lg bg-[#11141c]/95 border border-[#eef0f5]/[0.1] p-0.5 backdrop-blur-md text-xs font-sans shadow-[0_8px_24px_rgba(0,0,0,0.45)]">
                 {(['day', 'night', 'both'] as LstMode[]).map((m) => (
                   <button
                     key={m}
                     type="button"
                     onClick={() => setLstMode(m)}
-                    className={`px-1.5 py-0.5 rounded uppercase font-semibold cursor-pointer ${
-                      lstMode === m ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-white'
+                    className={`h-7 px-2.5 rounded-md capitalize transition-colors duration-150 cursor-pointer ${
+                      lstMode === m
+                        ? 'bg-[#1a1e28] text-[#eef0f5] font-medium'
+                        : 'text-[#7a8296] hover:text-[#eef0f5]'
                     }`}
                   >
                     {m}
@@ -685,14 +691,18 @@ export const MapContainer: React.FC<MapContainerProps> = ({
         )}
 
         {/* Raster Visibility & Opacity */}
-        <div className="inline-flex items-center gap-1.5 rounded bg-obsidian-900/90 border border-slate-700 px-2 py-1 backdrop-blur text-[10px] font-mono text-slate-300">
+        <div className="h-8 inline-flex items-center gap-2 rounded-lg bg-[#11141c]/95 border border-[#eef0f5]/[0.1] px-2.5 backdrop-blur-md text-xs font-mono text-[#a3a9b8] shadow-[0_8px_24px_rgba(0,0,0,0.45)]">
           <button
             type="button"
             onClick={() => setRasterVisible((v) => !v)}
-            className="hover:text-white cursor-pointer"
-            title="Toggle NASA Raster Layer"
+            className="hover:text-[#eef0f5] cursor-pointer"
+            title="Toggle NASA raster layer"
           >
-            {rasterVisible ? <Eye className="w-3.5 h-3.5 text-emerald-400" /> : <EyeOff className="w-3.5 h-3.5 text-slate-500" />}
+            {rasterVisible ? (
+              <Eye className="w-4 h-4 text-[#4cc38a]" strokeWidth={1.5} />
+            ) : (
+              <EyeOff className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+            )}
           </button>
           <input
             type="range"
@@ -701,25 +711,27 @@ export const MapContainer: React.FC<MapContainerProps> = ({
             step={0.05}
             value={rasterOpacity}
             onChange={(e) => setRasterOpacity(Number(e.target.value))}
-            className="w-14 accent-sky-400 cursor-pointer"
-            title="Raster Opacity"
+            className="w-16 accent-[#38bdf8] cursor-pointer"
+            title="Raster opacity"
           />
         </div>
 
         {/* Drawing & Inspect Mode Toolbar */}
-        <div className="inline-flex items-center rounded bg-obsidian-900/90 border border-slate-700 p-0.5 backdrop-blur text-[10px] font-mono">
+        <div className="h-8 inline-flex items-center rounded-lg bg-[#11141c]/95 border border-[#eef0f5]/[0.1] p-0.5 backdrop-blur-md text-xs font-sans shadow-[0_8px_24px_rgba(0,0,0,0.45)]">
           <button
             type="button"
             onClick={() => {
               setDrawMode('inspect');
               setDraftPoints([]);
             }}
-            className={`px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer ${
-              drawMode === 'inspect' ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'
+            className={`h-7 px-2.5 rounded-md flex items-center gap-1.5 transition-colors duration-150 cursor-pointer ${
+              drawMode === 'inspect'
+                ? 'bg-[#1a1e28] text-[#eef0f5] font-medium'
+                : 'text-[#7a8296] hover:text-[#eef0f5]'
             }`}
             title="Click pixel to inspect real MODIS NDVI / LST value"
           >
-            <Crosshair className="w-3 h-3" />
+            <Crosshair className="w-3.5 h-3.5" strokeWidth={1.5} />
             <span className="hidden sm:inline">Inspect</span>
           </button>
           <button
@@ -729,12 +741,14 @@ export const MapContainer: React.FC<MapContainerProps> = ({
               setDraftPoints([]);
               setCustomValidationMsg(null);
             }}
-            className={`px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer ${
-              drawMode === 'polygon' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-white'
+            className={`h-7 px-2.5 rounded-md flex items-center gap-1.5 transition-colors duration-150 cursor-pointer ${
+              drawMode === 'polygon'
+                ? 'bg-[#1a1e28] text-[#eef0f5] font-medium'
+                : 'text-[#7a8296] hover:text-[#eef0f5]'
             }`}
             title="Click 3+ points inside Nile Delta to draw polygon"
           >
-            <Pentagon className="w-3 h-3" />
+            <Pentagon className="w-3.5 h-3.5" strokeWidth={1.5} />
             <span className="hidden sm:inline">Polygon</span>
           </button>
           <button
@@ -744,12 +758,14 @@ export const MapContainer: React.FC<MapContainerProps> = ({
               setDraftPoints([]);
               setCustomValidationMsg(null);
             }}
-            className={`px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer ${
-              drawMode === 'rectangle' ? 'bg-amber-600 text-white' : 'text-slate-400 hover:text-white'
+            className={`h-7 px-2.5 rounded-md flex items-center gap-1.5 transition-colors duration-150 cursor-pointer ${
+              drawMode === 'rectangle'
+                ? 'bg-[#1a1e28] text-[#eef0f5] font-medium'
+                : 'text-[#7a8296] hover:text-[#eef0f5]'
             }`}
             title="Click 2 corners inside Nile Delta to draw rectangle"
           >
-            <Square className="w-3 h-3" />
+            <Square className="w-3.5 h-3.5" strokeWidth={1.5} />
             <span className="hidden sm:inline">Rect</span>
           </button>
         </div>
@@ -758,9 +774,9 @@ export const MapContainer: React.FC<MapContainerProps> = ({
           <button
             type="button"
             onClick={() => submitCustomPolygon(draftPoints)}
-            className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-mono font-semibold flex items-center gap-1 shadow cursor-pointer"
+            className="h-8 px-3 rounded-lg bg-[#eef0f5] hover:bg-white text-[#0b0d14] text-xs font-medium flex items-center gap-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.45)] cursor-pointer"
           >
-            <Check className="w-3 h-3" />
+            <Check className="w-3.5 h-3.5" strokeWidth={1.5} />
             <span>Finish ({draftPoints.length} pts)</span>
           </button>
         )}
@@ -770,10 +786,10 @@ export const MapContainer: React.FC<MapContainerProps> = ({
             <button
               type="button"
               onClick={handleExportCustomGeoJson}
-              className="p-1.5 rounded bg-zinc-900/90 border border-slate-700 text-sky-400 hover:text-white cursor-pointer"
-              title="Export Clipped GeoJSON"
+              className="w-8 h-8 rounded-lg bg-[#11141c]/95 border border-[#eef0f5]/[0.1] text-[#a3a9b8] hover:text-[#eef0f5] flex items-center justify-center cursor-pointer"
+              title="Export clipped GeoJSON"
             >
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-4 h-4" strokeWidth={1.5} />
             </button>
             <button
               type="button"
@@ -782,16 +798,16 @@ export const MapContainer: React.FC<MapContainerProps> = ({
                 setDraftPoints([]);
                 setRegion('nile_delta');
               }}
-              className="p-1.5 rounded bg-zinc-900/90 border border-slate-700 text-rose-400 hover:text-white cursor-pointer"
-              title="Clear Custom Polygon"
+              className="w-8 h-8 rounded-lg bg-[#11141c]/95 border border-[#eef0f5]/[0.1] text-[#7a8296] hover:text-[#e5484d] flex items-center justify-center cursor-pointer"
+              title="Clear custom polygon"
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <Trash2 className="w-4 h-4" strokeWidth={1.5} />
             </button>
           </div>
         )}
 
         {MAPTILER_KEY && (
-          <div className="hidden md:inline-flex rounded bg-[#0A1020]/90 border border-[#2B3F70] p-0.5 backdrop-blur text-[10px] font-mono">
+          <div className="hidden md:inline-flex h-8 items-center rounded-lg bg-[#11141c]/95 border border-[#eef0f5]/[0.1] p-0.5 backdrop-blur-md text-xs font-sans">
             <button
               type="button"
               onClick={() => {
@@ -800,10 +816,10 @@ export const MapContainer: React.FC<MapContainerProps> = ({
                   `https://api.maptiler.com/maps/hybrid/style.json?key=${MAPTILER_KEY}`
                 );
               }}
-              className={`px-2 py-0.5 rounded font-semibold transition-colors cursor-pointer ${
+              className={`h-7 px-2.5 rounded-md transition-colors duration-150 cursor-pointer ${
                 gisStyleMode === 'hybrid'
-                  ? 'bg-[#4F8BFF] text-white'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#1a1e28] text-[#eef0f5] font-medium'
+                  : 'text-[#7a8296] hover:text-[#eef0f5]'
               }`}
             >
               Satellite
@@ -816,10 +832,10 @@ export const MapContainer: React.FC<MapContainerProps> = ({
                   `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${MAPTILER_KEY}`
                 );
               }}
-              className={`px-2 py-0.5 rounded font-semibold transition-colors cursor-pointer ${
+              className={`h-7 px-2.5 rounded-md transition-colors duration-150 cursor-pointer ${
                 gisStyleMode === 'dark'
-                  ? 'bg-[#4F8BFF] text-white'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#1a1e28] text-[#eef0f5] font-medium'
+                  : 'text-[#7a8296] hover:text-[#eef0f5]'
               }`}
             >
               Dark GIS
@@ -831,13 +847,13 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       {/* Custom Polygon Validation / Error Alert */}
       {customValidationMsg && (
         <div
-          className={`absolute top-14 start-3 z-10 px-3 py-1.5 rounded-lg border text-[11px] font-mono flex items-center gap-2 backdrop-blur ${
+          className={`absolute top-14 start-3 z-10 px-3 py-2 rounded-lg border text-xs font-mono flex items-center gap-2 backdrop-blur-md ${
             customValidationMsg.type === 'error'
-              ? 'bg-rose-950/90 border-rose-700 text-rose-200'
-              : 'bg-emerald-950/90 border-emerald-700 text-emerald-200'
+              ? 'bg-[#11141c]/95 border-[#e5484d]/40 text-[#e5484d]'
+              : 'bg-[#11141c]/95 border-[#4cc38a]/40 text-[#4cc38a]'
           }`}
         >
-          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+          <AlertCircle className="w-4 h-4 shrink-0" strokeWidth={1.5} />
           <span>{customValidationMsg.text}</span>
         </div>
       )}
@@ -846,20 +862,20 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       <div ref={mapContainerRef} className="w-full flex-1" />
 
       {/* Floating Map Legend */}
-      <div className="hidden sm:block absolute bottom-7 start-3 z-10 max-w-[260px]">
+      <div className="hidden sm:block absolute bottom-9 start-3 z-10 max-w-[270px]">
         <MapLegend variableId={variableId} lstMode={lstMode} unit={unit} />
       </div>
 
       {/* Bottom Coordinates & Metadata Bar */}
-      <div className="h-6 bg-obsidian-950/95 border-t border-slate-800/80 px-3 flex items-center justify-between text-[10px] font-mono text-slate-400">
+      <div className="h-7 bg-[#07080d] border-t border-[#eef0f5]/[0.08] px-4 flex items-center justify-between text-xs font-mono tabular-nums text-[#7a8296]">
         <div className="flex items-center gap-2 truncate">
-          <span>NILE DELTA • EPSG:4326</span>
-          <span className="hidden sm:inline text-sky-400">
-            • {variableId === 'ndvi' ? 'MOD13Q1 250m' : `MOD11C3 LST 0.05° (${lstMode.toUpperCase()})`}
+          <span>Nile Delta · EPSG:4326</span>
+          <span className="hidden sm:inline text-[#a3a9b8]">
+            · {variableId === 'ndvi' ? 'MOD13Q1 250 m' : `MOD11C3 LST 0.05° (${lstMode})`}
           </span>
-          <span className="hidden md:inline">• CLICK MAP TO INSPECT PIXEL</span>
+          <span className="hidden md:inline">· Click map to inspect pixel</span>
         </div>
-        <div className="shrink-0">
+        <div className="shrink-0 text-[#a3a9b8]">
           {cursorCoords ? (
             formatCoordinate(cursorCoords.lat, cursorCoords.lng)
           ) : (

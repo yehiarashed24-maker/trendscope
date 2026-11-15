@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Loader2, Radio } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 interface LoadingStateProps {
   message?: string;
@@ -11,16 +11,15 @@ export const LoadingState: React.FC<LoadingStateProps> = ({ message, subMessage 
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col items-center justify-center p-12 rounded border border-slate-800/80 bg-obsidian-900/60 min-h-[220px]">
-      <div className="relative mb-4">
-        <Radio className="w-8 h-8 text-satellite-400 animate-pulse" />
-        <Loader2 className="w-8 h-8 text-satellite-500/40 animate-spin absolute inset-0" />
+    <div className="flex flex-col items-center justify-center p-12 rounded-2xl border border-[#eef0f5]/[0.08] bg-[#11141c] min-h-[240px]">
+      <div className="w-9 h-9 rounded-lg border border-[#eef0f5]/[0.08] bg-[#1a1e28] flex items-center justify-center mb-4">
+        <Loader2 className="w-4 h-4 text-[#38bdf8] animate-spin" strokeWidth={1.5} />
       </div>
-      <p className="text-xs font-mono text-slate-200 tracking-wide">
+      <p className="text-[13px] font-sans text-[#eef0f5]">
         {message || t('common.loading')}
       </p>
       {subMessage && (
-        <p className="text-[11px] text-slate-500 font-mono mt-1">{subMessage}</p>
+        <p className="text-xs text-[#7a8296] font-mono mt-1">{subMessage}</p>
       )}
     </div>
   );

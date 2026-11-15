@@ -132,24 +132,24 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
   };
 
   return (
-    <header className="w-full bg-[#08080A] relative z-30 pt-3 pb-3.5 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80">
-      <div className="max-w-[1440px] mx-auto space-y-3.5 relative z-10">
-        {/* ROW 1: BRAND LOGO + ORBIT FLIGHT RING NAVBAR (CONSTELLATION) + UTILITIES */}
+    <header className="w-full bg-[#07080d] relative z-30 py-3 px-4 sm:px-6 lg:px-8 border-b border-[#eef0f5]/[0.08]">
+      <div className="max-w-[1440px] mx-auto space-y-4 relative z-10">
+        {/* ROW 1: BRAND LOGO + UTILITIES */}
         <div className="flex items-center justify-between gap-3 sm:gap-4 flex-wrap sm:flex-nowrap">
           {/* Brand Signature */}
           <div className="shrink-0 flex items-center gap-3">
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 group text-start focus:outline-none cursor-pointer"
+              className="flex items-center gap-2.5 group text-start focus:outline-none cursor-pointer"
             >
-              <div className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.6)]" />
-              <span className="text-lg sm:text-xl font-bold tracking-tight text-white group-hover:text-sky-300 transition-colors">
+              <div className="w-2 h-2 rounded-full bg-[#38bdf8]" />
+              <span className="text-[17px] leading-none font-medium tracking-[-0.01em] text-[#eef0f5] group-hover:text-white transition-colors duration-150">
                 TrendScope
               </span>
-              <span className="h-3 w-[1px] bg-zinc-750 mx-1 hidden sm:inline-block" />
-              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-400 hidden sm:inline-block">
-                EOSDIS
+              <span className="h-3.5 w-[1px] bg-[#eef0f5]/[0.1] mx-0.5 hidden sm:inline-block" />
+              <span className="text-xs font-mono text-[#7a8296] hidden sm:inline-block">
+                NASA EOSDIS
               </span>
             </button>
           </div>
@@ -164,9 +164,9 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
               type="button"
               onClick={openOnboarding}
               title={lang === 'ar' ? 'إعداد الفحص خطوة بخطوة' : 'Guided Setup'}
-              className="h-8 px-2.5 rounded-lg border border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800 text-xs font-medium text-zinc-300 hover:text-white flex items-center gap-1.5 transition-colors duration-150 cursor-pointer"
+              className="h-8 px-3 rounded-lg border border-[#eef0f5]/[0.08] bg-[#11141c] hover:bg-[#1a1e28] text-xs font-normal text-[#a3a9b8] hover:text-[#eef0f5] flex items-center gap-2 transition-colors duration-150 cursor-pointer"
             >
-              <Compass className="w-4 h-4 text-zinc-400 shrink-0" strokeWidth={1.5} />
+              <Compass className="w-4 h-4 text-[#7a8296] shrink-0" strokeWidth={1.5} />
               <span className="hidden md:inline">
                 {lang === 'ar' ? 'الدليل' : 'Guide'}
               </span>
@@ -178,13 +178,13 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
               onClick={() => (showControlBar ? setTourStep(tourStep ? null : 1) : openOnboarding())}
               title={showControlBar ? 'Explorer Spotlight Tour' : 'Guided Setup Wizard'}
               className={cn(
-                'w-8 h-8 rounded-lg border text-xs font-medium flex items-center justify-center transition-colors cursor-pointer',
+                'w-8 h-8 rounded-lg border text-xs font-normal flex items-center justify-center transition-colors duration-150 cursor-pointer',
                 tourStep !== null
-                  ? 'border-sky-500/50 bg-sky-500/15 text-sky-400'
-                  : 'border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800 text-zinc-400 hover:text-white'
+                  ? 'border-[#38bdf8]/50 bg-[#1a1e28] text-[#38bdf8]'
+                  : 'border-[#eef0f5]/[0.08] bg-[#11141c] hover:bg-[#1a1e28] text-[#7a8296] hover:text-[#eef0f5]'
               )}
             >
-              <HelpCircle className="w-4 h-4" />
+              <HelpCircle className="w-4 h-4" strokeWidth={1.5} />
             </button>
 
             {/* My Cases — ONLY VISIBLE WHEN USER IS SIGNED IN (Account-specific cases) */}
@@ -192,12 +192,12 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
               <button
                 type="button"
                 onClick={() => setCasesDrawerOpen(true)}
-                className="h-8 px-2.5 sm:px-3 rounded-lg border border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800 text-xs text-zinc-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="h-8 px-3 rounded-lg border border-[#eef0f5]/[0.08] bg-[#11141c] hover:bg-[#1a1e28] text-xs text-[#a3a9b8] hover:text-[#eef0f5] flex items-center gap-2 transition-colors duration-150 cursor-pointer"
               >
-                <Bookmark className="w-3.5 h-3.5 text-zinc-400" />
+                <Bookmark className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
                 <span className="hidden sm:inline">{labels.myCases}</span>
-                <span className="text-[11px] font-mono text-sky-400 font-medium">
-                  ({savedInvestigations.length})
+                <span className="text-xs font-mono tabular-nums text-[#7a8296]">
+                  {savedInvestigations.length}
                 </span>
               </button>
             )}
@@ -213,17 +213,17 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                 <button
                   type="button"
                   onClick={() => setGoogleModalOpen(true)}
-                  className="h-8 px-2.5 sm:px-3 rounded-lg border border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800 text-xs text-zinc-200 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="h-8 px-3 rounded-lg border border-[#eef0f5]/[0.08] bg-[#11141c] hover:bg-[#1a1e28] text-xs text-[#eef0f5] flex items-center gap-2 transition-colors duration-150 cursor-pointer"
                 >
                   <img
                     src={googleUser.avatar}
                     alt={googleUser.name}
-                    className="w-4 h-4 rounded-full border border-zinc-700 shrink-0"
+                    className="w-4 h-4 rounded-full border border-[#eef0f5]/[0.15] shrink-0"
                   />
-                  <span className="max-w-[100px] truncate text-xs font-medium">
+                  <span className="max-w-[100px] truncate text-xs font-normal">
                     {googleUser.name}
                   </span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#4cc38a] shrink-0" />
                 </button>
               </div>
             ) : (
@@ -233,9 +233,9 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                   setAuthMethod('google');
                   setGoogleModalOpen(true);
                 }}
-                className="h-8 px-3 rounded-lg text-xs font-medium text-white bg-sky-600 hover:bg-sky-500 border border-sky-500/50 shrink-0 flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
+                className="h-8 px-3.5 rounded-lg text-xs font-medium text-[#0b0d14] bg-[#eef0f5] hover:bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] shrink-0 flex items-center gap-2 transition-colors duration-150 cursor-pointer"
               >
-                <User className="w-3.5 h-3.5" />
+                <User className="w-4 h-4" strokeWidth={1.5} />
                 <span>
                   {lang === 'ar' ? 'تسجيل الدخول' : 'Sign in'}
                 </span>
@@ -246,12 +246,12 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
 
         {/* ROW 2: HEADLINE & PARAMETER CONSOLE (SHOWN ON EXPLORER) */}
         {showControlBar && (
-          <div className="space-y-2.5 pt-1">
-            <div>
-              <h1 className="text-lg sm:text-[22px] font-bold text-white tracking-tight">
+          <div className="space-y-3 pt-1">
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+              <h1 className="text-[20px] sm:text-[24px] leading-[1.2] font-medium text-[#eef0f5] tracking-[-0.01em]">
                 {labels.heroTitle}
               </h1>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <p className="text-[13px] text-[#7a8296]">
                 {labels.heroSubtitle}
               </p>
             </div>
@@ -274,23 +274,23 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setCasesDrawerOpen(false)}
-              className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50"
+              className="fixed inset-0 bg-[#05060a]/80 backdrop-blur-sm z-50"
             />
             <motion.aside
               initial={{ x: lang === 'ar' ? '-100%' : '100%' }}
               animate={{ x: 0 }}
               exit={{ x: lang === 'ar' ? '-100%' : '100%' }}
-              transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-              className="fixed top-3 bottom-3 end-3 w-full max-w-md rounded-2xl bg-[#0B0F17] z-50 flex flex-col p-5 sm:p-6 border border-zinc-800 shadow-2xl"
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed top-3 bottom-3 end-3 w-full max-w-md rounded-2xl bg-[#11141c] z-50 flex flex-col p-6 border border-[#eef0f5]/[0.1] shadow-[0_24px_64px_rgba(0,0,0,0.7)]"
             >
-              <div className="flex items-center justify-between pb-3.5 border-b border-zinc-800">
+              <div className="flex items-center justify-between pb-4 border-b border-[#eef0f5]/[0.08]">
                 <div className="flex items-center gap-2.5">
-                  <Bookmark className="w-4 h-4 text-sky-400" />
+                  <Bookmark className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
                   <div>
-                    <h3 className="text-base font-semibold text-white leading-tight">
+                    <h3 className="text-[15px] font-medium text-[#eef0f5] leading-tight">
                       {labels.myCases}
                     </h3>
-                    <p className="text-[11px] text-zinc-500 font-mono">
+                    <p className="text-xs text-[#7a8296] font-mono">
                       {googleUser.email}
                     </p>
                   </div>
@@ -298,20 +298,20 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                 <button
                   type="button"
                   onClick={() => setCasesDrawerOpen(false)}
-                  className="w-7 h-7 rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                  className="w-8 h-8 rounded-lg border border-[#eef0f5]/[0.08] bg-[#1a1e28] hover:bg-[#232836] text-[#7a8296] hover:text-[#eef0f5] flex items-center justify-center transition-colors duration-150 cursor-pointer"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-4 h-4" strokeWidth={1.5} />
                 </button>
               </div>
 
-              <p className="text-xs text-zinc-400 mt-3 mb-4 leading-relaxed">
+              <p className="text-[13px] text-[#a3a9b8] mt-3 mb-4 leading-5">
                 Saved Earth system trend investigations and pre-calibrated NASA
                 benchmark studies for this account.
               </p>
 
               <div className="flex-1 overflow-y-auto space-y-2.5 pe-1">
                 {savedInvestigations.length === 0 ? (
-                  <div className="text-center py-12 text-zinc-500 text-xs">
+                  <div className="text-center py-12 text-[#7a8296] text-xs">
                     {lang === 'ar'
                       ? 'لا توجد تحقيقات محفوظة لهذا الحساب حالياً'
                       : 'No saved investigations for this account yet'}
@@ -320,45 +320,44 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                   savedInvestigations.map((inv) => (
                     <div
                       key={inv.id}
-                      className="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800 flex flex-col justify-between gap-3"
+                      className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.08] flex flex-col justify-between gap-3"
                     >
                       <div>
-                        <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 mb-1">
-                          <span className="font-semibold uppercase tracking-wider text-sky-400">
+                        <div className="flex items-center justify-between text-xs font-mono text-[#7a8296] mb-1">
+                          <span className="font-sans font-medium text-[#38bdf8]">
                             {t(`regions.${inv.regionId}` as any) || inv.regionId}
                           </span>
                           <span>{formatDate(inv.createdAt, lang)}</span>
                         </div>
-                        <h4 className="text-xs font-semibold text-zinc-100">
+                        <h4 className="text-[13px] font-medium text-[#eef0f5]">
                           {t(`variables.${inv.variableId}.name` as any)}
                         </h4>
-                        <div className="text-[11px] font-mono text-zinc-400 mt-1">
-                          Dataset: {inv.datasetId} •{' '}
-                          {inv.timeRange.startDate.slice(0, 4)}–
+                        <div className="text-xs font-mono tabular-nums text-[#7a8296] mt-1">
+                          {inv.datasetId} · {inv.timeRange.startDate.slice(0, 4)}–
                           {inv.timeRange.endDate.slice(0, 4)}
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-zinc-800">
+                      <div className="flex items-center justify-between pt-2.5 border-t border-[#eef0f5]/[0.07]">
                         <div className="flex items-center gap-2">
                           <DemoDataBadge status={inv.status} size="sm" />
                           <button
                             type="button"
                             onClick={() => deleteSavedInvestigation(inv.id)}
-                            className="p-1 text-zinc-500 hover:text-rose-400 transition-colors cursor-pointer"
+                            className="p-1 text-[#7a8296] hover:text-[#e5484d] transition-colors duration-150 cursor-pointer"
                             title="Remove case"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="w-4 h-4" strokeWidth={1.5} />
                           </button>
                         </div>
 
                         <button
                           type="button"
                           onClick={() => handleOpenCase(inv)}
-                          className="h-7 px-3 rounded-md bg-sky-500 hover:bg-sky-400 text-slate-950 font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                          className="h-8 px-3 rounded-lg bg-[#eef0f5] hover:bg-white text-[#0b0d14] font-medium text-xs flex items-center gap-1.5 transition-colors duration-150 cursor-pointer"
                         >
                           <span>{labels.analyzeBtn}</span>
-                          <ArrowUpRight className="w-3.5 h-3.5" />
+                          <ArrowUpRight className="w-3.5 h-3.5" strokeWidth={1.5} />
                         </button>
                       </div>
                     </div>
@@ -379,82 +378,83 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setGoogleModalOpen(false)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+              className="fixed inset-0 bg-[#05060a]/80 backdrop-blur-sm"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 8 }}
-              className="relative z-10 w-full max-w-md bg-[#0B0F17] border border-zinc-800 rounded-2xl shadow-2xl p-6 space-y-4"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="relative z-10 w-full max-w-md bg-[#11141c] border border-[#eef0f5]/[0.1] rounded-2xl shadow-[0_24px_64px_rgba(0,0,0,0.7)] p-6 space-y-4"
             >
               {/* Modal Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+              <div className="flex items-center justify-between pb-3.5 border-b border-[#eef0f5]/[0.08]">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400">
-                    <User className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-lg bg-[#1a1e28] border border-[#eef0f5]/[0.08] flex items-center justify-center text-[#a3a9b8]">
+                    <User className="w-4 h-4" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-white leading-tight">
+                    <h3 className="text-[15px] font-medium text-[#eef0f5] leading-tight">
                       {googleUser
-                        ? (lang === 'ar' ? 'الحساب المتصل' : 'Connected Account')
+                        ? (lang === 'ar' ? 'الحساب المتصل' : 'Connected account')
                         : (lang === 'ar' ? 'تسجيل الدخول' : 'Sign in')}
                     </h3>
-                    <p className="text-[11px] text-zinc-400">
-                      TrendScope NASA Identity Hub
+                    <p className="text-xs text-[#7a8296]">
+                      TrendScope identity hub
                     </p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setGoogleModalOpen(false)}
-                  className="w-7 h-7 rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                  className="w-8 h-8 rounded-lg border border-[#eef0f5]/[0.08] bg-[#1a1e28] hover:bg-[#232836] text-[#7a8296] hover:text-[#eef0f5] flex items-center justify-center transition-colors duration-150 cursor-pointer"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-4 h-4" strokeWidth={1.5} />
                 </button>
               </div>
 
               {/* If user is ALREADY signed in */}
               {googleUser ? (
                 <div className="space-y-4">
-                  <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 flex items-center gap-3.5">
+                  <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.08] flex items-center gap-3.5">
                     <img
                       src={googleUser.avatar}
                       alt={googleUser.name}
-                      className="w-11 h-11 rounded-full border border-zinc-700 shrink-0"
+                      className="w-11 h-11 rounded-full border border-[#eef0f5]/[0.12] shrink-0"
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h4 className="text-sm font-semibold text-white truncate">
+                        <h4 className="text-sm font-medium text-[#eef0f5] truncate">
                           {googleUser.name}
                         </h4>
-                        <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#4cc38a]" />
                       </div>
-                      <p className="text-xs text-zinc-400 truncate">
+                      <p className="text-xs text-[#7a8296] truncate">
                         {googleUser.email}
                       </p>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-400 mt-1">
-                        <CheckCircle2 className="w-3 h-3" />
+                      <span className="inline-flex items-center gap-1.5 text-xs font-mono text-[#4cc38a] mt-1">
+                        <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                         <span>
                           {googleUser.provider === 'email'
-                            ? (lang === 'ar' ? 'حساب بريد إلكتروني نشط' : 'Email Account Active')
-                            : (lang === 'ar' ? 'متصل عبر Google OAuth' : 'Google OAuth Synced')}
+                            ? (lang === 'ar' ? 'حساب بريد إلكتروني نشط' : 'Email account active')
+                            : (lang === 'ar' ? 'متصل عبر Google OAuth' : 'Google OAuth synced')}
                         </span>
                       </span>
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-zinc-900/40 border border-zinc-800 text-xs text-zinc-400 space-y-1 font-mono">
+                  <div className="p-3.5 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] text-xs text-[#a3a9b8] space-y-1.5 font-mono tabular-nums">
                     <div className="flex justify-between">
-                      <span className="text-zinc-500">NASA Earthdata:</span>
-                      <span className="text-emerald-400">
-                        Backend Proxy Verified
+                      <span className="text-[#7a8296]">NASA Earthdata</span>
+                      <span className="text-[#4cc38a]">
+                        Backend proxy verified
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-zinc-500">
-                        {lang === 'ar' ? 'الحالات المحفوظة:' : 'Account Cases:'}
+                      <span className="text-[#7a8296]">
+                        {lang === 'ar' ? 'الحالات المحفوظة' : 'Account cases'}
                       </span>
-                      <span className="text-sky-400 font-medium">
+                      <span className="text-[#eef0f5]">
                         {savedInvestigations.length} {lang === 'ar' ? 'حالات' : 'cases'}
                       </span>
                     </div>
@@ -464,31 +464,30 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                     <button
                       type="button"
                       onClick={() => setGoogleModalOpen(false)}
-                      className="flex-1 h-9 rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-medium transition-colors cursor-pointer"
+                      className="flex-1 h-9 rounded-lg border border-[#eef0f5]/[0.08] bg-[#1a1e28] hover:bg-[#232836] text-[#eef0f5] text-xs font-medium transition-colors duration-150 cursor-pointer"
                     >
                       {lang === 'ar' ? 'إغلاق' : 'Close'}
                     </button>
                     <button
                       type="button"
                       onClick={handleSignOut}
-                      className="h-9 px-4 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800 text-rose-300 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="h-9 px-4 rounded-lg bg-[#e5484d]/10 hover:bg-[#e5484d]/20 border border-[#e5484d]/30 text-[#e5484d] text-xs font-medium flex items-center gap-1.5 transition-colors duration-150 cursor-pointer"
                     >
-                      <LogOut className="w-3.5 h-3.5" />
-                      <span>{lang === 'ar' ? 'تسجيل الخروج' : 'Sign Out'}</span>
+                      <LogOut className="w-4 h-4" strokeWidth={1.5} />
+                      <span>{lang === 'ar' ? 'تسجيل الخروج' : 'Sign out'}</span>
                     </button>
                   </div>
                 </div>
               ) : (
-                /* NOT SIGNED IN: Choose Google or Email (as requested!) */
+                /* NOT SIGNED IN: Choose Google or Email */
                 <div className="space-y-4">
-                  {/* The exact question requested by the user */}
-                  <div className="p-3 rounded-xl bg-zinc-900/70 border border-zinc-800/80 text-center">
-                    <p className="text-xs sm:text-[13px] font-medium text-zinc-200">
+                  <div className="p-3.5 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.08] text-center">
+                    <p className="text-[13px] font-medium text-[#eef0f5]">
                       {lang === 'ar'
                         ? 'تحب تسجيل الدخول بواسطة Google أو البريد الإلكتروني؟'
                         : 'Would you like to sign in with Google or with Email?'}
                     </p>
-                    <p className="text-[11px] text-zinc-400 mt-1">
+                    <p className="text-xs text-[#7a8296] mt-1">
                       {lang === 'ar'
                         ? 'اختر الطريقة المناسبة لمزامنة دراساتك وحالاتك الخاصة'
                         : 'Choose your preferred method to sync your NASA cases'}
@@ -496,15 +495,15 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                   </div>
 
                   {/* Method Switcher Tabs */}
-                  <div className="grid grid-cols-2 gap-1.5 p-1 rounded-lg bg-zinc-900 border border-zinc-800">
+                  <div className="grid grid-cols-2 gap-1.5 p-1 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08]">
                     <button
                       type="button"
                       onClick={() => setAuthMethod('google')}
                       className={cn(
-                        'py-2 px-3 rounded-md text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer',
+                        'h-8 px-3 rounded-md text-xs font-medium flex items-center justify-center gap-2 transition-colors duration-150 cursor-pointer',
                         authMethod === 'google'
-                          ? 'bg-zinc-800 text-white shadow-xs'
-                          : 'text-zinc-400 hover:text-white'
+                          ? 'bg-[#1a1e28] text-[#eef0f5]'
+                          : 'text-[#7a8296] hover:text-[#eef0f5]'
                       )}
                     >
                       <GoogleIcon className="w-3.5 h-3.5" />
@@ -514,13 +513,13 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                       type="button"
                       onClick={() => setAuthMethod('email')}
                       className={cn(
-                        'py-2 px-3 rounded-md text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer',
+                        'h-8 px-3 rounded-md text-xs font-medium flex items-center justify-center gap-2 transition-colors duration-150 cursor-pointer',
                         authMethod === 'email'
-                          ? 'bg-zinc-800 text-white shadow-xs'
-                          : 'text-zinc-400 hover:text-white'
+                          ? 'bg-[#1a1e28] text-[#eef0f5]'
+                          : 'text-[#7a8296] hover:text-[#eef0f5]'
                       )}
                     >
-                      <Mail className="w-3.5 h-3.5 text-sky-400" />
+                      <Mail className="w-3.5 h-3.5 text-[#38bdf8]" strokeWidth={1.5} />
                       <span>{lang === 'ar' ? 'البريد الإلكتروني' : 'Email'}</span>
                     </button>
                   </div>
@@ -531,7 +530,7 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                       <button
                         type="button"
                         onClick={() => handleGoogleSignIn(customGoogleEmail)}
-                        className="w-full h-11 rounded-lg bg-white text-zinc-900 font-semibold text-xs sm:text-sm flex items-center justify-center gap-3 hover:bg-zinc-100 active:scale-[0.99] transition-all cursor-pointer shadow-sm"
+                        className="w-full h-10 rounded-lg bg-[#eef0f5] hover:bg-white text-[#0b0d14] font-medium text-xs sm:text-sm flex items-center justify-center gap-3 active:scale-[0.99] transition-[background-color,transform] duration-150 cursor-pointer shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
                       >
                         <GoogleIcon className="w-4 h-4 shrink-0" />
                         <span>
@@ -541,8 +540,8 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                         </span>
                       </button>
 
-                      <div className="pt-2 border-t border-zinc-800/80 space-y-1.5">
-                        <label className="block text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+                      <div className="pt-3 border-t border-[#eef0f5]/[0.07] space-y-1.5">
+                        <label className="block text-xs text-[#7a8296]">
                           {lang === 'ar'
                             ? 'أو أدخل بريد Google يدوياً'
                             : 'Or specify Google account email'}
@@ -553,14 +552,14 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                             value={customGoogleEmail}
                             onChange={(e) => setCustomGoogleEmail(e.target.value)}
                             placeholder="yehia.amin@gmail.com"
-                            className="flex-1 h-8 px-3 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:border-sky-500 focus:outline-none"
+                            className="flex-1 h-9 px-3 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] text-xs text-[#eef0f5] placeholder-[#7a8296] focus:border-[#38bdf8]/50 focus:outline-none"
                           />
                           <button
                             type="button"
                             onClick={() => handleGoogleSignIn(customGoogleEmail)}
-                            className="h-8 px-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs font-medium text-white transition-colors cursor-pointer"
+                            className="h-9 px-3.5 rounded-lg bg-[#1a1e28] hover:bg-[#232836] border border-[#eef0f5]/[0.08] text-xs font-medium text-[#eef0f5] transition-colors duration-150 cursor-pointer"
                           >
-                            {lang === 'ar' ? 'دخول' : 'Sign In'}
+                            {lang === 'ar' ? 'دخول' : 'Sign in'}
                           </button>
                         </div>
                       </div>
@@ -574,10 +573,10 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                       className="space-y-3 pt-1"
                     >
                       <div className="space-y-1">
-                        <label className="block text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+                        <label className="block text-xs text-[#7a8296]">
                           {lang === 'ar'
                             ? 'البريد الإلكتروني'
-                            : 'Email Address'}
+                            : 'Email address'}
                         </label>
                         <input
                           type="email"
@@ -585,30 +584,30 @@ export const DetectiveTopShell: React.FC<DetectiveTopShellProps> = ({
                           value={customEmail}
                           onChange={(e) => setCustomEmail(e.target.value)}
                           placeholder="researcher@nasa.gov"
-                          className="w-full h-9 px-3 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:border-sky-500 focus:outline-none"
+                          className="w-full h-9 px-3 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] text-xs text-[#eef0f5] placeholder-[#7a8296] focus:border-[#38bdf8]/50 focus:outline-none"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="block text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+                        <label className="block text-xs text-[#7a8296]">
                           {lang === 'ar'
                             ? 'كلمة المرور / الرمز'
-                            : 'Password / Access Key'}
+                            : 'Password or access key'}
                         </label>
                         <input
                           type="password"
                           value={customPassword}
                           onChange={(e) => setCustomPassword(e.target.value)}
                           placeholder="••••••••"
-                          className="w-full h-9 px-3 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:border-sky-500 focus:outline-none"
+                          className="w-full h-9 px-3 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] text-xs text-[#eef0f5] placeholder-[#7a8296] focus:border-[#38bdf8]/50 focus:outline-none"
                         />
                       </div>
 
                       <button
                         type="submit"
-                        className="w-full h-10 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm mt-2"
+                        className="w-full h-10 rounded-lg bg-[#eef0f5] hover:bg-white text-[#0b0d14] font-medium text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors duration-150 cursor-pointer shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] mt-2"
                       >
-                        <Mail className="w-4 h-4" />
+                        <Mail className="w-4 h-4" strokeWidth={1.5} />
                         <span>
                           {lang === 'ar'
                             ? 'تسجيل الدخول بالبريد'

@@ -66,20 +66,20 @@ export const MapLegend: React.FC<MapLegendProps> = ({
   return (
     <div
       className={cn(
-        'p-2.5 rounded-lg bg-[#090D16]/95 border border-slate-800 backdrop-blur text-xs font-mono select-none shadow-lg',
+        'p-3.5 rounded-xl bg-[#11141c]/95 border border-[#eef0f5]/[0.1] backdrop-blur-md text-xs font-mono tabular-nums select-none shadow-[0_12px_32px_rgba(0,0,0,0.55)]',
         className
       )}
     >
-      <div className="flex items-center justify-between gap-2 text-[11px] text-slate-200 font-semibold mb-1">
+      <div className="flex items-center justify-between gap-2 text-xs text-[#eef0f5] font-sans font-medium mb-1">
         <span className="truncate">{current.title}</span>
-        <span className="text-slate-400 shrink-0">[{unit}]</span>
+        <span className="text-[#7a8296] font-mono shrink-0">[{unit}]</span>
       </div>
 
-      <div className="text-[9px] text-sky-400/90 mb-1.5">{current.resolution}</div>
+      <div className="text-xs text-[#7a8296] mb-2">{current.resolution}</div>
 
-      <div className={cn('h-2.5 w-full rounded-sm bg-gradient-to-r mb-1.5', current.gradient)} />
+      <div className={cn('h-2 w-full rounded-sm bg-gradient-to-r mb-1.5', current.gradient)} />
 
-      <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+      <div className="flex justify-between text-xs text-[#a3a9b8] font-mono tabular-nums">
         <span>{current.low}</span>
         <span>{current.mid}</span>
         <span>{current.high}</span>

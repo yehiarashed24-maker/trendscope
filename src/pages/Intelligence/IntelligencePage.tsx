@@ -79,24 +79,18 @@ export const IntelligencePage: React.FC = () => {
         title={t('intelligence.title')}
         subtitle={t('intelligence.tabs.compare')}
         status="VERIFIED"
-        extraBadge={
-          <span className="inline-flex items-center gap-1.5 text-xs font-mono px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-400/40">
-            <GitCompare className="w-3.5 h-3.5" />
-            <span>{t('intelligence.tabs.compare')}</span>
-          </span>
-        }
       />
 
       {/* Region & Variable Selectors */}
-      <div className="p-4 rounded-xl border border-zinc-800/80 bg-[#0B0F17] grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="p-5 rounded-2xl border border-[#eef0f5]/[0.08] bg-[#11141c] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
-          <label className="block text-xs font-medium text-zinc-400 mb-1.5 font-sans">
+          <label className="block text-xs text-[#a3a9b8] mb-1.5 font-sans">
             {t('intelligence.compare.regionA')}
           </label>
           <select
             value={compareRegionA}
             onChange={(e) => setCompareRegionA(e.target.value)}
-            className="w-full h-9 px-3 rounded-lg bg-zinc-900/80 border border-zinc-800 text-xs font-mono text-zinc-200 focus:border-sky-500 focus:outline-none transition-colors"
+            className="w-full h-9 px-3 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] text-xs font-sans text-[#eef0f5] focus:border-[#38bdf8]/50 focus:outline-none transition-colors duration-150"
           >
             {PREDEFINED_REGIONS.map((r) => (
               <option key={r.id} value={r.id}>
@@ -107,13 +101,13 @@ export const IntelligencePage: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-zinc-400 mb-1.5 font-sans">
+          <label className="block text-xs text-[#a3a9b8] mb-1.5 font-sans">
             {t('intelligence.compare.regionB')}
           </label>
           <select
             value={compareRegionB}
             onChange={(e) => setCompareRegionB(e.target.value)}
-            className="w-full h-9 px-3 rounded-lg bg-zinc-900/80 border border-zinc-800 text-xs font-mono text-zinc-200 focus:border-sky-500 focus:outline-none transition-colors"
+            className="w-full h-9 px-3 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] text-xs font-sans text-[#eef0f5] focus:border-[#38bdf8]/50 focus:outline-none transition-colors duration-150"
           >
             {PREDEFINED_REGIONS.map((r) => (
               <option key={r.id} value={r.id}>
@@ -124,13 +118,13 @@ export const IntelligencePage: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-zinc-400 mb-1.5 font-sans">
+          <label className="block text-xs text-[#a3a9b8] mb-1.5 font-sans">
             {t('intelligence.compare.variable')}
           </label>
           <select
             value={compareVar}
             onChange={(e) => setCompareVar(e.target.value as VariableId)}
-            className="w-full h-9 px-3 rounded-lg bg-zinc-900/80 border border-zinc-800 text-xs font-mono text-zinc-200 focus:border-sky-500 focus:outline-none transition-colors"
+            className="w-full h-9 px-3 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] text-xs font-sans text-[#eef0f5] focus:border-[#38bdf8]/50 focus:outline-none transition-colors duration-150"
           >
             {ENVIRONMENTAL_VARIABLES.map((v) => (
               <option key={v.id} value={v.id}>
@@ -140,41 +134,39 @@ export const IntelligencePage: React.FC = () => {
           </select>
         </div>
 
-        {(compareVar === 'lst' || true) && (
-          <div className="sm:col-span-3 pt-3 border-t border-zinc-800/80 flex items-center justify-between gap-3 flex-wrap">
-            <span className="text-[11px] font-medium text-zinc-400 font-sans">
-              MODIS LST {t('lstModes.label')}:
-            </span>
-            <div className="flex items-center gap-1.5 flex-wrap">
-              {[
-                { id: 'day' as LstMode, icon: Sun, key: 'lstModes.day' },
-                { id: 'night' as LstMode, icon: Moon, key: 'lstModes.night' },
-                { id: 'both' as LstMode, icon: SunMoon, key: 'lstModes.both' },
-              ].map((m) => {
-                const Icon = m.icon;
-                const active = compareLstMode === m.id;
-                return (
-                  <button
-                    key={m.id}
-                    type="button"
-                    onClick={() => {
-                      setCompareLstMode(m.id);
-                      setLstMode(m.id);
-                    }}
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono border transition-colors cursor-pointer ${
-                      active
-                        ? 'bg-amber-500/20 text-amber-200 border-amber-400/60'
-                        : 'bg-zinc-900/70 text-zinc-400 border-zinc-800 hover:text-white'
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    <span>{t(m.key as any)}</span>
-                  </button>
-                );
-              })}
-            </div>
+        <div className="sm:col-span-3 pt-4 border-t border-[#eef0f5]/[0.07] flex items-center justify-between gap-3 flex-wrap">
+          <span className="text-xs text-[#a3a9b8] font-sans">
+            MODIS LST {t('lstModes.label')}
+          </span>
+          <div className="inline-flex rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] p-0.5 gap-0.5">
+            {[
+              { id: 'day' as LstMode, icon: Sun, key: 'lstModes.day' },
+              { id: 'night' as LstMode, icon: Moon, key: 'lstModes.night' },
+              { id: 'both' as LstMode, icon: SunMoon, key: 'lstModes.both' },
+            ].map((m) => {
+              const Icon = m.icon;
+              const active = compareLstMode === m.id;
+              return (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => {
+                    setCompareLstMode(m.id);
+                    setLstMode(m.id);
+                  }}
+                  className={`h-7 inline-flex items-center gap-1.5 px-2.5 rounded-md text-xs font-sans transition-colors duration-150 cursor-pointer ${
+                    active
+                      ? 'bg-[#1a1e28] text-[#eef0f5] font-medium'
+                      : 'text-[#7a8296] hover:text-[#eef0f5]'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  <span>{t(m.key as any)}</span>
+                </button>
+              );
+            })}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Side-by-Side Comparison Cards */}
@@ -191,31 +183,31 @@ export const IntelligencePage: React.FC = () => {
                 key={tag}
                 title={`${tag}: ${t(`regions.${region.id}` as any) || region.name}`}
                 subtitle={region.climateZone}
-                badge={<span className="text-[11px] font-mono text-zinc-400">{region.code}</span>}
+                badge={<span className="text-xs font-mono text-[#7a8296]">{region.code}</span>}
               >
-                <div className="space-y-2.5 text-xs">
-                  <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800/80 flex justify-between items-center">
-                    <span className="text-zinc-400 font-sans">Sen&apos;s Slope (per Decade)</span>
-                    <span className="text-amber-400 font-mono font-medium tabular-nums">
+                <div className="rounded-xl border border-[#eef0f5]/[0.07] bg-[#07080d] divide-y divide-[#eef0f5]/[0.07] text-xs">
+                  <div className="px-4 py-3 flex justify-between items-center">
+                    <span className="text-[#a3a9b8] font-sans">Sen&apos;s slope (per decade)</span>
+                    <span className="text-[#eef0f5] font-mono font-medium tabular-nums">
                       {metrics
                         ? `${metrics.trendDecade >= 0 ? '+' : ''}${metrics.trendDecade} ${compareVarObj.unit}/dec`
-                        : '...'}
+                        : '—'}
                     </span>
                   </div>
-                  <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800/80 flex justify-between items-center">
-                    <span className="text-zinc-400 font-sans">Mann-Kendall p-value</span>
+                  <div className="px-4 py-3 flex justify-between items-center">
+                    <span className="text-[#a3a9b8] font-sans">Mann-Kendall p-value</span>
                     <span
                       className={`font-mono font-medium tabular-nums ${
-                        metrics && metrics.pValue < 0.05 ? 'text-emerald-400' : 'text-red-400'
+                        metrics && metrics.pValue < 0.05 ? 'text-[#4cc38a]' : 'text-[#e5484d]'
                       }`}
                     >
-                      {metrics ? metrics.pValue : '...'}
+                      {metrics ? metrics.pValue : '—'}
                     </span>
                   </div>
-                  <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800/80 flex justify-between items-center">
-                    <span className="text-zinc-400 font-sans">Spatial Mean / Area</span>
-                    <span className="text-zinc-200 font-mono font-medium tabular-nums">
-                      {metrics ? `${metrics.meanVal} ${compareVarObj.unit}` : '—'} •{' '}
+                  <div className="px-4 py-3 flex justify-between items-center">
+                    <span className="text-[#a3a9b8] font-sans">Spatial mean · area</span>
+                    <span className="text-[#eef0f5] font-mono font-medium tabular-nums">
+                      {metrics ? `${metrics.meanVal} ${compareVarObj.unit}` : '—'} ·{' '}
                       {formatNumber(region.areaKm2, lang)} km²
                     </span>
                   </div>
@@ -229,57 +221,57 @@ export const IntelligencePage: React.FC = () => {
             title={`NDVI (MOD13Q1) vs Land Surface Temperature (MOD11C3 · ${t(`lstModes.${compareLstMode}` as any)})`}
             subtitle={`${t(`regions.${regionAObj.id}` as any) || regionAObj.name} · 2000–2024 overlapping MODIS observation window`}
             badge={
-              <span className="text-[11px] font-mono text-sky-300">
-                {couplingData ? `${couplingData.sampleSize} paired mo` : '2000–2024'}
+              <span className="text-xs font-mono tabular-nums text-[#7a8296]">
+                {couplingData ? `${couplingData.sampleSize} paired months` : '2000–2024'}
               </span>
             }
           >
             {couplingLoading || !couplingData ? (
-              <div className="py-6 text-xs font-mono text-zinc-400">
+              <div className="py-6 text-xs font-mono text-[#7a8296]">
                 Computing MODIS NDVI–LST thermal coupling...
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                  <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800/80">
-                    <div className="text-[11px] text-zinc-400 font-sans">
+                  <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07] space-y-1">
+                    <div className="text-xs text-[#a3a9b8] font-sans">
                       Pearson r ({compareLstMode === 'night' ? 'Nighttime LST' : 'Daytime LST'})
                     </div>
-                    <div className="text-base font-mono font-bold text-white mt-0.5 tabular-nums">
+                    <div className="text-[24px] leading-none font-mono font-medium text-[#eef0f5] tabular-nums">
                       {couplingData.pearsonR.toFixed(3)}
                     </div>
-                    <div className="text-[11px] font-mono text-zinc-400">
+                    <div className="text-xs font-mono tabular-nums text-[#7a8296]">
                       p = {couplingData.pearsonPValue} · lag {couplingData.lagMonths} mo
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800/80">
-                    <div className="text-[11px] text-zinc-400 font-sans">Spearman ρ (Rank)</div>
-                    <div className="text-base font-mono font-bold text-sky-300 mt-0.5 tabular-nums">
+                  <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07] space-y-1">
+                    <div className="text-xs text-[#a3a9b8] font-sans">Spearman ρ (rank)</div>
+                    <div className="text-[24px] leading-none font-mono font-medium text-[#38bdf8] tabular-nums">
                       {couplingData.spearmanRho.toFixed(3)}
                     </div>
-                    <div className="text-[11px] font-mono text-zinc-400">
+                    <div className="text-xs font-mono tabular-nums text-[#7a8296]">
                       {couplingData.points?.length || couplingData.sampleSize} aligned months
                     </div>
                   </div>
 
                   {couplingData.nightCorrelation ? (
-                    <div className="p-3 rounded-lg bg-sky-950/20 border border-sky-500/30">
-                      <div className="text-[11px] text-sky-300 font-sans">
-                        Nighttime LST Coupling
+                    <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07] space-y-1">
+                      <div className="text-xs text-[#a3a9b8] font-sans">
+                        Nighttime LST coupling
                       </div>
-                      <div className="text-base font-mono font-bold text-white mt-0.5 tabular-nums">
+                      <div className="text-[24px] leading-none font-mono font-medium text-[#eef0f5] tabular-nums">
                         r = {couplingData.nightCorrelation.pearsonR.toFixed(3)}
                       </div>
-                      <div className="text-[11px] font-mono text-zinc-400">
+                      <div className="text-xs font-mono tabular-nums text-[#7a8296]">
                         ρ = {couplingData.nightCorrelation.spearmanRho.toFixed(3)} · p = {couplingData.nightCorrelation.pValue}
                       </div>
                     </div>
                   ) : (
-                    <div className="p-3 rounded-lg bg-zinc-900/50 border border-zinc-800/80">
-                      <div className="text-[11px] text-zinc-400 font-sans">Skin vs Air Note</div>
-                      <div className="text-[11px] text-zinc-300 mt-0.5 leading-snug">
-                        MOD11C3 measures land surface radiative skin temperature; canopy cover cools surface via evapotranspiration.
+                    <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07] space-y-1">
+                      <div className="text-xs text-[#eef0f5] font-medium font-sans">Skin vs air temperature</div>
+                      <div className="text-xs text-[#a3a9b8] leading-5">
+                        MOD11C3 measures radiative land surface skin temperature; canopy cover cools surface via evapotranspiration.
                       </div>
                     </div>
                   )}
@@ -287,19 +279,19 @@ export const IntelligencePage: React.FC = () => {
 
                 {Array.isArray(couplingData.coOccurringStressEpisodes) &&
                   couplingData.coOccurringStressEpisodes.length > 0 && (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-1.5 text-[11px] font-medium text-amber-300 font-sans">
-                        <Flame className="w-3.5 h-3.5" />
-                        <span>Co-Occurring Thermal &amp; Canopy Stress Episodes</span>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center gap-2 text-xs font-medium text-[#eef0f5] font-sans">
+                        <Flame className="w-4 h-4 text-[#e5484d]" strokeWidth={1.5} />
+                        <span>Co-occurring thermal and canopy stress episodes</span>
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs font-mono">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs font-mono tabular-nums">
                         {couplingData.coOccurringStressEpisodes.slice(0, 6).map((ep) => (
                           <div
                             key={ep.date}
-                            className="p-2.5 rounded-lg bg-amber-950/20 border border-amber-500/30 flex items-center justify-between gap-2"
+                            className="px-3.5 py-2.5 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.07] flex items-center justify-between gap-2"
                           >
-                            <span className="text-zinc-200">{ep.date}</span>
-                            <span className="text-amber-300">
+                            <span className="text-[#eef0f5]">{ep.date}</span>
+                            <span className="text-[#a3a9b8]">
                               {ep.lst.toFixed(1)} °C ({ep.lstZScore >= 0 ? '+' : ''}{ep.lstZScore.toFixed(2)}σ)
                             </span>
                           </div>

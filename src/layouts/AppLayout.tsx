@@ -49,7 +49,7 @@ export const AppLayout: React.FC = () => {
   }, [location.pathname, isExplorer, pendingTourOnExplorer, setPendingTourOnExplorer, tourStep]);
 
   return (
-    <div className="min-h-screen min-h-dvh bg-[#08080A] text-zinc-100 flex flex-col selection:bg-white/20 selection:text-white">
+    <div className="min-h-screen min-h-dvh bg-[#0b0d14] text-[#eef0f5] flex flex-col selection:bg-[#38bdf8]/20 selection:text-[#eef0f5]">
       <DetectiveTopShell
         tourStep={tourStep}
         setTourStep={setTourStep}
@@ -61,7 +61,7 @@ export const AppLayout: React.FC = () => {
           <Outlet context={{ tourStep, setTourStep }} />
         </main>
       ) : (
-        <main className="flex-1 max-w-[1440px] w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24">
+        <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -76,7 +76,7 @@ export const AppLayout: React.FC = () => {
         </main>
       )}
 
-      {/* Features Bottom Dock (Replaces Globe Halo Nav with minimal bottom dock) */}
+      {/* Features Bottom Dock */}
       <FeaturesBottomDock />
     </div>
   );

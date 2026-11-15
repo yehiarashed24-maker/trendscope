@@ -21,22 +21,22 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   actions,
 }) => {
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-zinc-800/80 gap-4 mb-6">
-      <div>
+    <div className="flex flex-col md:flex-row md:items-end justify-between pb-6 border-b border-[#eef0f5]/[0.08] gap-4 mb-6">
+      <div className="space-y-1.5">
         <div className="flex items-center gap-3 flex-wrap">
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white font-sans">
+          <h1 className="text-[28px] sm:text-[32px] leading-[1.15] font-medium tracking-[-0.02em] text-[#eef0f5] font-sans">
             {title}
           </h1>
           {status && <DemoDataBadge status={status} size="sm" />}
           {extraBadge}
           {badgeText && (
-            <span className="text-[10px] font-mono text-zinc-400 bg-zinc-900/80 border border-zinc-800 px-2 py-0.5 rounded">
+            <span className="text-xs font-mono text-[#7a8296] bg-[#11141c] border border-[#eef0f5]/[0.08] px-2 py-0.5 rounded-md">
               {badgeText}
             </span>
           )}
         </div>
         {subtitle && (
-          <p className="text-xs sm:text-sm text-zinc-400 mt-1 max-w-3xl leading-relaxed">
+          <p className="text-[14px] leading-5 text-[#a3a9b8] max-w-3xl">
             {subtitle}
           </p>
         )}

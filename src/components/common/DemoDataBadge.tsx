@@ -12,7 +12,6 @@ interface DemoDataBadgeProps {
 
 export const DemoDataBadge: React.FC<DemoDataBadgeProps> = ({
   status = 'VERIFIED',
-  size = 'md',
   className,
 }) => {
   const { t } = useTranslation();
@@ -24,26 +23,26 @@ export const DemoDataBadge: React.FC<DemoDataBadgeProps> = ({
     DEMO_DATA: {
       label: t('status.demoData'),
       tooltip: t('status.demoTooltip'),
-      text: 'text-amber-400',
+      text: 'text-[#a3a9b8]',
       dot: 'bg-amber-400',
     },
     VERIFIED: {
       label: t('status.verified'),
       tooltip: 'Directly verified from peer-reviewed NASA mission archive.',
-      text: 'text-emerald-400',
-      dot: 'bg-emerald-400',
+      text: 'text-[#a3a9b8]',
+      dot: 'bg-[#4cc38a]',
     },
     PENDING_BACKEND: {
       label: t('status.pendingBackend'),
       tooltip: 'Data endpoint awaiting connection with Python scientific service.',
-      text: 'text-sky-400',
-      dot: 'bg-sky-400',
+      text: 'text-[#a3a9b8]',
+      dot: 'bg-[#38bdf8]',
     },
     UNAVAILABLE: {
       label: t('status.unavailable'),
       tooltip: 'Telemetry stream masked or unavailable for this temporal window.',
-      text: 'text-rose-400',
-      dot: 'bg-rose-400',
+      text: 'text-[#a3a9b8]',
+      dot: 'bg-[#e5484d]',
     },
   };
 
@@ -53,7 +52,7 @@ export const DemoDataBadge: React.FC<DemoDataBadgeProps> = ({
     <span
       title={current.tooltip}
       className={cn(
-        'inline-flex items-center gap-1.5 font-mono uppercase tracking-wider font-semibold cursor-help select-none text-[10px]',
+        'inline-flex items-center gap-2 font-mono text-xs cursor-help select-none',
         current.text,
         className
       )}

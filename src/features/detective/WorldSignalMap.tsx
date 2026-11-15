@@ -168,7 +168,7 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
             ))}
           </div>
 
-          {/* Interactive Global NASA Trend Signal Pills — Liquid Glass Capsules */}
+          {/* Interactive Global NASA Trend Signal Pills */}
           <div className="absolute inset-0 z-10">
             {GLOBAL_TREND_SIGNALS.map((sig, index) => {
               const isInc = sig.direction === 'increasing';
@@ -177,24 +177,22 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
               const dotElement = (
                 <span
                   className={cn(
-                    'w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-transform group-hover:scale-110',
-                    isInc
-                      ? 'bg-[#F06449] shadow-[0_0_12px_2px_rgba(240,100,73,0.65)]'
-                      : 'bg-[#38BDF8] shadow-[0_0_12px_2px_rgba(56,189,248,0.65)]'
+                    'w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border border-[#0b0d14]',
+                    isInc ? 'bg-[#e5484d]' : 'bg-[#38bdf8]'
                   )}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#eef0f5]" />
                 </span>
               );
 
               return (
                 <motion.div
                   key={sig.id}
-                  initial={{ opacity: 0, scale: 0.85, y: 8 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{
                     delay: index * 0.04,
-                    duration: 0.32,
+                    duration: 0.3,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   style={{
@@ -203,33 +201,31 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
                   }}
                   className="absolute -translate-x-1/2 -translate-y-1/2 z-20"
                 >
-                  <motion.button
+                  <button
                     type="button"
-                    whileHover={{ scale: 1.06, y: -2 }}
-                    whileTap={{ scale: 0.96 }}
                     onClick={() => handleSignalClick(sig)}
-                    className="group flex items-center gap-2 focus:outline-none"
+                    className="group flex items-center gap-2 focus:outline-none active:scale-[0.98] transition-transform duration-150"
                   >
                     {sig.dotPosition === 'left' && dotElement}
 
                     <div
                       className={cn(
-                        'px-2.5 py-1 rounded-md transition-colors flex items-center gap-1.5 text-xs font-medium whitespace-nowrap border cursor-pointer',
+                        'h-7 px-2.5 rounded-lg transition-colors duration-150 flex items-center gap-1.5 text-xs font-normal whitespace-nowrap border cursor-pointer',
                         isSelected
-                          ? 'bg-zinc-900 text-white border-sky-500 shadow-md ring-1 ring-sky-500/30'
-                          : 'bg-zinc-950/85 hover:bg-zinc-900 text-zinc-300 hover:text-white border-zinc-800 hover:border-zinc-700 backdrop-blur-sm'
+                          ? 'bg-[#1a1e28] text-[#eef0f5] font-medium border-[#38bdf8]/60 shadow-[0_8px_24px_rgba(0,0,0,0.5)]'
+                          : 'bg-[#11141c]/90 hover:bg-[#1a1e28] text-[#a3a9b8] hover:text-[#eef0f5] border-[#eef0f5]/[0.1] backdrop-blur-sm'
                       )}
                     >
                       {isInc ? (
-                        <ArrowUp className="w-3 h-3 text-[#F06449] transition-colors" />
+                        <ArrowUp className="w-3.5 h-3.5 text-[#e5484d]" strokeWidth={1.5} />
                       ) : (
-                        <ArrowDown className="w-3 h-3 text-[#38BDF8] transition-colors" />
+                        <ArrowDown className="w-3.5 h-3.5 text-[#38bdf8]" strokeWidth={1.5} />
                       )}
                       <span>{sig.label[lang]}</span>
                     </div>
 
                     {sig.dotPosition === 'right' && dotElement}
-                  </motion.button>
+                  </button>
                 </motion.div>
               );
             })}
@@ -240,28 +236,28 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
             {selectedSignal && (
               <motion.div
                 key={selectedSignal.id}
-                initial={{ opacity: 0, y: 20, scale: 0.97 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 16, scale: 0.97 }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
                 transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                className="fixed inset-x-2 bottom-18 sm:bottom-auto sm:inset-auto sm:top-4 sm:end-4 z-30 sm:w-[360px] text-start bg-[#0B0F17]/95 backdrop-blur-md border border-zinc-800 rounded-2xl sm:rounded-xl shadow-2xl p-4 sm:p-5"
+                className="fixed inset-x-3 bottom-20 sm:bottom-auto sm:inset-auto sm:top-4 sm:end-4 z-30 sm:w-[360px] text-start bg-[#11141c]/95 backdrop-blur-md border border-[#eef0f5]/[0.1] rounded-2xl shadow-[0_24px_64px_rgba(0,0,0,0.7)] p-5"
               >
-                <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
+                <div className="flex items-start justify-between gap-2 mb-3">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <span
                         className={cn(
-                          'w-2 h-2 rounded-full',
+                          'w-1.5 h-1.5 rounded-full',
                           selectedSignal.direction === 'increasing'
-                            ? 'bg-[#F06449]'
-                            : 'bg-[#38BDF8]'
+                            ? 'bg-[#e5484d]'
+                            : 'bg-[#38bdf8]'
                         )}
                       />
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+                      <span className="text-xs font-mono text-[#7a8296]">
                         {selectedSignal.satellite}
                       </span>
                     </div>
-                    <h4 className="text-sm sm:text-base font-semibold text-white">
+                    <h4 className="text-[15px] font-medium text-[#eef0f5]">
                       {selectedSignal.label[lang]}
                     </h4>
                   </div>
@@ -269,30 +265,23 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
                   <button
                     type="button"
                     onClick={() => setSelectedSignal(null)}
-                    className="w-7 h-7 rounded-lg border border-zinc-800 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                    className="w-8 h-8 rounded-lg border border-[#eef0f5]/[0.08] bg-[#1a1e28] hover:bg-[#232836] text-[#7a8296] hover:text-[#eef0f5] flex items-center justify-center transition-colors duration-150 cursor-pointer"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-4 h-4" strokeWidth={1.5} />
                   </button>
                 </div>
 
-                <p className="text-xs text-zinc-300 leading-relaxed mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-none">
+                <p className="text-[13px] text-[#a3a9b8] leading-5 mb-4 line-clamp-2 sm:line-clamp-none">
                   {selectedSignal.summary[lang]}
                 </p>
 
                 {/* Mini Sparkline & Telemetry Readout */}
-                <div className="p-3 sm:p-3.5 rounded-lg bg-zinc-900/80 border border-zinc-800 mb-3 sm:mb-4">
-                  <div className="flex items-center justify-between text-xs font-mono mb-2">
-                    <span
-                      className={cn(
-                        'font-bold text-sm',
-                        selectedSignal.direction === 'increasing'
-                          ? 'text-[#F06449]'
-                          : 'text-[#38BDF8]'
-                      )}
-                    >
+                <div className="p-3.5 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.08] mb-4">
+                  <div className="flex items-center justify-between text-xs font-mono tabular-nums mb-2">
+                    <span className="font-medium text-sm text-[#eef0f5]">
                       {selectedSignal.rateText}
                     </span>
-                    <span className="text-[10px] text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 px-2 py-0.5 rounded">
+                    <span className="text-xs text-[#4cc38a]">
                       Mann-Kendall {selectedSignal.pValue}
                     </span>
                   </div>
@@ -305,15 +294,15 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
                       fill="none"
                       stroke={
                         selectedSignal.direction === 'increasing'
-                          ? '#F06449'
-                          : '#38BDF8'
+                          ? '#e5484d'
+                          : '#38bdf8'
                       }
-                      strokeWidth="2"
+                      strokeWidth="1.75"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       initial={{ pathLength: 0, opacity: 0.3 }}
                       animate={{ pathLength: 1, opacity: 1 }}
-                      transition={{ duration: 0.6, ease: 'easeOut' }}
+                      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                       points={selectedSignal.sparkline
                         .map((val, idx) => {
                           const min = Math.min(...selectedSignal.sparkline);
@@ -329,9 +318,9 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
                         .join(' ')}
                     />
                   </svg>
-                  <div className="flex justify-between text-[9px] font-mono text-zinc-500 mt-1">
+                  <div className="flex justify-between text-xs font-mono tabular-nums text-[#7a8296] mt-1">
                     <span>2000</span>
-                    <span>NASA 25-YEAR SERIES</span>
+                    <span>25-year series</span>
                     <span>2024</span>
                   </div>
                 </div>
@@ -341,70 +330,70 @@ export const WorldSignalMap: React.FC<WorldSignalMapProps> = ({
                   <button
                     type="button"
                     onClick={() => handleInvestigateSignal(selectedSignal)}
-                    className="h-8 px-3.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer active:scale-95"
+                    className="h-9 px-4 rounded-lg bg-[#eef0f5] hover:bg-white text-[#0b0d14] font-medium text-xs flex items-center gap-2 transition-colors duration-150 cursor-pointer active:scale-[0.98]"
                   >
                     <span>{labels.investigateSignal}</span>
-                    <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+                    <ArrowRight className="w-4 h-4 rtl:rotate-180" strokeWidth={1.5} />
                   </button>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Bottom-Left Legend Card (Positioned Above Mobile Bottom Bar) */}
-          <div className="absolute bottom-16 sm:bottom-6 start-2 sm:start-5 z-20 w-[210px] sm:w-[280px] text-start bg-[#0B0F17]/90 backdrop-blur-md border border-zinc-800 rounded-xl shadow-xl p-2.5 sm:p-3.5">
-            <div className="text-[11px] sm:text-xs font-semibold text-zinc-100 mb-1.5 sm:mb-2">
+          {/* Bottom-Left Legend Card */}
+          <div className="absolute bottom-16 sm:bottom-6 start-3 sm:start-5 z-20 w-[220px] sm:w-[280px] text-start bg-[#11141c]/95 backdrop-blur-md border border-[#eef0f5]/[0.1] rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.55)] p-3.5">
+            <div className="text-xs font-medium text-[#eef0f5] mb-2">
               {labels.legendTitle}
             </div>
 
-            <div className="space-y-1 sm:space-y-1.5 text-[11px] sm:text-xs text-zinc-300 mb-1.5 sm:mb-2.5">
+            <div className="space-y-1.5 text-xs text-[#a3a9b8] mb-2">
               <div className="flex items-center gap-2">
-                <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-[#F06449] shrink-0" />
-                <ArrowUp className="w-3 h-3 text-[#F06449]" />
+                <span className="w-2 h-2 rounded-full bg-[#e5484d] shrink-0" />
+                <ArrowUp className="w-3.5 h-3.5 text-[#e5484d]" strokeWidth={1.5} />
                 <span>{labels.increasing}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-[#38BDF8] shrink-0" />
-                <ArrowDown className="w-3 h-3 text-[#38BDF8]" />
+                <span className="w-2 h-2 rounded-full bg-[#38bdf8] shrink-0" />
+                <ArrowDown className="w-3.5 h-3.5 text-[#38bdf8]" strokeWidth={1.5} />
                 <span>{labels.decreasing}</span>
               </div>
             </div>
 
-            <p className="text-[9px] sm:text-[10px] text-zinc-400 leading-tight sm:leading-relaxed hidden sm:block">
+            <p className="text-xs text-[#7a8296] leading-4 hidden sm:block">
               {labels.legendFootnote}
             </p>
           </div>
         </div>
       )}
 
-      {/* Bottom-Right Map View Switcher (Positioned Above Mobile Bottom Bar) */}
-      <div className="absolute bottom-16 sm:bottom-6 end-2 sm:end-5 z-20 bg-zinc-900/90 backdrop-blur-md border border-zinc-800 rounded-lg p-1 flex items-center gap-1 shadow-lg">
+      {/* Bottom-Right Map View Switcher */}
+      <div className="absolute bottom-16 sm:bottom-6 end-3 sm:end-5 z-20 bg-[#11141c]/95 backdrop-blur-md border border-[#eef0f5]/[0.1] rounded-xl p-1 flex items-center gap-1 shadow-[0_12px_32px_rgba(0,0,0,0.55)]">
         <button
           type="button"
           onClick={() => setMapMode('signals')}
           className={cn(
-            'h-7 px-2.5 sm:px-3 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer active:scale-95',
+            'h-8 px-3 rounded-lg text-xs font-normal flex items-center gap-2 transition-colors duration-150 cursor-pointer active:scale-[0.98]',
             mapMode === 'signals'
-              ? 'bg-zinc-800 text-white shadow-xs'
-              : 'text-zinc-400 hover:text-white'
+              ? 'bg-[#1a1e28] text-[#eef0f5] font-medium border border-[#eef0f5]/[0.1]'
+              : 'text-[#7a8296] hover:text-[#eef0f5] border border-transparent'
           )}
         >
-          <Globe2 className="w-3.5 h-3.5" />
-          <span className="text-[11px] sm:text-xs">{labels.viewModeSignals}</span>
+          <Globe2 className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+          <span>{labels.viewModeSignals}</span>
         </button>
 
         <button
           type="button"
           onClick={() => setMapMode('gis')}
           className={cn(
-            'h-7 px-2.5 sm:px-3 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer active:scale-95',
+            'h-8 px-3 rounded-lg text-xs font-normal flex items-center gap-2 transition-colors duration-150 cursor-pointer active:scale-[0.98]',
             mapMode === 'gis'
-              ? 'bg-zinc-800 text-white shadow-xs'
-              : 'text-zinc-400 hover:text-white'
+              ? 'bg-[#1a1e28] text-[#eef0f5] font-medium border border-[#eef0f5]/[0.1]'
+              : 'text-[#7a8296] hover:text-[#eef0f5] border border-transparent'
           )}
         >
-          <MapIcon className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-[11px] sm:text-xs">{labels.viewModeGis}</span>
+          <MapIcon className="w-4 h-4 text-[#38bdf8]" strokeWidth={1.5} />
+          <span>{labels.viewModeGis}</span>
         </button>
       </div>
     </div>

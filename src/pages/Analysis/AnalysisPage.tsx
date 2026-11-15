@@ -261,18 +261,10 @@ export const AnalysisPage: React.FC = () => {
     : displayRegion;
 
   const significanceBadge = (
-    <span
-      className={`inline-flex items-center gap-2 text-xs font-mono font-semibold px-3 py-1 rounded-full border transition-all ${
-        isSig
-          ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/70 shadow-[0_0_20px_rgba(16,185,129,0.45)]'
-          : 'bg-red-500/20 text-red-200 border-red-400/70 shadow-[0_0_20px_rgba(239,68,68,0.5)]'
-      }`}
-    >
+    <span className="inline-flex items-center gap-2 text-xs font-mono text-[#a3a9b8] px-2.5 py-1 rounded-md bg-[#11141c] border border-[#eef0f5]/[0.08]">
       <span
-        className={`w-2 h-2 rounded-full animate-pulse ${
-          isSig
-            ? 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.95)]'
-            : 'bg-red-500 shadow-[0_0_10px_rgba(248,113,113,0.95)]'
+        className={`w-1.5 h-1.5 rounded-full ${
+          isSig ? 'bg-[#4cc38a]' : 'bg-[#e5484d]'
         }`}
       />
       <span>{isSig ? t('analysis.summary.significant') : t('analysis.summary.notSignificant')}</span>
@@ -293,11 +285,11 @@ export const AnalysisPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleResetToNasa}
-                className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-700 text-xs font-medium font-sans inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="h-9 px-3.5 rounded-lg bg-[#11141c] hover:bg-[#1a1e28] text-[#eef0f5] border border-[#eef0f5]/[0.08] text-xs font-normal font-sans inline-flex items-center gap-2 transition-colors duration-150 cursor-pointer"
                 title="Switch back to official NASA observations"
               >
-                <RefreshCw className="w-3.5 h-3.5 text-sky-400" />
-                <span>Reset to NASA Archive</span>
+                <RefreshCw className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
+                <span>Reset to NASA archive</span>
               </button>
             )}
 
@@ -307,19 +299,19 @@ export const AnalysisPage: React.FC = () => {
                 saveCurrentInvestigation();
                 navigate('/workspace?tab=assistant');
               }}
-              className="px-3.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 text-xs font-medium font-sans inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="h-9 px-3.5 rounded-lg bg-[#11141c] hover:bg-[#1a1e28] text-[#eef0f5] border border-[#eef0f5]/[0.08] text-xs font-normal font-sans inline-flex items-center gap-2 transition-colors duration-150 cursor-pointer"
             >
-              <Bot className="w-3.5 h-3.5 text-sky-400" />
+              <Bot className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
               <span>Ask AI Scientist</span>
             </button>
 
             <button
               type="button"
               onClick={() => navigate('/reports')}
-              className="px-3.5 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium font-sans inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="h-9 px-4 rounded-lg bg-[#eef0f5] hover:bg-white text-[#0b0d14] text-xs font-medium font-sans inline-flex items-center gap-2 transition-colors duration-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] cursor-pointer"
             >
-              <FileText className="w-3.5 h-3.5" />
-              <span>Generate Report</span>
+              <FileText className="w-4 h-4" strokeWidth={1.5} />
+              <span>Generate report</span>
             </button>
           </div>
         }
@@ -327,15 +319,15 @@ export const AnalysisPage: React.FC = () => {
 
       {/* CSV Upload Error / Active File Notice */}
       {uploadError && (
-        <div className="p-3.5 rounded-xl border border-rose-500/40 bg-rose-950/30 flex items-center justify-between gap-3 text-xs text-rose-200 font-sans">
+        <div className="p-4 rounded-xl border border-[#e5484d]/30 bg-[#11141c] flex items-center justify-between gap-3 text-xs text-[#eef0f5] font-sans">
           <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+            <AlertCircle className="w-4 h-4 text-[#e5484d] shrink-0" strokeWidth={1.5} />
             <span>{uploadError}</span>
           </div>
           <button
             type="button"
             onClick={() => setUploadError(null)}
-            className="text-rose-300 hover:text-white text-[11px] font-mono cursor-pointer shrink-0"
+            className="text-[#a3a9b8] hover:text-[#eef0f5] text-xs font-mono cursor-pointer shrink-0"
           >
             Dismiss
           </button>
@@ -343,91 +335,93 @@ export const AnalysisPage: React.FC = () => {
       )}
 
       {customFileLoaded && (
-        <div className="px-4 py-2.5 rounded-xl border border-emerald-500/30 bg-emerald-950/25 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-emerald-200 font-sans">
+        <div className="px-4 py-3 rounded-xl border border-[#4cc38a]/30 bg-[#11141c] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#a3a9b8] font-sans">
           <div className="flex items-center gap-2 flex-wrap">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="w-4 h-4 text-[#4cc38a] shrink-0" strokeWidth={1.5} />
             <span>
-              Dynamic CSV mode active: <strong className="font-mono text-white">{customFileLoaded}</strong>
+              Dynamic CSV mode active: <strong className="font-mono font-medium text-[#eef0f5]">{customFileLoaded}</strong>
             </span>
             {(analysisData as any)?.provenance?.detectedColumns && (
-              <span className="text-[11px] font-mono text-emerald-300/80">
+              <span className="text-xs font-mono text-[#7a8296]">
                 ({(analysisData as any).provenance.detectedColumns.dateColumn} →{' '}
                 {(analysisData as any).provenance.detectedColumns.valueColumn}
                 {(analysisData as any).provenance.selectedDataset
-                  ? ` • ${(analysisData as any).provenance.selectedDataset}`
+                  ? ` · ${(analysisData as any).provenance.selectedDataset}`
                   : ''}
                 )
               </span>
             )}
           </div>
-          <span className="text-[11px] font-mono text-emerald-400/90">SciPy + PyMannKendall</span>
+          <span className="text-xs font-mono text-[#7a8296]">SciPy · PyMannKendall</span>
         </div>
       )}
 
       {/* Analysis Summary Banner */}
-      <div className="p-4 rounded-xl border border-zinc-800/80 bg-[#0B0F17] space-y-4">
+      <div className="p-5 rounded-2xl border border-[#eef0f5]/[0.08] bg-[#11141c] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-5 flex-wrap">
             <div>
-              <div className="text-[11px] text-zinc-500 font-sans">Variable</div>
-              <div className="text-xs font-medium text-emerald-400 font-mono">
+              <div className="text-xs text-[#7a8296] font-sans">Variable</div>
+              <div className="text-[13px] font-medium text-[#eef0f5] font-mono mt-0.5">
                 {displayVariable} [{unit}]
               </div>
             </div>
 
-            <div className="border-s border-zinc-800/80 ps-4">
-              <div className="text-[11px] text-zinc-500 font-sans">
-                {customFileLoaded ? 'Dataset Source' : 'Nile Delta Region'}
+            <div className="border-s border-[#eef0f5]/[0.08] ps-5">
+              <div className="text-xs text-[#7a8296] font-sans">
+                {customFileLoaded ? 'Dataset source' : 'Nile Delta region'}
               </div>
-              <div className="text-xs font-medium text-zinc-200 font-sans">
+              <div className="text-[13px] font-medium text-[#eef0f5] font-sans mt-0.5">
                 {displayRegion}
               </div>
             </div>
 
-            <div className="border-s border-zinc-800/80 ps-4">
-              <div className="text-[11px] text-zinc-500 font-sans">Effective Period</div>
-              <div className="text-xs font-mono text-zinc-300">
+            <div className="border-s border-[#eef0f5]/[0.08] ps-5">
+              <div className="text-xs text-[#7a8296] font-sans">Effective period</div>
+              <div className="text-[13px] font-mono tabular-nums text-[#a3a9b8] mt-0.5">
                 {formatDate(analysisData.config.timeRange.startDate, lang)} –{' '}
                 {formatDate(analysisData.config.timeRange.endDate, lang)}
               </div>
             </div>
 
-            <div className="border-s border-zinc-800/80 ps-4">
-              <div className="text-[11px] text-zinc-500 font-sans">
-                {customFileLoaded ? 'Input Cadence' : 'Native Resolution'}
+            <div className="border-s border-[#eef0f5]/[0.08] ps-5">
+              <div className="text-xs text-[#7a8296] font-sans">
+                {customFileLoaded ? 'Input cadence' : 'Native resolution'}
               </div>
-              <div className="text-xs font-mono text-sky-400">{displayResolution}</div>
+              <div className="text-[13px] font-mono tabular-nums text-[#38bdf8] mt-0.5">{displayResolution}</div>
             </div>
           </div>
 
           {!customFileLoaded && activeConfig.variableId === 'lst' && (
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-[11px] text-zinc-400 font-sans me-1">
-                {t('lstModes.label')}:
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-[#7a8296] font-sans">
+                {t('lstModes.label')}
               </span>
-              {[
-                { id: 'day' as LstMode, icon: Sun, key: 'lstModes.day' },
-                { id: 'night' as LstMode, icon: Moon, key: 'lstModes.night' },
-                { id: 'both' as LstMode, icon: SunMoon, key: 'lstModes.both' },
-              ].map((m) => {
-                const Icon = m.icon;
-                const active = lstMode === m.id;
-                return (
-                  <button
-                    key={m.id}
-                    type="button"
-                    onClick={() => setLstMode(m.id)}
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono border transition-colors cursor-pointer ${
-                      active
-                        ? 'bg-amber-500/20 text-amber-200 border-amber-400/60'
-                        : 'bg-zinc-900/70 text-zinc-400 border-zinc-800 hover:text-white'
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    <span>{t(m.key as any)}</span>
-                  </button>
-                );
-              })}
+              <div className="inline-flex rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] p-0.5 gap-0.5">
+                {[
+                  { id: 'day' as LstMode, icon: Sun, key: 'lstModes.day' },
+                  { id: 'night' as LstMode, icon: Moon, key: 'lstModes.night' },
+                  { id: 'both' as LstMode, icon: SunMoon, key: 'lstModes.both' },
+                ].map((m) => {
+                  const Icon = m.icon;
+                  const active = lstMode === m.id;
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setLstMode(m.id)}
+                      className={`h-7 inline-flex items-center gap-1.5 px-2.5 rounded-md text-xs font-sans transition-colors duration-150 cursor-pointer ${
+                        active
+                          ? 'bg-[#1a1e28] text-[#eef0f5] font-medium'
+                          : 'text-[#7a8296] hover:text-[#eef0f5]'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" strokeWidth={1.5} />
+                      <span>{t(m.key as any)}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>
@@ -447,34 +441,34 @@ export const AnalysisPage: React.FC = () => {
           };
 
           return (
-            <div className="pt-3 border-t border-zinc-800/80 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-              <div className="flex items-center gap-2 text-xs text-zinc-400 font-sans">
-                <Calendar className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                <span>{lang === 'ar' ? 'تحديد الفترة الزمنية للتحليل:' : 'Select Analysis Time Period:'}</span>
+            <div className="pt-4 border-t border-[#eef0f5]/[0.07] flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              <div className="flex items-center gap-2 text-xs text-[#a3a9b8] font-sans">
+                <Calendar className="w-4 h-4 text-[#7a8296] shrink-0" strokeWidth={1.5} />
+                <span>{lang === 'ar' ? 'تحديد الفترة الزمنية للتحليل' : 'Analysis time period'}</span>
               </div>
 
               <div className="flex items-center gap-2 flex-wrap">
-                <div className="flex items-center gap-1.5 text-xs">
-                  <span className="text-zinc-500 font-sans">{lang === 'ar' ? 'من' : 'From'}</span>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="text-[#7a8296] font-sans">{lang === 'ar' ? 'من' : 'From'}</span>
                   <input
                     type="date"
                     value={draftStartDate}
                     min={minBound}
                     max={draftEndDate || maxBound}
                     onChange={(e) => setDraftStartDate(e.target.value)}
-                    className="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700/80 text-zinc-200 font-mono text-xs focus:outline-none focus:border-sky-500"
+                    className="h-8 px-2.5 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] text-[#eef0f5] font-mono tabular-nums text-xs focus:outline-none focus:border-[#38bdf8]/50"
                   />
                 </div>
 
-                <div className="flex items-center gap-1.5 text-xs">
-                  <span className="text-zinc-500 font-sans">{lang === 'ar' ? 'إلى' : 'To'}</span>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="text-[#7a8296] font-sans">{lang === 'ar' ? 'إلى' : 'To'}</span>
                   <input
                     type="date"
                     value={draftEndDate}
                     min={draftStartDate || minBound}
                     max={maxBound}
                     onChange={(e) => setDraftEndDate(e.target.value)}
-                    className="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700/80 text-zinc-200 font-mono text-xs focus:outline-none focus:border-sky-500"
+                    className="h-8 px-2.5 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] text-[#eef0f5] font-mono tabular-nums text-xs focus:outline-none focus:border-[#38bdf8]/50"
                   />
                 </div>
 
@@ -482,35 +476,35 @@ export const AnalysisPage: React.FC = () => {
                   type="button"
                   disabled={uploading}
                   onClick={() => applyTimeRange(draftStartDate, draftEndDate)}
-                  className="px-3 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white text-xs font-medium font-sans transition-colors cursor-pointer"
+                  className="h-8 px-3.5 rounded-lg bg-[#eef0f5] hover:bg-white disabled:opacity-50 text-[#0b0d14] text-xs font-medium font-sans transition-colors duration-150 cursor-pointer"
                 >
-                  {uploading ? (lang === 'ar' ? 'جاري التحليل...' : 'Applying...') : (lang === 'ar' ? 'تطبيق الفترة' : 'Apply Range')}
+                  {uploading ? (lang === 'ar' ? 'جاري التحليل...' : 'Applying...') : (lang === 'ar' ? 'تطبيق الفترة' : 'Apply range')}
                 </button>
 
-                <div className="flex items-center gap-1 border-s border-zinc-800 ps-2">
+                <div className="flex items-center gap-1 border-s border-[#eef0f5]/[0.08] ps-2">
                   <button
                     type="button"
                     disabled={uploading}
                     onClick={() => applyTimeRange(shiftYearsBack(5), maxBound)}
-                    className="px-2 py-1 rounded-md bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[11px] font-mono cursor-pointer transition-colors"
+                    className="h-8 px-2.5 rounded-lg bg-[#07080d] hover:bg-[#1a1e28] border border-[#eef0f5]/[0.08] text-[#a3a9b8] hover:text-[#eef0f5] text-xs font-mono tabular-nums cursor-pointer transition-colors duration-150"
                   >
-                    {lang === 'ar' ? 'آخر 5 سنوات' : '5Y'}
+                    {lang === 'ar' ? '5 سنوات' : '5Y'}
                   </button>
                   <button
                     type="button"
                     disabled={uploading}
                     onClick={() => applyTimeRange(shiftYearsBack(10), maxBound)}
-                    className="px-2 py-1 rounded-md bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[11px] font-mono cursor-pointer transition-colors"
+                    className="h-8 px-2.5 rounded-lg bg-[#07080d] hover:bg-[#1a1e28] border border-[#eef0f5]/[0.08] text-[#a3a9b8] hover:text-[#eef0f5] text-xs font-mono tabular-nums cursor-pointer transition-colors duration-150"
                   >
-                    {lang === 'ar' ? 'آخر 10 سنوات' : '10Y'}
+                    {lang === 'ar' ? '10 سنوات' : '10Y'}
                   </button>
                   <button
                     type="button"
                     disabled={uploading}
                     onClick={() => applyTimeRange(minBound, maxBound)}
-                    className="px-2 py-1 rounded-md bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-emerald-300 text-[11px] font-mono cursor-pointer transition-colors"
+                    className="h-8 px-2.5 rounded-lg bg-[#07080d] hover:bg-[#1a1e28] border border-[#eef0f5]/[0.08] text-[#38bdf8] text-xs font-mono cursor-pointer transition-colors duration-150"
                   >
-                    {lang === 'ar' ? 'كل الفترة' : 'Full'}
+                    {lang === 'ar' ? 'كامل الفترة' : 'Full'}
                   </button>
                 </div>
               </div>
@@ -528,56 +522,59 @@ export const AnalysisPage: React.FC = () => {
             : 'Synthesized evaluation strictly grounded in computed Nile Delta evidence'
         }
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-sans text-zinc-300">
-          <div className="p-3 rounded-lg bg-zinc-900/40 border border-zinc-800/80">
-            <div className="text-[11px] font-medium text-zinc-400 mb-1 font-sans">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-sans text-[#a3a9b8]">
+          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
+            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 font-sans">
               {t('analysis.interpretation.what')}
             </div>
-            <p className="leading-relaxed text-zinc-300">
-              {displayVariable} in <strong className="text-white">{displayRegion}</strong> shows{' '}
-              <strong className="text-white font-medium">{trendText}</strong> across{' '}
-              {statistics.sampleCount} monthly observations.
+            <p className="leading-5 text-[#a3a9b8]">
+              {displayVariable} in <strong className="text-[#eef0f5] font-medium">{displayRegion}</strong> shows{' '}
+              <strong className="text-[#eef0f5] font-medium">{trendText}</strong> across{' '}
+              <span className="font-mono tabular-nums text-[#eef0f5]">{statistics.sampleCount}</span> monthly observations.
             </p>
           </div>
 
-          <div className="p-3 rounded-lg bg-zinc-900/40 border border-zinc-800/80">
-            <div className="text-[11px] font-medium text-zinc-400 mb-1 font-sans">
-              {lang === 'ar' ? 'أين ومتى حدث التغير؟' : 'Where & When it changed'}
+          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
+            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 font-sans">
+              {lang === 'ar' ? 'أين ومتى حدث التغير' : 'Where and when it changed'}
             </div>
-            <p className="leading-relaxed text-zinc-300">
-              <strong className="text-sky-300 font-mono">{whereChangedLabel}</strong> (
-              {netChange >= 0 ? '+' : ''}
-              {pctChange.toFixed(1)}% net change, strongest structural shift around{' '}
-              <strong className="text-white font-mono">{formatDate(changePointDate, lang)}</strong>).
+            <p className="leading-5 text-[#a3a9b8]">
+              <strong className="text-[#38bdf8] font-mono font-normal">{whereChangedLabel}</strong> (
+              <span className="font-mono tabular-nums">
+                {netChange >= 0 ? '+' : ''}
+                {pctChange.toFixed(1)}%
+              </span>{' '}
+              net change, strongest shift around{' '}
+              <strong className="text-[#eef0f5] font-mono font-normal tabular-nums">{formatDate(changePointDate, lang)}</strong>).
             </p>
           </div>
 
-          <div className="p-3 rounded-lg bg-zinc-900/40 border border-zinc-800/80">
-            <div className="text-[11px] font-medium text-zinc-400 mb-1 font-sans">
-              {t('analysis.interpretation.magnitude')} & {t('analysis.interpretation.significance')}
+          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
+            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 font-sans">
+              {t('analysis.interpretation.magnitude')} · {t('analysis.interpretation.significance')}
             </div>
-            <p className="leading-relaxed text-zinc-300">
+            <p className="leading-5 text-[#a3a9b8]">
               Theil-Sen slope is{' '}
-              <strong className="text-white font-mono font-medium tabular-nums">
+              <strong className="text-[#eef0f5] font-mono font-medium tabular-nums">
                 {formatSignedRate(slopeDecade, `${unit}/decade`, lang)}
               </strong>{' '}
               (two-tailed Mann-Kendall p ={' '}
-              <span className="font-mono text-emerald-400 tabular-nums">
+              <span className="font-mono text-[#4cc38a] tabular-nums">
                 {formatScientificPValue(statistics.pValue, lang)}
               </span>
-              , τ = {formatNumber(statistics.mannKendall.tau, lang)}).
+              , τ = <span className="font-mono tabular-nums">{formatNumber(statistics.mannKendall.tau, lang)}</span>).
             </p>
           </div>
 
-          <div className="p-3 rounded-lg bg-zinc-900/40 border border-zinc-800/80">
-            <div className="text-[11px] font-medium text-amber-400/90 mb-1 flex items-center gap-1.5 font-sans">
-              <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
+            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 flex items-center gap-1.5 font-sans">
+              <AlertCircle className="w-3.5 h-3.5 text-[#7a8296]" strokeWidth={1.5} />
               <span>{t('analysis.interpretation.limitations')}</span>
             </div>
-            <p className="text-[11px] text-zinc-400 leading-relaxed font-sans">
+            <p className="text-xs text-[#7a8296] leading-5 font-sans">
               {customFileLoaded
                 ? 'Custom CSV series are resampled to monthly means prior to Mann-Kendall and Theil-Sen estimation. Ensure your date and numeric value columns represent comparable measurement conditions across time.'
-                : 'MODIS MOD13Q1.061 operates at 250 m spatial resolution (16-day composite), while MODIS MOD11C3.061 provides 0.05° CMG (~5.5 km) monthly daytime (~10:30 LT) and nighttime (~22:30 LT) land surface skin temperature (distinct from near-surface air temperature).'}
+                : 'MODIS MOD13Q1.061 operates at 250 m spatial resolution (16-day composite), while MODIS MOD11C3.061 provides 0.05° CMG (~5.5 km) monthly daytime (~10:30 LT) and nighttime (~22:30 LT) land surface skin temperature.'}
             </p>
           </div>
         </div>
@@ -644,138 +641,134 @@ export const AnalysisPage: React.FC = () => {
         />
 
         {analysisData.lstComparison && (
-          <div className="mt-4 pt-4 border-t border-zinc-800/80 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-            <div className="p-3 rounded-lg bg-amber-950/20 border border-amber-500/30 space-y-1">
-              <div className="flex items-center justify-between text-[11px] font-medium text-amber-300">
+          <div className="mt-5 pt-5 border-t border-[#eef0f5]/[0.07] grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07] space-y-1.5">
+              <div className="flex items-center justify-between text-xs font-medium text-[#eef0f5]">
                 <span className="inline-flex items-center gap-1.5">
-                  <Sun className="w-3.5 h-3.5" />
+                  <Sun className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
                   {t('lstModes.day')}
                 </span>
-                <span className="font-mono text-zinc-400">
+                <span className="font-mono tabular-nums text-[#7a8296]">
                   p = {formatScientificPValue(analysisData.lstComparison.day.statistics.pValue, lang)}
                 </span>
               </div>
-              <div className="text-sm font-mono font-bold text-white tabular-nums">
+              <div className="text-[20px] leading-none font-mono font-medium text-[#eef0f5] tabular-nums">
                 {formatSignedRate(analysisData.lstComparison.day.statistics.sensSlope, '°C/dec', lang)}
               </div>
-              <div className="text-[11px] font-mono text-zinc-400">
+              <div className="text-xs font-mono tabular-nums text-[#7a8296]">
                 Mean {analysisData.lstComparison.day.statistics.mean.toFixed(2)} °C · τ = {formatNumber(analysisData.lstComparison.day.statistics.tau, lang)}
               </div>
             </div>
 
-            <div className="p-3 rounded-lg bg-sky-950/20 border border-sky-500/30 space-y-1">
-              <div className="flex items-center justify-between text-[11px] font-medium text-sky-300">
+            <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07] space-y-1.5">
+              <div className="flex items-center justify-between text-xs font-medium text-[#eef0f5]">
                 <span className="inline-flex items-center gap-1.5">
-                  <Moon className="w-3.5 h-3.5" />
+                  <Moon className="w-4 h-4 text-[#7a8296]" strokeWidth={1.5} />
                   {t('lstModes.night')}
                 </span>
-                <span className="font-mono text-zinc-400">
+                <span className="font-mono tabular-nums text-[#7a8296]">
                   p = {formatScientificPValue(analysisData.lstComparison.night.statistics.pValue, lang)}
                 </span>
               </div>
-              <div className="text-sm font-mono font-bold text-white tabular-nums">
+              <div className="text-[20px] leading-none font-mono font-medium text-[#eef0f5] tabular-nums">
                 {formatSignedRate(analysisData.lstComparison.night.statistics.sensSlope, '°C/dec', lang)}
               </div>
-              <div className="text-[11px] font-mono text-zinc-400">
+              <div className="text-xs font-mono tabular-nums text-[#7a8296]">
                 Mean {analysisData.lstComparison.night.statistics.mean.toFixed(2)} °C · τ = {formatNumber(analysisData.lstComparison.night.statistics.tau, lang)}
               </div>
             </div>
 
-            <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800/80 space-y-1">
-              <div className="flex items-center justify-between text-[11px] font-medium text-zinc-300">
+            <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07] space-y-1.5">
+              <div className="flex items-center justify-between text-xs font-medium text-[#eef0f5]">
                 <span className="inline-flex items-center gap-1.5">
-                  <SunMoon className="w-3.5 h-3.5 text-emerald-400" />
-                  Diurnal Spread (Day − Night)
+                  <SunMoon className="w-4 h-4 text-[#38bdf8]" strokeWidth={1.5} />
+                  Diurnal spread (Day − Night)
                 </span>
-                <span className="font-mono text-zinc-400">
+                <span className="font-mono tabular-nums text-[#7a8296]">
                   r = {analysisData.lstComparison.dayNightCorrelation.pearsonR.toFixed(3)}
                 </span>
               </div>
-              <div className="text-sm font-mono font-bold text-emerald-300 tabular-nums">
-                {analysisData.lstComparison.dayNightCorrelation.meanDiurnalRange.toFixed(2)} °C mean spread
+              <div className="text-[20px] leading-none font-mono font-medium text-[#38bdf8] tabular-nums">
+                {analysisData.lstComparison.dayNightCorrelation.meanDiurnalRange.toFixed(2)} °C spread
               </div>
-              <div className="text-[11px] font-mono text-zinc-400">
-                Spread slope {formatSignedRate(analysisData.lstComparison.diurnalSpread.statistics.sensSlope, '°C/dec', lang)} · p = {formatScientificPValue(analysisData.lstComparison.diurnalSpread.statistics.pValue, lang)}
+              <div className="text-xs font-mono tabular-nums text-[#7a8296]">
+                Slope {formatSignedRate(analysisData.lstComparison.diurnalSpread.statistics.sensSlope, '°C/dec', lang)} · p = {formatScientificPValue(analysisData.lstComparison.diurnalSpread.statistics.pValue, lang)}
               </div>
             </div>
           </div>
         )}
       </DataCard>
 
-      {/* Unified Statistical Metrics Row Below Chart (No Duplicates) */}
+      {/* Unified Statistical Metrics Row Below Chart */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* 1. Direction (Increase or Not) & MK Tau */}
-        <div className="p-4 rounded-xl border border-zinc-800/80 bg-[#0B0F17] flex flex-col justify-between gap-2.5">
+        <div className="p-5 rounded-xl border border-[#eef0f5]/[0.08] bg-[#11141c] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-between gap-2">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-medium text-zinc-400 font-sans">
-              {lang === 'ar' ? 'الاتجاه (هل هناك زيادة؟)' : 'Direction (Increase or Not)'}
+            <span className="text-xs font-normal text-[#a3a9b8] font-sans">
+              {lang === 'ar' ? 'الاتجاه العام' : 'Trend direction'}
             </span>
             {direction === 'up' ? (
-              <TrendingUp className="w-4 h-4 text-emerald-400 shrink-0" />
+              <TrendingUp className="w-4 h-4 text-[#4cc38a] shrink-0" strokeWidth={1.5} />
             ) : direction === 'down' ? (
-              <TrendingDown className="w-4 h-4 text-rose-400 shrink-0" />
+              <TrendingDown className="w-4 h-4 text-[#e5484d] shrink-0" strokeWidth={1.5} />
             ) : (
-              <Minus className="w-4 h-4 text-zinc-400 shrink-0" />
+              <Minus className="w-4 h-4 text-[#7a8296] shrink-0" strokeWidth={1.5} />
             )}
           </div>
           <div
-            className={`text-lg font-bold font-sans ${
+            className={`text-[24px] leading-tight font-medium font-sans my-1 ${
               direction === 'up'
-                ? 'text-emerald-400'
+                ? 'text-[#4cc38a]'
                 : direction === 'down'
-                ? 'text-rose-400'
-                : 'text-zinc-300'
+                ? 'text-[#e5484d]'
+                : 'text-[#eef0f5]'
             }`}
           >
             {direction === 'up'
               ? lang === 'ar'
-                ? 'تزايد مستمر (Increase)'
+                ? 'تزايد مستمر'
                 : 'Increasing'
               : direction === 'down'
               ? lang === 'ar'
-                ? 'تناقص مستمر (Decrease)'
+                ? 'تناقص مستمر'
                 : 'Decreasing'
               : lang === 'ar'
-              ? 'لا يوجد اتجاه واضح (Stable)'
-              : 'No Trend (Stable)'}
+              ? 'مستقر'
+              : 'Stable'}
           </div>
-          <div className="text-[11px] font-mono text-zinc-400 flex items-center justify-between border-t border-zinc-800/80 pt-2">
+          <div className="text-xs font-mono tabular-nums text-[#7a8296] flex items-center justify-between border-t border-[#eef0f5]/[0.07] pt-2">
             <span>τ = {formatNumber(statistics.mannKendall.tau, lang)}</span>
             <span>Z = {formatNumber(statistics.mannKendall.zScore, lang)}</span>
           </div>
         </div>
 
         {/* 2. Change Magnitude & Where / When It Changed */}
-        <div className="p-4 rounded-xl border border-zinc-800/80 bg-[#0B0F17] flex flex-col justify-between gap-2.5">
+        <div className="p-5 rounded-xl border border-[#eef0f5]/[0.08] bg-[#11141c] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-between gap-2">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-medium text-zinc-400 font-sans">
-              {lang === 'ar' ? `التغير في ${unit} ومكان/وقت التغير` : `Change in ${unit} & Where/When`}
+            <span className="text-xs font-normal text-[#a3a9b8] font-sans">
+              {lang === 'ar' ? `صافي التغير في ${unit}` : `Net change (${unit})`}
             </span>
-            <MapPin className="w-4 h-4 text-sky-400 shrink-0" />
+            <MapPin className="w-4 h-4 text-[#7a8296] shrink-0" strokeWidth={1.5} />
           </div>
-          <div className="flex items-baseline gap-2 flex-wrap">
+          <div className="flex items-baseline gap-2 flex-wrap my-1">
             <span
-              className={`text-lg font-bold font-mono tabular-nums ${
-                netChange > 0 ? 'text-emerald-400' : netChange < 0 ? 'text-rose-400' : 'text-zinc-200'
+              className={`text-[28px] leading-none font-medium font-mono tabular-nums ${
+                netChange > 0 ? 'text-[#4cc38a]' : netChange < 0 ? 'text-[#e5484d]' : 'text-[#eef0f5]'
               }`}
             >
               {netChange >= 0 ? '+' : ''}
-              {netChange.toFixed(4)} {unit}
+              {netChange.toFixed(4)}
             </span>
-            <span className="text-xs font-mono text-zinc-400 tabular-nums">
+            <span className="text-xs font-mono text-[#7a8296] tabular-nums">
               ({pctChange >= 0 ? '+' : ''}
-              {pctChange.toFixed(1)}%)
+              {pctChange.toFixed(1)}% vs baseline)
             </span>
           </div>
-          <div className="text-[11px] font-sans text-zinc-400 space-y-1 border-t border-zinc-800/80 pt-2">
-            <div className="truncate" title={whereChangedLabel}>
-              <span className="text-zinc-500">{lang === 'ar' ? 'المكان / الطبقة: ' : 'Where: '}</span>
-              <span className="text-sky-300 font-mono">{whereChangedLabel}</span>
-            </div>
-            <div>
-              <span className="text-zinc-500">{lang === 'ar' ? 'نقطة التحول: ' : 'Shift point: '}</span>
-              <span className="text-zinc-200 font-mono">{formatDate(changePointDate, lang)}</span>
-            </div>
+          <div className="text-xs font-sans text-[#7a8296] flex items-center justify-between gap-2 border-t border-[#eef0f5]/[0.07] pt-2">
+            <span className="truncate font-mono text-[#a3a9b8]" title={whereChangedLabel}>
+              {whereChangedLabel}
+            </span>
+            <span className="font-mono tabular-nums shrink-0">{formatDate(changePointDate, lang)}</span>
           </div>
         </div>
 
@@ -786,43 +779,28 @@ export const AnalysisPage: React.FC = () => {
           unit={`/ decade (${slopeYear >= 0 ? '+' : ''}${slopeYear.toFixed(5)}/yr)`}
           subtext="Non-parametric Theil-Sen median slope"
           direction={direction}
-          statusBadge={<span className="text-[11px] font-mono text-amber-400/90">SciPy</span>}
+          statusBadge={<span className="text-xs font-mono text-[#7a8296]">SciPy</span>}
         />
 
         {/* 4. P-Value + 95% CI, Samples & Spatial Coverage */}
-        <div className="p-4 rounded-xl border border-zinc-800/80 bg-[#0B0F17] flex flex-col justify-between gap-2 text-xs font-sans text-zinc-400">
+        <div className="p-5 rounded-xl border border-[#eef0f5]/[0.08] bg-[#11141c] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-between gap-2 text-xs font-sans text-[#a3a9b8]">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] font-medium text-zinc-400">{t('analysis.statistics.pValueText')}</span>
-            <span className="text-[10px] font-mono text-zinc-500">α = 0.05</span>
+            <span className="text-xs font-normal text-[#a3a9b8]">{t('analysis.statistics.pValueText')}</span>
+            <span className="text-xs font-mono tabular-nums text-[#7a8296]">α = 0.05</span>
           </div>
-          <div className="flex items-baseline justify-between gap-2">
-            <span className="text-lg font-bold font-mono text-white tabular-nums">
+          <div className="flex items-baseline justify-between gap-2 my-1">
+            <span className="text-[28px] leading-none font-medium font-mono text-[#eef0f5] tabular-nums">
               {formatScientificPValue(statistics.pValue, lang)}
             </span>
-            <span className="text-[11px] font-mono text-zinc-400">
+            <span className="text-xs font-mono tabular-nums text-[#4cc38a]">
               {statistics.pValue < 0.05 ? 'p < 0.05' : 'p ≥ 0.05'}
             </span>
           </div>
-          <div className="space-y-1 border-t border-zinc-800/80 pt-2 text-[11px]">
-            <div className="flex justify-between items-center">
-              <span>{t('analysis.statistics.ci95')}</span>
-              <span className="text-zinc-200 font-mono tabular-nums">
-                [{formatNumber(statistics.sensSlope.ciLower, lang)},{' '}
-                {formatNumber(statistics.sensSlope.ciUpper, lang)}] /dec
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>{t('analysis.statistics.sampleCount')}</span>
-              <span className="text-zinc-200 font-mono tabular-nums">{statistics.sampleCount}</span>
-            </div>
-            {rasterStatistics && (
-              <div className="flex justify-between items-center">
-                <span>Spatial Mean / Coverage</span>
-                <span className="text-sky-300 font-mono tabular-nums">
-                  {rasterStatistics.mean} {unit} ({rasterStatistics.validCoveragePercent}%)
-                </span>
-              </div>
-            )}
+          <div className="flex items-center justify-between gap-2 border-t border-[#eef0f5]/[0.07] pt-2 text-xs font-mono tabular-nums text-[#7a8296]">
+            <span>
+              CI [{formatNumber(statistics.sensSlope.ciLower, lang)}, {formatNumber(statistics.sensSlope.ciUpper, lang)}]
+            </span>
+            <span>n = {statistics.sampleCount}</span>
           </div>
         </div>
       </div>
@@ -830,27 +808,27 @@ export const AnalysisPage: React.FC = () => {
       {/* Seasonal Breakdown Table */}
       {seasonal?.seasonalSummary && seasonal.seasonalSummary.length > 0 && (
         <DataCard
-          title="Seasonal Climatology & Intra-Annual Crop-Cycle Breakdown"
+          title="Seasonal climatology & intra-annual crop-cycle breakdown"
           subtitle={
             customFileLoaded
               ? 'Winter (DJF), Spring (MAM), Summer (JJA), and Autumn (SON) averages from uploaded CSV'
               : 'Nile Delta Winter (DJF), Spring (MAM), Summer (JJA), and Autumn (SON) statistical averages'
           }
-          badge={<span className="text-[11px] font-mono text-sky-400">{displayResolution}</span>}
+          badge={<span className="text-xs font-mono text-[#7a8296]">{displayResolution}</span>}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {seasonal.seasonalSummary.map((s) => (
               <div
                 key={s.season}
-                className="p-3.5 rounded-xl border border-zinc-800/80 bg-zinc-900/40 space-y-1.5 font-mono text-xs"
+                className="p-4 rounded-xl border border-[#eef0f5]/[0.07] bg-[#07080d] space-y-1.5 font-mono text-xs tabular-nums"
               >
-                <div className="text-zinc-300 font-semibold">{s.season}</div>
-                <div className="text-lg font-bold text-white tabular-nums">
-                  {s.mean.toFixed(4)} <span className="text-[10px] text-zinc-400">± {s.std.toFixed(3)}</span>
+                <div className="text-[#a3a9b8] font-sans font-medium">{s.season}</div>
+                <div className="text-[22px] leading-none font-medium text-[#eef0f5]">
+                  {s.mean.toFixed(4)} <span className="text-xs text-[#7a8296]">± {s.std.toFixed(3)}</span>
                 </div>
-                <div className="text-[11px] text-zinc-400">
-                  Slope: {s.slopePerYear >= 0 ? '+' : ''}
-                  {s.slopePerYear.toFixed(5)}/yr (p = {s.pValue})
+                <div className="text-xs text-[#7a8296]">
+                  Slope {s.slopePerYear >= 0 ? '+' : ''}
+                  {s.slopePerYear.toFixed(5)}/yr · p = {s.pValue}
                 </div>
               </div>
             ))}

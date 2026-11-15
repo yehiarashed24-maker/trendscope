@@ -162,36 +162,36 @@ export const ScientificChart: React.FC<ScientificChartProps> = ({
     const layout: Partial<Plotly.Layout> = {
       height,
       autosize: true,
-      margin: { l: 50, r: 20, t: 25, b: 40 },
+      margin: { l: 52, r: 20, t: 28, b: 40 },
       paper_bgcolor: 'transparent',
       plot_bgcolor: 'transparent',
       font: {
         family: 'IBM Plex Mono, monospace',
         size: 11,
-        color: '#94A3B8',
+        color: '#7a8296',
       },
       hovermode: 'x unified',
       hoverlabel: {
-        bgcolor: '#0B1018',
-        bordercolor: '#334155',
-        font: { family: 'IBM Plex Mono, monospace', size: 11, color: '#F8FAFC' },
+        bgcolor: '#11141c',
+        bordercolor: 'rgba(238, 240, 245, 0.14)',
+        font: { family: 'IBM Plex Mono, monospace', size: 11, color: '#eef0f5' },
       },
       legend: {
         orientation: 'h',
-        y: 1.15,
+        y: 1.14,
         x: 0,
-        font: { size: 10, color: '#CBD5E1' },
+        font: { size: 11, color: '#a3a9b8' },
       },
       xaxis: {
-        gridcolor: 'rgba(51, 65, 85, 0.3)',
-        zerolinecolor: 'rgba(51, 65, 85, 0.5)',
-        tickfont: { size: 10, color: '#94A3B8' },
+        gridcolor: 'rgba(238, 240, 245, 0.06)',
+        zerolinecolor: 'rgba(238, 240, 245, 0.12)',
+        tickfont: { size: 11, color: '#7a8296' },
       },
       yaxis: {
-        title: { text: `${variableName} [${unit}]`, font: { size: 11, color: '#CBD5E1' } },
-        gridcolor: 'rgba(51, 65, 85, 0.3)',
-        zerolinecolor: 'rgba(51, 65, 85, 0.5)',
-        tickfont: { size: 10, color: '#94A3B8' },
+        title: { text: `${variableName} [${unit}]`, font: { size: 11, color: '#a3a9b8' } },
+        gridcolor: 'rgba(238, 240, 245, 0.06)',
+        zerolinecolor: 'rgba(238, 240, 245, 0.12)',
+        tickfont: { size: 11, color: '#7a8296' },
       },
     };
 
@@ -240,9 +240,9 @@ export const ScientificChart: React.FC<ScientificChartProps> = ({
   return (
     <div className="w-full flex flex-col">
       <div ref={containerRef} className="w-full" style={{ minHeight: `${height}px` }} />
-      <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 px-2 pt-1 border-t border-slate-800/60 mt-1">
-        <span>DATA SOURCE: {dataSource}</span>
-        <span>CONFIDENCE: 95% (2σ RESIDUAL ESTIMATOR)</span>
+      <div className="flex items-center justify-between gap-4 flex-wrap text-xs font-mono tabular-nums text-[#7a8296] px-1 pt-3 border-t border-[#eef0f5]/[0.07] mt-2">
+        <span>Source: {dataSource}</span>
+        <span>Confidence band: 95% (2σ residual estimator)</span>
       </div>
     </div>
   );

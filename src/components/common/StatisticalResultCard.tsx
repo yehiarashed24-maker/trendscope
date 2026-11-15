@@ -27,42 +27,35 @@ export const StatisticalResultCard: React.FC<StatisticalResultCardProps> = ({
   return (
     <div
       className={cn(
-        'relative p-3.5 sm:p-4 rounded-xl bg-[#0B0F17] border border-zinc-800/80 hover:border-zinc-700 transition-colors flex flex-col justify-between',
-        isSignificant && 'border-emerald-500/30 bg-[#0B0F17]',
+        'relative p-5 rounded-xl bg-[#11141c] border border-[#eef0f5]/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-between gap-2',
+        isSignificant && 'border-[#4cc38a]/30',
         className
       )}
     >
-      <div className="flex items-start justify-between gap-2 mb-1">
-        <span className="text-xs text-zinc-400 font-medium">{label}</span>
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs text-[#a3a9b8] font-normal font-sans">{label}</span>
         {statusBadge}
       </div>
 
       <div className="flex items-baseline gap-2 my-1">
         {direction === 'up' && (
-          <span className="inline-flex items-center gap-1 text-[#F06449]">
-            <ArrowUp className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1 text-[#4cc38a]">
+            <ArrowUp className="w-4 h-4" strokeWidth={1.5} />
           </span>
         )}
         {direction === 'down' && (
-          <span className="inline-flex items-center gap-1 text-[#38BDF8]">
-            <ArrowDown className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1 text-[#e5484d]">
+            <ArrowDown className="w-4 h-4" strokeWidth={1.5} />
           </span>
         )}
-        <span
-          className={cn(
-            'text-xl font-bold font-mono tracking-tight tabular-nums',
-            direction === 'up' && 'text-[#F06449]',
-            direction === 'down' && 'text-[#38BDF8]',
-            !direction && 'text-white'
-          )}
-        >
+        <span className="text-[28px] leading-none font-medium font-mono tabular-nums text-[#eef0f5]">
           {value}
         </span>
-        {unit && <span className="text-xs font-mono text-zinc-400">{unit}</span>}
+        {unit && <span className="text-xs font-mono text-[#7a8296] tabular-nums">{unit}</span>}
       </div>
 
       {subtext && (
-        <span className="text-[11px] text-zinc-400 font-sans leading-tight mt-1">
+        <span className="text-xs text-[#7a8296] font-sans leading-4 pt-2 border-t border-[#eef0f5]/[0.07]">
           {subtext}
         </span>
       )}
