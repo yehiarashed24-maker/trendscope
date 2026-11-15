@@ -64,14 +64,23 @@ def build_grounded_context(
             "dayNightPearsonR": lc["dayNightCorrelation"]["pearsonR"],
         }
 
+    is_global_or_world = bool(reg_meta.get("isGlobalOrWorld"))
+    if region_id == "global_mean":
+        study_area_label = "Planetary Land Baseline (Global Mean)"
+    elif is_global_or_world:
+        study_area_label = f"Global Regional Study Area ({reg_meta.get('name', region_id)})"
+    else:
+        study_area_label = "Nile Delta Regional Benchmark, Egypt"
+
     return {
-        "studyArea": "Nile Delta, Egypt",
+        "studyArea": study_area_label,
         "region": {
             "id": reg_meta.get("id", region_id),
             "name": reg_meta.get("name", region_id),
             "name_ar": reg_meta.get("nameAr") or reg_meta.get("name_ar", ""),
             "areaKm2": reg_meta.get("areaKm2") or reg_meta.get("area_km2", 24450.0),
-            "climateZone": reg_meta.get("climateZone") or reg_meta.get("climate_zone", "Mediterranean / Semi-Arid Irrigated Delta"),
+            "climateZone": reg_meta.get("climateZone") or reg_meta.get("climate_zone", "Regional Earth Observation Zone"),
+            "isGlobalOrWorld": is_global_or_world,
         },
         "variableId": variable_id,
         "lstMode": mode if variable_id == "lst" else None,
@@ -100,6 +109,7 @@ def _generate_deterministic_grounded_response(grounded: Dict[str, Any], language
     metrics if Gemini API is unreachable or rate-limited.
     """
     reg_name = grounded["region"]["name"]
+    is_global_or_world = bool(grounded["region"].get("isGlobalOrWorld"))
     var_id = grounded["variableId"]
     lst_mode = grounded.get("lstMode") or "day"
     ds = grounded["dataset"]
@@ -133,23 +143,28 @@ def _generate_deterministic_grounded_response(grounded: Dict[str, Any], language
             else ""
         )
         summary = (
-            f"تحليل علمي موثق لمنطقة **{reg_name}** في دلتا النيل ({tr['startDate']} إلى {tr['endDate']}) "
+            f"تحليل علمي موثق لمنطقة **{reg_name}** ({tr['startDate']} إلى {tr['endDate']}) "
             f"باستخدام بيانات وكالة ناسا **{ds['shortName']}.{ds['version']}** بدقة مكانية أصلية **{ds['spatialResolution']}**.{extra_ar}"
         )
         methodology = (
-            f"تم تطبيق اختبار مان-كيندال اللابارامتري (Mann-Kendall $\\tau = {tau:.3f}$, $Z = {z_val:.2f}$, $p = {p_val:.4f}$) "
-            f"ومقدّر ميل سين (Sen's Slope = ${slope_yr:+.5f}$ {ds['unit']}/سنة أو ${slope_dec:+.4f}$ {ds['unit']}/عقد) "
-            f"مع فلترة الجودة (`{ds['qualityBand']}`). للإشارة المشتركة، يتم تقييم ارتباط الغطاء النباتي (NDVI، 250 م) "
-            f"مع درجة حرارة سطح الأرض (MOD11C3 LST، 0.05°) على المستوى الإقليمي دون أي رفع زائف للدقة."
+            f"تم تطبيق اختبار مان-كيندال اللابارامتري (Mann-Kendall τ = {tau:.3f}, Z = {z_val:.2f}, p = {p_val:.4f}) "
+            f"ومقدّر ميل سين (Sen's Slope = {slope_yr:+.5f} {ds['unit']}/سنة أو {slope_dec:+.4f} {ds['unit']}/عقد) "
+            f"مع فلترة الجودة ({ds['qualityBand']}). للإشارة المشتركة، يتم تقييم ارتباط الغطاء النباتي (NDVI) "
+            f"مع درجة حرارة سطح الأرض (MOD11C3 LST) على المستوى الإقليمي دون أي رفع زائف للدقة."
         )
     else:
         mode_note = f" ({mode_en})" if var_id == "lst" else ""
+        scope_phrase = (
+            "across the global & regional Earth observation framework"
+            if is_global_or_world
+            else "within the Nile Delta regional benchmark (Egypt)"
+        )
         summary = (
-            f"Grounded scientific evaluation for **{reg_name}** within the Nile Delta study area "
+            f"Grounded scientific evaluation for **{reg_name}** {scope_phrase} "
             f"({tr['startDate']} to {tr['endDate']}) using **{ds['shortName']}.{ds['version']}**{mode_note} "
-            f"(DOI: `{ds['doi']}`, native spatial resolution **{ds['spatialResolution']}**, {ds['temporalResolution']} frequency). "
-            f"The observed monotonic trend is **{st['trendDirection'].replace('_', ' ')}** ({sig_str} at $\\alpha = 0.05$, "
-            f"Mann-Kendall $\\tau = {tau:.3f}$, $Z = {z_val:.2f}$, $p = {p_val:.4f}$) with a Sen's slope of "
+            f"(DOI: {ds['doi']}, native spatial resolution **{ds['spatialResolution']}**, {ds['temporalResolution']} frequency). "
+            f"The observed monotonic trend is **{st['trendDirection'].replace('_', ' ')}** ({sig_str} at α = 0.05, "
+            f"Mann-Kendall τ = {tau:.3f}, Z = {z_val:.2f}, p = {p_val:.4f}) with a Sen's slope of "
             f"**{slope_yr:+.5f} {ds['unit']}/year** (**{slope_dec:+.4f} {ds['unit']}/decade**, 95% CI "
             f"[{st['slopeCiLower']:+.4f}, {st['slopeCiUpper']:+.4f}] {ds['unit']}/decade)."
         )
@@ -161,11 +176,11 @@ def _generate_deterministic_grounded_response(grounded: Dict[str, Any], language
                 f"yielding a mean diurnal surface spread of **{lc['meanDiurnalSpreadC']:.2f} °C**."
             )
         methodology = (
-            f"Quality filtering applied via `{ds['qualityBand']}` with scale factor `{ds['scaleFactor']}` and NoData `{ds['noDataValue']}` masked prior to aggregation. "
+            f"Quality filtering applied via {ds['qualityBand']} with scale factor {ds['scaleFactor']} and NoData {ds['noDataValue']} masked prior to aggregation. "
             f"Spatial coverage over {reg_name} is {rst.get('validCoveragePercent', 95.0)}% ({rst.get('validPixelCount', 0)} valid pixels; "
             f"spatial mean = {rst.get('mean', st['mean'])} {ds['unit']}, std = {rst.get('std', st['stdDev'])} {ds['unit']}). "
-            f"Combined MODIS NDVI (250 m) and MODIS LST (0.05° CMG) thermal-canopy coupling is evaluated at regional monthly scale "
-            f"(Pearson $r = {corr['pearsonR']:.3f}$, Spearman $\\rho = {corr['spearmanRho']:.3f}$, $p = {corr['pValue']:.4f}$)."
+            f"Combined MODIS NDVI and MODIS LST (0.05° CMG) thermal-canopy coupling is evaluated at regional monthly scale "
+            f"(Pearson r = {corr['pearsonR']:.3f}, Spearman ρ = {corr['spearmanRho']:.3f}, p = {corr['pValue']:.4f})."
         )
 
     evidence = [
@@ -177,27 +192,27 @@ def _generate_deterministic_grounded_response(grounded: Dict[str, Any], language
 
     drivers = [
         {
-            "factor": "Evaporative Canopy Cooling & Bi-Modal Cropping Calendar",
+            "factor": "Evaporative Canopy Cooling & Seasonal Cropping / Phenology Calendar",
             "impactWeight": "Primary",
-            "mechanism": "Irrigated winter wheat/berseem and summer rice/maize cycles modulate latent heat flux, typically suppressing daytime LST relative to bare peri-urban or desert-fringe soils.",
+            "mechanism": "Seasonal canopy vigor and irrigation/moisture cycles modulate latent heat flux, typically suppressing daytime LST relative to bare peri-urban or dryland soils.",
         },
         {
             "factor": "Asymmetric Daytime Heating vs. Nighttime Cooling",
             "impactWeight": "Secondary",
-            "mechanism": f"Detected {st['anomaliesCount']} standardized anomalies (|Z| ≥ 1.85σ) against the {grounded['dataset']['baselinePeriod']} baseline; urban impervious cover and soil thermal inertia elevate nighttime LST even when daytime extremes vary.",
+            "mechanism": f"Detected {st['anomaliesCount']} standardized anomalies (|Z| ≥ 1.85σ) against the {grounded['dataset']['baselinePeriod']} baseline; surface thermal inertia elevates nighttime LST even when daytime extremes vary.",
         },
         {
             "factor": "Multi-Resolution Surface Measurement Contrast (250 m vs 0.05° CMG)",
             "impactWeight": "Contributing",
-            "mechanism": "MODIS MOD13Q1 captures 250 m field-mosaic vegetation density while MOD11C3 measures 0.05° (~5.5 km) radiant surface skin temperature under clear-sky conditions.",
+            "mechanism": "MODIS MOD13Q1/MOD13C2 captures canopy vegetation density while MOD11C3 measures 0.05° (~5.5 km) radiant surface skin temperature under clear-sky conditions.",
         },
     ]
 
     if var_id == "ndvi":
         limitations = [
             "Optical vegetation retrievals (MOD13Q1.061 250 m / MOD13C2.061 0.05° CMG; valid NDVI range -0.2 to 1.0) omit cloud/aerosol-masked pixels via pixel_reliability QC without synthetic interpolation.",
-            "Nile Delta agricultural planting/harvesting seasonality is explicitly controlled using the Hirsch–Slack Seasonal Mann-Kendall test (period=12) and deseasonalized Theil-Sen anomalies.",
-            f"Spatial comparison with MODIS LST (0.05° CMG) in coupled diagnostics preserves native resolution without artificial thermal upsampling.",
+            "Intra-annual vegetation and agricultural seasonality is explicitly controlled using the Hirsch–Slack Seasonal Mann-Kendall test (period=12) and deseasonalized Theil-Sen anomalies.",
+            "Spatial comparison with MODIS LST (0.05° CMG) in coupled diagnostics preserves native resolution without artificial thermal upsampling.",
         ]
     else:
         limitations = [
@@ -213,7 +228,7 @@ def _generate_deterministic_grounded_response(grounded: Dict[str, Any], language
     ]
 
     return {
-        "id": f"ai_nile_delta_{int(datetime.now(timezone.utc).timestamp())}",
+        "id": f"ai_trendscope_{int(datetime.now(timezone.utc).timestamp())}",
         "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "language": language,
         "summary": summary,
@@ -240,7 +255,7 @@ def generate_ai_scientific_explanation(
 ) -> Dict[str, Any]:
     """
     Calls the verified Google Gemini model (`gemini-2.5-flash`) from the backend only,
-    supplying the structured Nile Delta statistical and geospatial JSON context.
+    supplying the structured global & regional statistical and geospatial JSON context.
     Never exposes GEMINI_API_KEY to the frontend.
     """
     grounded = build_grounded_context(
@@ -257,14 +272,15 @@ def generate_ai_scientific_explanation(
         return fallback_resp
 
     lang_name = LANGUAGE_LABELS.get(language, "English")
-    system_instruction = f"""You are the TRENDSCOPE AI — NILE DELTA EDITION Chief Earth Observation Scientist.
+    system_instruction = f"""You are the TrendScope — Global & Regional Earth Observation Chief Scientist.
 You must answer strictly in {lang_name}.
-You are analyzing ONLY the Nile Delta in Egypt and ONLY two NASA MODIS Terra satellite products:
+You are analyzing global & regional Earth observation zones (including the high-resolution Nile Delta benchmark in Egypt and global regional hotspots) using NASA MODIS Terra & NASA POWER satellite products:
 1. Vegetation Cover — MODIS/Terra Vegetation Indices (MOD13Q1.061 250 m & MOD13C2.061 0.05° CMG, DOI: 10.5067/MODIS/MOD13Q1.061, NDVI 2000–2024).
 2. Land Surface Temperature (LST) — MODIS/Terra Land Surface Temperature/Emissivity Monthly CMG (MOD11C3.061, DOI: 10.5067/MODIS/MOD11C3.061, 0.05° ~5.5 km, Daytime ~10:30 LT & Nighttime ~22:30 LT, 2000–2024).
 
 MANDATORY SCIENTIFIC RULES:
 - Ground every single number in the provided JSON context (`grounded_context`). NEVER invent or alter p-values, Sen's slopes, Mann-Kendall tau/Z, pixel counts, or correlation coefficients.
+- Focus strictly on the selected region (`{grounded['region']['name']}`) and do NOT refer to it as part of the Nile Delta unless it is actually a Nile Delta subregion.
 - Explicitly note that Land Surface Temperature (LST) is the radiative skin temperature of the land surface itself (distinct from 2-meter air temperature) and highlight Daytime vs Nighttime dynamics when `lstComparisonSummary` or `lstMode` is present.
 - Explicitly state that NDVI and LST are evaluated at regional monthly aggregation across their native grids without artificial spatial upsampling.
 - Do NOT claim causation from correlation alone.

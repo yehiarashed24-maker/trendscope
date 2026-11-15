@@ -47,16 +47,16 @@ export const reportService = {
     }
 
     return {
-      reportId: `EPR-NILEDELTA-${config.regionId.toUpperCase()}-${Date.now().toString().slice(-6)}`,
+      reportId: `TRENDSCOPE-${config.regionId.toUpperCase()}-${Date.now().toString().slice(-6)}`,
       generatedAt: new Date().toISOString(),
       language,
-      title: `TRENDSCOPE AI — Nile Delta Scientific Dossier: ${config.regionId.toUpperCase()} (${config.variableId.toUpperCase()})`,
+      title: `TrendScope — Global & Regional Scientific Dossier: ${config.regionId.toUpperCase()} (${config.variableId.toUpperCase()})`,
       config,
       analysis,
       customCsvFileName: null,
-      executiveSummary: `This scientific investigation evaluates ${config.variableId.toUpperCase()}${config.variableId === 'lst' ? ` (${config.lstMode === 'both' ? 'Day & Night' : config.lstMode === 'night' ? 'Nighttime' : 'Daytime'})` : ''} across the Nile Delta subregion (${config.regionId}) using ${analysis.dataSource}. Across ${config.timeRange.startDate} to ${config.timeRange.endDate}, non-parametric Mann-Kendall testing yields τ = ${formatNumber(tau, language, { minimumFractionDigits: 3 })}, p = ${formatNumber(pVal, language, { minimumFractionDigits: 4 })} (${sigText}), with a Theil-Sen slope of ${formatSignedRate(slopeYear, `${analysis.unit}/yr`, language)} (${formatSignedRate(slopeDecade, `${analysis.unit}/decade`, language)}). Native spatial resolutions (250 m for MODIS MOD13Q1.061 NDVI vs 0.05° CMG ~5.5 km for MOD11C3.061 Land Surface Temperature) are strictly preserved.`,
+      executiveSummary: `This scientific investigation evaluates ${config.variableId.toUpperCase()}${config.variableId === 'lst' ? ` (${config.lstMode === 'both' ? 'Day & Night' : config.lstMode === 'night' ? 'Nighttime' : 'Daytime'})` : ''} across study region (${config.regionId}) using ${analysis.dataSource}. Across ${config.timeRange.startDate} to ${config.timeRange.endDate}, non-parametric Mann-Kendall testing yields τ = ${formatNumber(tau, language, { minimumFractionDigits: 3 })}, p = ${formatNumber(pVal, language, { minimumFractionDigits: 4 })} (${sigText}), with a Theil-Sen slope of ${formatSignedRate(slopeYear, `${analysis.unit}/yr`, language)} (${formatSignedRate(slopeDecade, `${analysis.unit}/decade`, language)}). Native spatial resolutions (250 m for MODIS MOD13Q1.061 NDVI vs 0.05° CMG ~5.5 km for MOD11C3.061 Land Surface Temperature) are strictly preserved.`,
       dataGovernanceStatement:
-        'All observational metrics originate from quality-filtered NASA EOSDIS LP DAAC MODIS archives (MOD13Q1.061 NDVI, DOI: 10.5067/MODIS/MOD13Q1.061, and MOD11C3.061 Day/Night Land Surface Temperature, DOI: 10.5067/MODIS/MOD11C3.061) clipped to the Nile Delta study area in Egypt. LST measures land-surface skin temperature (distinct from air temperature).',
+        'All observational metrics originate from quality-filtered NASA EOSDIS LP DAAC MODIS & NASA POWER archives (MOD13Q1.061 / MOD13C2.061 NDVI, DOI: 10.5067/MODIS/MOD13Q1.061, and MOD11C3.061 Day/Night Land Surface Temperature, DOI: 10.5067/MODIS/MOD11C3.061). LST measures land-surface skin temperature (distinct from air temperature).',
     };
   },
 

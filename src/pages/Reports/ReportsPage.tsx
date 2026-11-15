@@ -21,7 +21,10 @@ export const ReportsPage: React.FC = () => {
   const navigate = useNavigate();
   const lang = (i18n.language?.split('-')[0] || 'en') as SupportedLanguage;
 
-  const { activeConfig, customCsvFileName, customCsvAnalysis } = useAppStore();
+  const { activeConfig, currentRegion, customCsvFileName, customCsvAnalysis } = useAppStore();
+  const selectedRegionName = t(`regions.${activeConfig.regionId}` as any, {
+    defaultValue: currentRegion?.name || activeConfig.regionId,
+  });
   const isCustomCsv = Boolean(customCsvAnalysis && customCsvFileName);
   const csvProvenance = (customCsvAnalysis as any)?.provenance;
   const csvValueCol = csvProvenance?.detectedColumns?.valueColumn;
@@ -157,9 +160,9 @@ export const ReportsPage: React.FC = () => {
           ) : (
             <>
               <div>
-                <span className="text-[#7a8296] text-xs">Nile Delta Region: </span>
+                <span className="text-[#7a8296] text-xs">Study Region: </span>
                 <strong className="text-[#eef0f5] font-medium">
-                  {t(`regions.${activeConfig.regionId}` as any) || activeConfig.regionId}
+                  {selectedRegionName}
                 </strong>
               </div>
               <div className="border-s border-[#eef0f5]/[0.08] ps-4">
@@ -191,7 +194,7 @@ export const ReportsPage: React.FC = () => {
       </div>
 
       {reportLoading || !reportAnalysis ? (
-        <LoadingState message="Compiling verified Nile Delta scientific assessment dossier..." />
+        <LoadingState message="Compiling verified TrendScope scientific assessment dossier..." />
       ) : (
         <div className="p-8 sm:p-10 rounded-2xl border border-[#eef0f5]/[0.08] bg-[#11141c] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] text-[#eef0f5] space-y-8 max-w-4xl mx-auto">
           <div className="border-b border-[#eef0f5]/[0.08] pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -201,13 +204,13 @@ export const ReportsPage: React.FC = () => {
                 <span>
                   {isCustomCsv
                     ? `TrendScope · Custom CSV dataset — ${customCsvFileName}`
-                    : 'TrendScope · Verified scientific dossier'}
+                    : 'TrendScope · Global & Regional Earth Observation Dossier'}
                 </span>
               </div>
               <h1 className="text-[22px] sm:text-[26px] leading-[1.2] font-medium font-sans text-[#eef0f5] mt-2 tracking-[-0.02em]">
                 {isCustomCsv
                   ? `${customCsvFileName} — Environmental Assessment Report`
-                  : 'Nile Delta Environmental Assessment Report'}
+                  : `TrendScope — ${selectedRegionName} Environmental Report`}
               </h1>
               <div className="text-xs font-mono tabular-nums text-[#7a8296] mt-1.5">
                 {isCustomCsv
@@ -240,9 +243,9 @@ export const ReportsPage: React.FC = () => {
                   <strong className="text-[#eef0f5] font-medium">
                     {t(`variables.${activeConfig.variableId}.name` as any)}
                   </strong>{' '}
-                  exclusively within the Nile Delta subregion{' '}
+                  across study region{' '}
                   <strong className="text-[#eef0f5] font-medium">
-                    ({t(`regions.${activeConfig.regionId}` as any) || activeConfig.regionId})
+                    {selectedRegionName}
                   </strong>{' '}
                   from {formatDate(reportAnalysis.config.timeRange.startDate, lang)} through{' '}
                   {formatDate(reportAnalysis.config.timeRange.endDate, lang)} using{' '}

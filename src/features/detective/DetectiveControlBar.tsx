@@ -532,43 +532,7 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
                   </div>
 
                   <div className="max-h-64 overflow-y-auto space-y-2 py-1 pe-1">
-                    <div className="px-2 py-1 text-[11px] font-mono uppercase tracking-wider text-[#38bdf8]">
-                      {lang === 'ar'
-                        ? 'مناطق دلتا النيل (MODIS 250m / 0.05°)'
-                        : 'Nile Delta Subregions (MODIS 250m / 0.05°)'}
-                    </div>
-                    {geoAdapterResult.detectedRegions
-                      .filter((reg) => reg.countryCode?.startsWith('EG'))
-                      .map((reg) => {
-                        const isSelected = currentRegion.id === reg.id;
-                        return (
-                          <button
-                            key={reg.id}
-                            type="button"
-                            onClick={() => handleSelectRegion(reg.id)}
-                            className={cn(
-                              'w-full px-3 py-2.5 rounded-lg text-start transition-colors duration-150 flex items-center justify-between gap-2 border cursor-pointer active:scale-[0.99]',
-                              isSelected
-                                ? 'bg-[#1a1e28] text-[#eef0f5] border-[#38bdf8]/45'
-                                : 'hover:bg-[#1a1e28]/60 border-transparent text-[#a3a9b8]'
-                            )}
-                          >
-                            <div>
-                              <div className="text-[13px] font-medium text-[#eef0f5]">
-                                {t(`regions.${reg.id}` as any, { defaultValue: reg.name })}
-                              </div>
-                              <div className="text-xs text-[#7a8296]">
-                                {reg.climateZone}
-                              </div>
-                            </div>
-                            <span className="text-xs font-mono text-[#7a8296]">
-                              {reg.code}
-                            </span>
-                          </button>
-                        );
-                      })}
-
-                    <div className="px-2 pt-2 pb-1 border-t border-[#eef0f5]/[0.07] text-[11px] font-mono uppercase tracking-wider text-[#4cc38a]">
+                    <div className="px-2 py-1 text-[11px] font-mono uppercase tracking-wider text-[#4cc38a]">
                       {lang === 'ar'
                         ? 'الاتجاه العالمي وأقاليم العالم (NASA GISS / POWER)'
                         : 'Global Baseline & World Regions (NASA GISS / POWER)'}
@@ -598,6 +562,42 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
                               </div>
                             </div>
                             <span className="text-xs font-mono text-[#4cc38a]">
+                              {reg.code}
+                            </span>
+                          </button>
+                        );
+                      })}
+
+                    <div className="px-2 pt-2 pb-1 border-t border-[#eef0f5]/[0.07] text-[11px] font-mono uppercase tracking-wider text-[#38bdf8]">
+                      {lang === 'ar'
+                        ? 'دراسة حالة مرجعية: دلتا النيل (MODIS 250m / 0.05°)'
+                        : 'Featured Case Study: Nile Delta Benchmark (MODIS 250m)'}
+                    </div>
+                    {geoAdapterResult.detectedRegions
+                      .filter((reg) => reg.countryCode?.startsWith('EG'))
+                      .map((reg) => {
+                        const isSelected = currentRegion.id === reg.id;
+                        return (
+                          <button
+                            key={reg.id}
+                            type="button"
+                            onClick={() => handleSelectRegion(reg.id)}
+                            className={cn(
+                              'w-full px-3 py-2.5 rounded-lg text-start transition-colors duration-150 flex items-center justify-between gap-2 border cursor-pointer active:scale-[0.99]',
+                              isSelected
+                                ? 'bg-[#1a1e28] text-[#eef0f5] border-[#38bdf8]/45'
+                                : 'hover:bg-[#1a1e28]/60 border-transparent text-[#a3a9b8]'
+                            )}
+                          >
+                            <div>
+                              <div className="text-[13px] font-medium text-[#eef0f5]">
+                                {t(`regions.${reg.id}` as any, { defaultValue: reg.name })}
+                              </div>
+                              <div className="text-xs text-[#7a8296]">
+                                {reg.climateZone}
+                              </div>
+                            </div>
+                            <span className="text-xs font-mono text-[#7a8296]">
                               {reg.code}
                             </span>
                           </button>

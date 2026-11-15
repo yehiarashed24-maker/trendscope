@@ -111,7 +111,7 @@ export const aiScientistService = {
       role: 'assistant',
       timestamp: new Date().toISOString(),
       content:
-        'Grounded Nile Delta synthesis: MODIS MOD13Q1.061 NDVI (250 m, 16-day) and MOD11C3.061 Daytime & Nighttime Land Surface Temperature (0.05° CMG ~5.5 km, monthly) measure vegetative canopy density and radiative skin temperature (distinct from air temperature) over 2000–2024 without artificial upsampling.',
+        'Grounded TrendScope synthesis: MODIS MOD13Q1.061 / MOD13C2.061 NDVI and MOD11C3.061 Daytime & Nighttime Land Surface Temperature (0.05° CMG ~5.5 km, monthly) measure vegetative canopy density and radiative skin temperature (distinct from air temperature) over 2000–2024 without artificial upsampling.',
       citations: [
         'Didan, K. (2021). MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid V061 (MOD13Q1.061). DOI: 10.5067/MODIS/MOD13Q1.061',
         'Wan, Z., Hook, S., Hulley, G. (2021). MODIS/Terra Land Surface Temperature/Emissivity Monthly L3 Global 0.05Deg CMG V061 (MOD11C3.061). DOI: 10.5067/MODIS/MOD11C3.061',

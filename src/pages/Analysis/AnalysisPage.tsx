@@ -175,7 +175,7 @@ export const AnalysisPage: React.FC = () => {
   }, [analysisData?.config?.timeRange?.startDate, analysisData?.config?.timeRange?.endDate]);
 
   if (loading) {
-    return <LoadingState message="Computing Nile Delta Mann-Kendall, Sen's Slope & spatial raster statistics..." />;
+    return <LoadingState message="Computing Mann-Kendall, Sen's Slope & spatial raster statistics..." />;
   }
 
   if (error || !analysisData) {
@@ -393,7 +393,7 @@ export const AnalysisPage: React.FC = () => {
 
             <div className="border-s border-[#eef0f5]/[0.08] ps-5">
               <div className="text-xs text-[#7a8296] font-sans">
-                {customFileLoaded ? 'Dataset source' : 'Nile Delta region'}
+                {customFileLoaded ? 'Dataset source' : 'Study region'}
               </div>
               <div className="text-[13px] font-medium text-[#eef0f5] font-sans mt-0.5">
                 {displayRegion}
@@ -581,7 +581,7 @@ export const AnalysisPage: React.FC = () => {
             ? 'Monthly aggregated trajectory with non-parametric Theil-Sen trendline & baseline'
             : analysisData.lstComparison
             ? 'Daytime (~10:30 LT) vs Nighttime (~22:30 LT) Land Surface Temperature with independent Theil-Sen slopes'
-            : 'Nile Delta monthly trajectory with non-parametric Theil-Sen trendline & baseline'
+            : 'Regional & global monthly trajectory with non-parametric Theil-Sen trendline & baseline'
         }
       >
         <ScientificChart
@@ -698,7 +698,7 @@ export const AnalysisPage: React.FC = () => {
         subtitle={
           customFileLoaded
             ? 'Synthesized evaluation strictly grounded in uploaded CSV statistics'
-            : 'Synthesized evaluation strictly grounded in computed Nile Delta evidence'
+            : 'Synthesized evaluation strictly grounded in computed NASA satellite evidence'
         }
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-sans text-[#a3a9b8]">
@@ -775,7 +775,7 @@ export const AnalysisPage: React.FC = () => {
               {customFileLoaded
                 ? 'Custom CSV series are resampled to monthly means and tested with Seasonal Mann-Kendall (when ≥ 24 months) and deseasonalized Theil-Sen estimation. Ensure columns reflect consistent units across time.'
                 : activeConfig.variableId === 'ndvi'
-                ? 'MODIS MOD13Q1.061 (250 m, 16-day) and MOD13C2.061 (0.05° CMG monthly continuity) measure canopy greenness (valid range -0.2 to 1.0); cloud/aerosol pixels are masked via pixel_reliability without gap-filling, and Nile Delta crop cycles are controlled via Seasonal Mann-Kendall (period = 12).'
+                ? 'MODIS MOD13Q1.061 (250 m, 16-day) and MOD13C2.061 (0.05° CMG monthly continuity) measure canopy greenness (valid range -0.2 to 1.0); cloud/aerosol pixels are masked via pixel_reliability without gap-filling, and seasonal phenology/crop cycles are controlled via Seasonal Mann-Kendall (period = 12).'
                 : 'MODIS MOD11C3.061 (0.05° CMG, ~5.5 km) measures monthly clear-sky daytime (~10:30 LT) and nighttime (~22:30 LT) radiative land surface skin temperature (distinct from 2 m air temperature); cloudy passes are masked and annual cycles are controlled via Seasonal Mann-Kendall (period = 12).'}
             </p>
           </div>
@@ -1007,7 +1007,7 @@ export const AnalysisPage: React.FC = () => {
           subtitle={
             customFileLoaded
               ? 'Winter (DJF), Spring (MAM), Summer (JJA), and Autumn (SON) averages from uploaded CSV'
-              : 'Nile Delta Winter (DJF), Spring (MAM), Summer (JJA), and Autumn (SON) statistical averages'
+              : 'Regional Winter (DJF), Spring (MAM), Summer (JJA), and Autumn (SON) statistical averages'
           }
           badge={<span className="text-xs font-mono text-[#7a8296]">{displayResolution}</span>}
         >

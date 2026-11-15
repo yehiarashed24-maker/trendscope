@@ -171,7 +171,7 @@ export const IntelligencePage: React.FC = () => {
 
       {/* Side-by-Side Comparison Cards */}
       {compareLoading && !compareResult ? (
-        <LoadingState message="Computing side-by-side Nile Delta regional trend & mean comparison..." />
+        <LoadingState message="Computing side-by-side global & regional trend comparison..." />
       ) : (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

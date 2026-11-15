@@ -49,7 +49,7 @@ export const WorkspacePage: React.FC = () => {
     let isMounted = true;
     aiScientistService
       .askQuestion(
-        'Provide a concise scientific overview of the active Nile Delta subregion metrics and spatial resolution.',
+        'Provide a concise scientific overview of the active study region metrics and spatial resolution.',
         lang,
         {
           regionId: activeConfig.regionId,
@@ -176,7 +176,7 @@ export const WorkspacePage: React.FC = () => {
           <div className="lg:col-span-8 space-y-4">
             <DataCard
               title="Evidence-Grounded Scientific Inquirer"
-              subtitle="Constrained strictly to verified Nile Delta NASA metrics & citations"
+              subtitle="Constrained strictly to verified global & regional NASA metrics & citations"
               badge={<DemoDataBadge status="VERIFIED" size="sm" />}
             >
               {/* Message thread */}

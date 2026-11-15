@@ -190,10 +190,30 @@ def _build_custom_csv_pdf_report(payload: Dict[str, Any], csv_name: str, analysi
     return buf.getvalue()
 
 
+def _clean_pdf_text(text: str) -> str:
+    """Convert Markdown/LaTeX inline tokens to clean Unicode for ReportLab PDF paragraphs."""
+    s = str(text or "")
+    replacements = [
+        ("**", ""),
+        ("`", ""),
+        ("\\alpha", "α"),
+        ("\\tau", "τ"),
+        ("\\rho", "ρ"),
+        ("\\sigma", "σ"),
+        ("\\pm", "±"),
+        ("\\ge", "≥"),
+        ("\\le", "≤"),
+        ("$", ""),
+    ]
+    for old, new in replacements:
+        s = s.replace(old, new)
+    return s
+
+
 def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
     """
-    Generates a comprehensive, publication-grade PDF Scientific Dossier for the Nile Delta
-    study area or a user-uploaded custom CSV dataset.
+    Generates a comprehensive, publication-grade PDF Scientific Dossier for global & regional
+    study areas (including high-resolution Nile Delta benchmarks) or custom CSV datasets.
     """
     custom_csv = payload.get("customCsvFileName")
     custom_analysis = payload.get("analysis")
@@ -219,10 +239,18 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
     except Exception:
         reg_meta = {
             "id": region_id,
-            "name": "Custom Nile Delta Study Polygon",
+            "name": "Custom Study Polygon",
             "areaKm2": 24450.0,
-            "climateZone": "Mediterranean / Semi-Arid Irrigated Delta",
+            "climateZone": "Regional Earth Observation Zone",
         }
+
+    is_global_or_world = bool(reg_meta.get("isGlobalOrWorld"))
+    if region_id == "global_mean":
+        scope_label = "Planetary Land Baseline (Global Mean — NASA GISTEMP / MODIS CMG)"
+    elif is_global_or_world:
+        scope_label = f"Global Regional Study Area — {reg_meta.get('name')}"
+    else:
+        scope_label = "Regional High-Resolution Benchmark — Nile Delta, Egypt"
 
     primary_analysis = run_full_variable_analysis(
         region_id=region_id,
@@ -244,30 +272,35 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
     rst = primary_analysis["rasterStatistics"]
     corr = combined["correlation"]
 
+    grounded_ctx = {
+        "studyArea": scope_label,
+        "region": {
+            "id": reg_meta.get("id", region_id),
+            "name": reg_meta.get("name", region_id),
+            "areaKm2": reg_meta.get("areaKm2") or reg_meta.get("area_km2", 24450.0),
+            "isGlobalOrWorld": is_global_or_world,
+        },
+        "variableId": variable_id,
+        "lstMode": lst_mode if variable_id == "lst" else None,
+        "dataset": ds_meta,
+        "timeRange": primary_analysis["config"]["timeRange"],
+        "statistics": st,
+        "rasterStatistics": rst,
+        "combinedCorrelation": {
+            "pearsonR": corr["pearsonR"],
+            "spearmanRho": corr["spearmanRho"],
+            "pValue": corr["pValue"],
+            "sampleSize": corr["sampleSize"],
+            "coOccurringStressCount": len(combined["coOccurringStressEpisodes"]),
+            "resolutionNotice": combined["resolutionNotice"],
+        },
+    }
     ai_interp = payload.get("aiInterpretation")
-    if not ai_interp or not ai_interp.get("summary"):
-        grounded_ctx = {
-            "studyArea": "Nile Delta, Egypt",
-            "region": {
-                "id": reg_meta.get("id", region_id),
-                "name": reg_meta.get("name", region_id),
-                "areaKm2": reg_meta.get("areaKm2") or reg_meta.get("area_km2", 24450.0),
-            },
-            "variableId": variable_id,
-            "lstMode": lst_mode if variable_id == "lst" else None,
-            "dataset": ds_meta,
-            "timeRange": primary_analysis["config"]["timeRange"],
-            "statistics": st,
-            "rasterStatistics": rst,
-            "combinedCorrelation": {
-                "pearsonR": corr["pearsonR"],
-                "spearmanRho": corr["spearmanRho"],
-                "pValue": corr["pValue"],
-                "sampleSize": corr["sampleSize"],
-                "coOccurringStressCount": len(combined["coOccurringStressEpisodes"]),
-                "resolutionNotice": combined["resolutionNotice"],
-            },
-        }
+    if (
+        not ai_interp
+        or not ai_interp.get("summary")
+        or (is_global_or_world and "Nile Delta" in str(ai_interp.get("summary", "")))
+    ):
         ai_interp = _generate_deterministic_grounded_response(grounded_ctx, "en")
 
     gen_date = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
@@ -280,8 +313,8 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
         rightMargin=16 * mm,
         topMargin=16 * mm,
         bottomMargin=16 * mm,
-        title=f"EARTHPULSE AI — Nile Delta Scientific Dossier ({reg_meta.get('name')})",
-        author="EARTHPULSE AI — Nile Delta Edition",
+        title=f"TrendScope — Scientific Earth Observation Dossier ({reg_meta.get('name')})",
+        author="TrendScope — Global & Regional Earth Intelligence",
     )
 
     styles = getSampleStyleSheet()
@@ -335,32 +368,37 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
     story = []
 
     # Header
-    story.append(Paragraph("EARTHPULSE AI — NILE DELTA EDITION", title_style))
+    story.append(Paragraph("TRENDSCOPE — GLOBAL & REGIONAL EARTH OBSERVATION", title_style))
     story.append(
         Paragraph(
-            f"Scientific Earth Observation & Agricultural Intelligence Dossier • Generated: {gen_date}",
+            f"Scientific Earth Observation & Environmental Intelligence Dossier • Generated: {gen_date}",
             subtitle_style,
         )
     )
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#CBD5E1"), spaceAfter=8))
 
     # Section 1: Study Area, Dataset & Provenance Metadata (Items 1-9 & 19)
-    story.append(Paragraph("1. Study Area, NASA Dataset Provenance & Quality Control", sec_style))
+    story.append(Paragraph("1. Study Region, NASA Dataset Provenance & Quality Control", sec_style))
     area_km2 = reg_meta.get("areaKm2") or reg_meta.get("area_km2") or 24450.0
     lst_mode_label = (
         f" — {'Day & Night Comparison' if lst_mode == 'both' else ('Nighttime (~22:30 LT)' if lst_mode == 'night' else 'Daytime (~10:30 LT)')}"
         if variable_id == "lst"
         else ""
     )
+    native_res_str = (
+        "0.05° CMG (~5.5 km Global Grid — MOD13C2.061 / MOD11C3.061 & NASA POWER)"
+        if is_global_or_world
+        else f"{ds_meta['spatialResolution']} (MODIS NDVI = 250 m vs MOD11C3 LST = 0.05° CMG ~5.5 km)"
+    )
     meta_rows = [
-        ["Study Area", "Nile Delta, Egypt (Strictly Restricted Geographic Scope)"],
-        ["Selected Subregion / Polygon", f"{reg_meta.get('name')} (ID: {region_id}, Area: {area_km2:,.1f} km²)"],
+        ["Geographic Scope", scope_label],
+        ["Selected Study Region", f"{reg_meta.get('name')} (ID: {region_id}, Area: {area_km2:,.1f} km²)"],
         ["Primary Variable", f"{ds_meta['title']} ({variable_id.upper()}{lst_mode_label}) [{ds_meta['unit']}]"],
-        ["Secondary Coupled Variable", "MODIS Land Surface Temperature (MOD11C3.061, 0.05° CMG)" if variable_id == "ndvi" else "MODIS NDVI (MOD13Q1.061, 250 m)"],
+        ["Secondary Coupled Variable", "MODIS Land Surface Temperature (MOD11C3.061, 0.05° CMG)" if variable_id == "ndvi" else "MODIS NDVI (MOD13Q1.061 / MOD13C2.061)"],
         ["Dataset Short Name & Version", f"{ds_meta['shortName']} Version {ds_meta['version']} ({ds_meta['collectionConceptId']})"],
         ["Official DOI", ds_meta["doi"]],
         ["Observation Period", f"{primary_analysis['config']['timeRange']['startDate']} to {primary_analysis['config']['timeRange']['endDate']} ({aggregation})"],
-        ["Native Spatial Resolution", f"{ds_meta['spatialResolution']} (MODIS NDVI = 250 m vs MOD11C3 LST = 0.05° CMG ~5.5 km)"],
+        ["Native Spatial Resolution", native_res_str],
         ["Native Temporal Resolution", f"{ds_meta['temporalResolution']} (Historical Coverage: {ds_meta['historicalCoverage']})"],
         ["Scale Factor & NoData", f"Scale Factor: {ds_meta['scaleFactor']} | Valid Range: {ds_meta['validRange']} | Fill/NoData: {ds_meta['noDataValue']}"],
         ["Quality Filtering Applied", f"Band: {ds_meta['qualityBand']} — Retains Good/Recommended retrievals; clouds/water/bad retrievals masked as NaN"],
@@ -387,17 +425,18 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
 
     # Section 2: Non-Parametric Mann-Kendall & Sen's Slope Results (Items 10-12)
     test_method = st.get("testMethod", "Seasonal Mann-Kendall (Hirsch-Slack, period=12)")
+    short_method = "Seasonal MK (period=12)" if "Seasonal" in test_method else "Mann-Kendall (Annual)"
     pettitt_summary = (
-        f"Pettitt step change at {st['changePointDate']} (p = {st['changePointPValue']:.4f})"
+        f"Shift at {st['changePointDate']} (p={st['changePointPValue']:.3f})"
         if st.get("changePointSignificant")
-        else f"No significant shift (Pettitt p = {st.get('changePointPValue', 1.0):.4f})"
+        else f"No shift (Pettitt p={st.get('changePointPValue', 1.0):.3f})"
     )
     story.append(Paragraph("2. Non-Parametric Trend, Seasonality Control & Sen's Slope Results", sec_style))
     story.append(
         Paragraph(
-            f"Trend significance is evaluated via <b>{test_method}</b> (`pymannkendall`), which accounts for intra-annual "
-            "crop-cycle seasonality on monthly data, and trend magnitude is quantified using the deseasonalized Theil-Sen median "
-            "slope estimator (`scipy.stats.theilslopes`) with 95% confidence intervals.",
+            f"Trend significance is evaluated via <b>{test_method}</b> (pymannkendall), which accounts for intra-annual "
+            "seasonality on monthly data, and trend magnitude is quantified using the deseasonalized Theil-Sen median "
+            "slope estimator (scipy.stats.theilslopes) with 95% confidence intervals.",
             body_style,
         )
     )
@@ -408,7 +447,7 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
         ["Mann-Kendall S-Statistic", f"{st['sStatistic']:+.1f}", "Two-Tailed p-Value", f"{st['pValue']:.5f}"],
         ["Sen's Slope (per Year)", f"{st['sensSlopePerYear']:+.5f} {ds_meta['unit']}/yr", "Sen's Slope (per Decade)", f"{st['sensSlope']:+.4f} {ds_meta['unit']}/dec"],
         ["95% CI (per Decade)", f"[{st['slopeCiLower']:+.4f}, {st['slopeCiUpper']:+.4f}]", "Sample Size (Valid obs)", f"{st['sampleSize']}"],
-        ["Pettitt Change-Point Test", pettitt_summary, "Trend Method", test_method],
+        ["Pettitt Change-Point Test", pettitt_summary, "Trend Method", short_method],
         ["Time-Series Mean ± SD", f"{st['mean']:.4f} ± {st['stdDev']:.4f} {ds_meta['unit']}", "Time-Series Min / Max", f"{st['min']:.4f} / {st['max']:.4f} {ds_meta['unit']}"],
     ]
     t_stat = Table(stat_rows, colWidths=[44 * mm, 44 * mm, 44 * mm, 44 * mm])
@@ -439,7 +478,7 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
         ["Spatial Min / Max", f"{rst.get('min', st['min'])} / {rst.get('max', st['max'])} {ds_meta['unit']}", "Spatial Std Dev", f"{rst.get('std', st['stdDev'])} {ds_meta['unit']}"],
         ["Valid Pixel Count", f"{rst.get('validPixelCount', 0):,} / {rst.get('totalPixelCount', 0):,}", "Valid Spatial Coverage", f"{rst.get('validCoveragePercent', 95.0)}%"],
         ["NDVI–LST Pearson r", f"{corr['pearsonR']:+.4f} (p = {corr['pValue']:.5f})", "Spearman Rank ρ", f"{corr['spearmanRho']:+.4f} (n = {corr['sampleSize']})"],
-        ["Co-Occurring Stress Episodes", f"{len(combined['coOccurringStressEpisodes'])} months (LST Z ≥ +1.25 & NDVI Z ≤ -1.15)", "Overlapping Period", "2000-02-18 to 2024-12-31"],
+        ["Co-Occurring Stress Episodes", f"{len(combined['coOccurringStressEpisodes'])} months (|Z| ≥ 1.25)", "Overlapping Period", "2000-02-18 to 2024-12-31"],
     ]
     t_spat = Table(spatial_rows, colWidths=[48 * mm, 40 * mm, 44 * mm, 44 * mm])
     t_spat.setStyle(
@@ -507,8 +546,8 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
 
     # Section 4: Grounded AI Scientific Interpretation (Item 17)
     story.append(Paragraph("4. Grounded AI Scientist Interpretation", sec_style))
-    story.append(Paragraph(str(ai_interp.get("summary", "")).replace("**", ""), body_style))
-    story.append(Paragraph(f"<b>Methodological Note:</b> {str(ai_interp.get('methodologyExplanation', '')).replace('**', '')}", body_style))
+    story.append(Paragraph(_clean_pdf_text(ai_interp.get("summary", "")), body_style))
+    story.append(Paragraph(f"<b>Methodological Note:</b> {_clean_pdf_text(ai_interp.get('methodologyExplanation', ''))}", body_style))
 
     # Section 5: Limitations, Resolution Difference & Citations (Items 5, 18, 20)
     if variable_id == "ndvi":
@@ -516,15 +555,15 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
         story.append(
             Paragraph(
                 "• <b>Optical Vegetation Dataset Scope (MOD13Q1.061 / MOD13C2.061):</b> NDVI measures canopy greenness and photosynthetic vigor (valid physical range -0.2 to 1.0) "
-                "using 250 m 16-day composites (`_250m_16_days_pixel_reliability` retaining 0=Good and 1=Marginal) and 0.05° CMG monthly continuity. "
-                "Cloud/aerosol contamination over winter coastal zones is masked without synthetic interpolation.",
+                "using 250 m 16-day composites (_250m_16_days_pixel_reliability retaining 0=Good and 1=Marginal) and 0.05° CMG monthly global continuity. "
+                "Cloud/aerosol contamination is masked without synthetic interpolation.",
                 body_style,
             )
         )
         story.append(
             Paragraph(
-                "• <b>Crop-Cycle Seasonality Control:</b> Nile Delta croplands exhibit strong bi-modal winter (wheat/clover) and summer (rice/maize) cycles. "
-                "Trend significance is computed using the Seasonal Mann-Kendall test (period=12) and deseasonalized Theil-Sen slope rather than unadjusted monthly ranks.",
+                "• <b>Phenology & Seasonality Control:</b> Regional vegetation and agricultural canopies exhibit strong intra-annual seasonal cycles. "
+                "Trend significance is computed using the Seasonal Mann-Kendall test (Hirsch–Slack, period=12) and deseasonalized Theil-Sen slope rather than unadjusted monthly ranks.",
                 body_style,
             )
         )
@@ -539,7 +578,7 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
         )
     story.append(
         Paragraph(
-            "• <b>Coupled Resolution Note & Correlation vs. Causation:</b> Regional NDVI (250 m) vs. LST (0.05° CMG) comparison preserves native sensor footprints without artificial thermal upsampling; "
+            "• <b>Coupled Resolution Note & Correlation vs. Causation:</b> Regional NDVI vs. LST (0.05° CMG) comparison preserves native sensor footprints without artificial thermal upsampling; "
             "statistical coupling does not isolate single-factor causation without ground-station validation.",
             body_style,
         )
@@ -547,8 +586,8 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
     story.append(Paragraph(f"• <b>Primary Citation:</b> {ds_meta['citation']}", small_style))
     story.append(
         Paragraph(
-            "Disclaimer: TRENDSCOPE AI — NILE DELTA EDITION utilizes publicly available NASA Earth Observation archives "
-            "(EOSDIS LP DAAC) for scientific research and is not an official NASA publication.",
+            "Disclaimer: TrendScope — Global & Regional Earth Observation Platform utilizes publicly available NASA Earth Observation archives "
+            "(EOSDIS LP DAAC / NASA POWER / GISS) for scientific research and is not an official NASA publication.",
             small_style,
         )
     )
