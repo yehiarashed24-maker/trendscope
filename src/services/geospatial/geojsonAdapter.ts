@@ -79,15 +79,9 @@ export function adaptIncomingGeoJSON(
   }
 
   const overallBbox = computeBBoxFromCoordinates(featureCollection);
-  // Enforce Nile Delta geographic boundary check [29.85, 30.02, 32.35, 31.60]
   const [minLng, minLat, maxLng, maxLat] = overallBbox;
-  const intersectsNileDelta =
-    maxLng >= 29.80 && minLng <= 32.40 && maxLat >= 29.95 && minLat <= 31.65;
-
-  if (!intersectsNileDelta && fileName !== 'fallback_boundaries.geojson') {
-    throw new Error(
-      'Geographic Restriction Error: Uploaded polygon lies outside the Nile Delta study area (29.85°E–32.35°E, 30.02°N–31.60°N).'
-    );
+  if (minLng < -180 || maxLng > 180 || minLat < -90 || maxLat > 90) {
+    throw new Error('Coordinates out of EPSG:4326 bounds [-180..180, -90..90].');
   }
 
   const detectedRegions: GeographicRegion[] = [];
@@ -130,9 +124,16 @@ export function adaptIncomingGeoJSON(
     });
   });
 
+  const allRegions =
+    fileName === 'fallback_boundaries.geojson'
+      ? PREDEFINED_REGIONS
+      : detectedRegions.length > 0
+      ? [...detectedRegions, ...PREDEFINED_REGIONS.filter((r) => !r.countryCode?.startsWith('EG'))]
+      : PREDEFINED_REGIONS;
+
   return {
     featureCollection,
-    detectedRegions: detectedRegions.length > 0 ? detectedRegions : PREDEFINED_REGIONS,
+    detectedRegions: allRegions,
     sourceType: fileName === 'fallback_boundaries.geojson' ? 'FALLBACK_BOUNDARIES' : 'CUSTOM_TEAM_FILE',
     featureCount: featureCollection.features.length,
     bbox: overallBbox,
@@ -181,7 +182,7 @@ export function getDefaultFallbackGeoJSON(): GeoJSON.FeatureCollection {
           ],
         },
       },
-      ...PREDEFINED_REGIONS.filter((r) => r.id !== 'nile_delta').map((r) => {
+      ...PREDEFINED_REGIONS.filter((r) => r.id !== 'nile_delta' && r.countryCode?.startsWith('EG')).map((r) => {
         const [w, s, e, n] = r.bbox;
         return {
           type: 'Feature' as const,

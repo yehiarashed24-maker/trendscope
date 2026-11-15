@@ -81,6 +81,32 @@ const STORAGE_KEY = 'earthpulse_nile_delta_investigations_v2';
 const getUserStorageKey = (email?: string | null) =>
   email ? `earthpulse_nile_delta_cases_${email.toLowerCase().trim()}` : STORAGE_KEY;
 
+function buildDynamicWorldRegion(regionId: string): GeographicRegion | null {
+  if (!regionId.startsWith('world_lat_')) return null;
+  try {
+    const parts = regionId.replace('world_lat_', '').split('_lon_');
+    const lat = Math.max(-85, Math.min(85, parseFloat(parts[0])));
+    const lon = Math.max(-179, Math.min(179, parseFloat(parts[1])));
+    if (isNaN(lat) || isNaN(lon)) return null;
+    const labelCoord = `${lat >= 0 ? '+' : ''}${lat.toFixed(2)}°, ${lon >= 0 ? '+' : ''}${lon.toFixed(2)}°`;
+    return {
+      id: regionId,
+      code: `WLD-${Math.abs(Math.round(lat))}${Math.abs(Math.round(lon))}`,
+      name: `🌐 Custom World Region (${labelCoord})`,
+      name_ar: `🌐 منطقة عالمية مخصصة (${labelCoord})`,
+      name_de: `🌐 Weltregion (${labelCoord})`,
+      name_fr: `🌐 Région mondiale (${labelCoord})`,
+      coordinates: [lon, lat],
+      bbox: [lon - 0.5, lat - 0.5, lon + 0.5, lat + 0.5],
+      areaKm2: 12100,
+      climateZone: `NASA POWER Live Cell (${labelCoord})`,
+      countryCode: 'WLD',
+    };
+  } catch {
+    return null;
+  }
+}
+
 function sanitizeInvestigationConfig(cfg: any): InvestigationConfig {
   const rawVar = cfg?.variableId === 'soil_moisture' ? 'lst' : cfg?.variableId;
   const validVarIds: VariableId[] = ['ndvi', 'lst'];
@@ -89,7 +115,9 @@ function sanitizeInvestigationConfig(cfg: any): InvestigationConfig {
     cfg?.lstMode === 'night' || cfg?.lstMode === 'both' ? cfg.lstMode : 'day';
   const validRegionIds = PREDEFINED_REGIONS.map((r) => r.id);
   const regionId =
-    validRegionIds.includes(cfg?.regionId) || String(cfg?.regionId || '').startsWith('custom_')
+    validRegionIds.includes(cfg?.regionId) ||
+    String(cfg?.regionId || '').startsWith('custom_') ||
+    String(cfg?.regionId || '').startsWith('world_lat_')
       ? cfg.regionId
       : 'nile_delta';
   const datasetId: DatasetId = varId === 'lst' ? 'MODIS_MOD11C3' : 'MODIS_MOD13Q1';
@@ -182,6 +210,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     const region =
       get().geoAdapterResult.detectedRegions.find((r) => r.id === clean.regionId) ||
       PREDEFINED_REGIONS.find((r) => r.id === clean.regionId) ||
+      buildDynamicWorldRegion(clean.regionId) ||
       PREDEFINED_REGIONS[0];
     set({ activeConfig: clean, currentRegion: region, selectedMapLayer: clean.variableId });
   },
@@ -195,6 +224,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     const region =
       get().geoAdapterResult.detectedRegions.find((r) => r.id === regionId) ||
       PREDEFINED_REGIONS.find((r) => r.id === regionId) ||
+      buildDynamicWorldRegion(regionId) ||
       PREDEFINED_REGIONS[0];
     const updatedConfig = { ...get().activeConfig, regionId: region.id };
     set({ currentRegion: region, activeConfig: updatedConfig });

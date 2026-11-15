@@ -59,6 +59,28 @@ def test_math_ground_truth_mann_kendall_and_theil_sen():
     assert res_shift["changePointDate"].startswith("2017-0")
 
 
+def test_global_baseline_and_worldwide_regional_acquisition():
+    """Verify Global Land Mean, World Biomes, and dynamic coordinates return valid trends + globalBenchmark."""
+    from backend.services.stats_engine import run_full_variable_analysis
+
+    glb = run_full_variable_analysis("global_mean", "ndvi", "2000-02-01", "2024-12-31", aggregation="monthly")
+    assert glb["config"]["status"] == "VERIFIED"
+    assert glb["statistics"]["significant"] is True
+    assert glb["statistics"]["sensSlope"] > 0
+    assert glb["globalBenchmark"]["isGlobalRegion"] is True
+
+    amz = run_full_variable_analysis("amazon_basin", "ndvi", "2000-02-01", "2024-12-31", aggregation="monthly")
+    assert amz["config"]["status"] == "VERIFIED"
+    assert amz["statistics"]["sensSlope"] < 0
+    assert amz["globalBenchmark"]["relationship"] == "opposite_to_global"
+
+    dyn = run_full_variable_analysis("world_lat_24.09_lon_32.90", "lst", "2015-01-01", "2024-12-31", aggregation="monthly")
+    assert dyn["config"]["status"] == "VERIFIED"
+    assert len(dyn["points"]) >= 100
+    assert "globalBenchmark" in dyn
+
+
+
 def test_short_csv_r_squared_and_semicolon_bom_parsing():
     """Verify short linear CSV returns accurate R^2 (not 0.0) and handles BOM/semicolons/NaNs."""
     csv_text = (

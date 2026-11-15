@@ -395,7 +395,12 @@
     "monufia": "Monufia (Upper Inter-Branch Apex)",
     "qalyubia": "Qalyubia (Southern Delta Apex)",
     "damietta": "Damietta (Northeast Coastal & Estuary)",
-    "ismailia_canal": "Ismailia Canal Eastern Corridor"
+    "ismailia_canal": "Ismailia Canal Eastern Corridor",
+    "global_mean": "🌍 Global Land Mean (NASA GISTEMP / MODIS Global)",
+    "amazon_basin": "🌎 Amazon Rainforest Basin (South America)",
+    "sahel_region": "🌍 African Sahel Transition Belt",
+    "aral_sea_basin": "🌏 Aral Sea & Amu Darya Basin (Central Asia)",
+    "california_central_valley": "🌎 California Central Valley (North America)"
   },
   "common": {
     "back": "Back",

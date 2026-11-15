@@ -395,7 +395,12 @@
     "monufia": "Monufia (Apex supérieur inter-branches)",
     "qalyubia": "Qalyubia (Apex sud du Delta)",
     "damietta": "Damiette (Estuaire nord-est)",
-    "ismailia_canal": "Corridor du canal d'Ismaïlia"
+    "ismailia_canal": "Corridor du canal d'Ismaïlia",
+    "global_mean": "🌍 Moyenne terrestre mondiale (NASA GISTEMP / MODIS Global)",
+    "amazon_basin": "🌎 Bassin amazonien (Amérique du Sud)",
+    "sahel_region": "🌍 Ceinture sahélienne africaine",
+    "aral_sea_basin": "🌏 Bassin de la mer d’Aral et Amou-Daria",
+    "california_central_valley": "🌎 Vallée centrale de Californie (Amérique du Nord)"
   },
   "common": {
     "back": "Retour",

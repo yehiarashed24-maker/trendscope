@@ -117,6 +117,94 @@ class GeographyService:
             "features": clipped_features,
         }
 
+        # Register Global Baseline & Worldwide Reference Regions (for regional-vs-global & worldwide NASA POWER/MODIS analysis)
+        global_ref_specs = [
+            {
+                "id": "global_mean",
+                "code": "GLB-ALL",
+                "name": "Global Land Mean (NASA GISTEMP / MODIS Global)",
+                "name_ar": "المتوسط العالمي لليابسة (مرجع ناسا العالمي)",
+                "name_de": "Globales Landmittel (NASA GISTEMP / MODIS Global)",
+                "name_fr": "Moyenne terrestre mondiale (NASA GISTEMP / MODIS Global)",
+                "administrative_level": "planetary_baseline",
+                "country": "GLOBAL",
+                "countryCode": "GLOBAL",
+                "coordinates": [0.0, 20.0],
+                "bbox": [-180.0, -60.0, 180.0, 75.0],
+                "areaKm2": 148940000.0,
+                "climateZone": "Planetary Land Baseline (NASA GISTEMP v4 & MODIS CMG 0.05°)",
+            },
+            {
+                "id": "amazon_basin",
+                "code": "GLB-AMZ",
+                "name": "Amazon Rainforest Basin (South America)",
+                "name_ar": "حوض غابات الأمازون المطيرة (أمريكا الجنوبية)",
+                "name_de": "Amazonas-Regenwaldbecken (Südamerika)",
+                "name_fr": "Bassin amazonien (Amérique du Sud)",
+                "administrative_level": "world_biome",
+                "country": "BR",
+                "countryCode": "BR-AMZ",
+                "coordinates": [-62.0, -3.5],
+                "bbox": [-70.0, -10.0, -52.0, 2.0],
+                "areaKm2": 5500000.0,
+                "climateZone": "Equatorial Tropical Rainforest (Canopy & Drought Signal)",
+            },
+            {
+                "id": "sahel_region",
+                "code": "GLB-SHL",
+                "name": "African Sahel Transition Belt",
+                "name_ar": "إقليم الساحل الأفريقي (حزام الاخضرار والجفاف)",
+                "name_de": "Afrikanischer Sahel-Übergangsgürtel",
+                "name_fr": "Ceinture sahélienne africaine",
+                "administrative_level": "world_biome",
+                "country": "AF",
+                "countryCode": "AF-SHL",
+                "coordinates": [15.0, 14.5],
+                "bbox": [-10.0, 12.0, 35.0, 17.5],
+                "areaKm2": 3053000.0,
+                "climateZone": "Semi-Arid Sudano-Sahelian Greening & Warming Belt",
+            },
+            {
+                "id": "aral_sea_basin",
+                "code": "GLB-ARL",
+                "name": "Aral Sea & Amu Darya Basin (Central Asia)",
+                "name_ar": "حوض بحر آرال ونهر أمو داريا (آسيا الوسطى)",
+                "name_de": "Aralsee & Amudarja-Becken (Zentralasien)",
+                "name_fr": "Bassin de la mer d’Aral et Amou-Daria",
+                "administrative_level": "world_biome",
+                "country": "UZ",
+                "countryCode": "UZ-KZ",
+                "coordinates": [59.5, 45.0],
+                "bbox": [58.0, 43.0, 62.0, 46.8],
+                "areaKm2": 68000.0,
+                "climateZone": "Endorheic Desiccation & Irrigated Dryland Basin",
+            },
+            {
+                "id": "california_central_valley",
+                "code": "GLB-CCV",
+                "name": "California Central Valley (North America)",
+                "name_ar": "الوادي الأوسط في كاليفورنيا (أمريكا الشمالية)",
+                "name_de": "Kalifornisches Längstal (Nordamerika)",
+                "name_fr": "Vallée centrale de Californie (Amérique du Nord)",
+                "administrative_level": "world_biome",
+                "country": "US",
+                "countryCode": "US-CA",
+                "coordinates": [-120.5, 36.8],
+                "bbox": [-122.5, 35.0, -118.8, 40.2],
+                "areaKm2": 47000.0,
+                "climateZone": "Mediterranean Irrigated Agro-Basin (Drought & Heat Signal)",
+            },
+        ]
+        for spec in global_ref_specs:
+            w, s, e, n = spec["bbox"]
+            poly = Polygon([[w, s], [e, s], [e, n], [w, n], [w, s]])
+            self._regions_by_id[spec["id"]] = {
+                **spec,
+                "area_km2": spec["areaKm2"],
+                "isGlobalOrWorld": True,
+                "geometry": mapping(poly),
+            }
+
     @property
     def study_polygon(self):
         return self._study_polygon
@@ -133,6 +221,37 @@ class GeographyService:
     def get_region(self, region_id: str) -> Dict[str, Any]:
         if region_id in self._regions_by_id:
             return self._regions_by_id[region_id]
+        # Support dynamic worldwide coordinate queries: world_lat_<lat>_lon_<lon>
+        if isinstance(region_id, str) and region_id.startswith("world_lat_"):
+            try:
+                parts = region_id.replace("world_lat_", "").split("_lon_")
+                lat = max(-85.0, min(85.0, float(parts[0])))
+                lon = max(-179.0, min(179.0, float(parts[1])))
+                w, s, e, n = round(lon - 0.5, 4), round(lat - 0.5, 4), round(lon + 0.5, 4), round(lat + 0.5, 4)
+                poly = Polygon([[w, s], [e, s], [e, n], [w, n], [w, s]])
+                area_km2 = _compute_area_km2(poly)
+                dyn_reg = {
+                    "id": region_id,
+                    "code": f"WLD-{abs(int(lat)):02d}{abs(int(lon)):03d}",
+                    "name": f"Custom World Region ({lat:+.2f}°, {lon:+.2f}°)",
+                    "name_ar": f"منطقة عالمية مخصصة ({lat:+.2f}°, {lon:+.2f}°)",
+                    "name_de": f"Weltregion ({lat:+.2f}°, {lon:+.2f}°)",
+                    "name_fr": f"Région mondiale ({lat:+.2f}°, {lon:+.2f}°)",
+                    "administrative_level": "world_custom_point",
+                    "country": "WORLD",
+                    "countryCode": "WLD",
+                    "coordinates": [round(lon, 4), round(lat, 4)],
+                    "bbox": [w, s, e, n],
+                    "areaKm2": area_km2,
+                    "area_km2": area_km2,
+                    "climateZone": f"NASA POWER / MODIS Global Cell ({lat:+.2f}°N, {lon:+.2f}°E)",
+                    "isGlobalOrWorld": True,
+                    "geometry": mapping(poly),
+                }
+                self._regions_by_id[region_id] = dyn_reg
+                return dyn_reg
+            except Exception:
+                pass
         # Default to nile_delta if legacy region id (e.g. 'egypt') is passed
         return self._regions_by_id["nile_delta"]
 
