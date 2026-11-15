@@ -55,6 +55,7 @@ interface AppStoreState {
   clearCustomCsvSession: () => void;
 
   onboardingOpen: boolean;
+  pendingOnboardingAuto: boolean;
   pendingTourOnExplorer: boolean;
   openOnboarding: () => void;
   openOnboardingIfAllowed: () => void;
@@ -159,6 +160,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   customCsvAnalysis: null,
   customCsvAvailableRange: null,
   onboardingOpen: false,
+  pendingOnboardingAuto: false,
   pendingTourOnExplorer: false,
 
   loadUserInvestigations: (userEmail) => {
@@ -343,12 +345,12 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
   },
 
   openOnboarding: () => {
-    set({ onboardingOpen: true });
+    set({ onboardingOpen: true, pendingOnboardingAuto: false });
   },
 
   openOnboardingIfAllowed: () => {
     if (isOnboardingAutoAllowed(false)) {
-      set({ onboardingOpen: true });
+      set({ pendingOnboardingAuto: true });
     }
   },
 
@@ -361,7 +363,7 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
     } catch {
       // ignore storage failure
     }
-    set({ onboardingOpen: false });
+    set({ onboardingOpen: false, pendingOnboardingAuto: false });
   },
 
   setPendingTourOnExplorer: (pending) => {

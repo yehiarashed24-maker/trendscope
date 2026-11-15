@@ -8,23 +8,35 @@ import { useAppStore } from '../store/useAppStore';
 export const AppLayout: React.FC = () => {
   const location = useLocation();
   const isExplorer = location.pathname === '/explorer';
-  const { pendingTourOnExplorer, setPendingTourOnExplorer, openOnboarding } = useAppStore();
+  const {
+    pendingTourOnExplorer,
+    setPendingTourOnExplorer,
+    pendingOnboardingAuto,
+    openOnboarding,
+  } = useAppStore();
 
   const [tourStep, setTourStep] = useState<number | null>(null);
 
   useEffect(() => {
-    if (isExplorer && !pendingTourOnExplorer) {
-      try {
-        const hidden = localStorage.getItem('trendscope_onboarding_hidden_v1') === '1';
-        const seen = sessionStorage.getItem('trendscope_onboarding_seen_v1') === '1';
-        if (!hidden && !seen) {
-          openOnboarding();
-        }
-      } catch {
-        // ignore storage errors
-      }
+    if (!isExplorer || pendingTourOnExplorer) return;
+
+    try {
+      const hidden = localStorage.getItem('trendscope_onboarding_hidden_v1') === '1';
+      if (hidden) return;
+      const seen = sessionStorage.getItem('trendscope_onboarding_seen_v1') === '1';
+      if (!pendingOnboardingAuto && seen) return;
+    } catch {
+      return;
     }
-  }, [isExplorer, pendingTourOnExplorer, openOnboarding]);
+
+    const timer = window.setTimeout(() => {
+      openOnboarding();
+    }, 2000);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [isExplorer, pendingTourOnExplorer, pendingOnboardingAuto, openOnboarding]);
 
   useEffect(() => {
     if (!isExplorer && tourStep !== null) {
