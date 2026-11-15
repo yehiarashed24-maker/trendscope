@@ -30,12 +30,20 @@ export function formatSignedRate(
   value: number,
   unit: string,
   lang: SupportedLanguage = 'en',
-  decimals = 2
+  decimals?: number
 ): string {
-  const sign = value > 0 ? '+' : '';
-  const formatted = formatNumber(value, lang, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
+  const autoDecimals =
+    decimals !== undefined
+      ? decimals
+      : unit.toUpperCase().includes('NDVI') || (value !== 0 && Math.abs(value) < 0.05)
+      ? 4
+      : 2;
+  const threshold = Math.pow(10, -autoDecimals) * 0.5;
+  const sign = value > threshold ? '+' : value < -threshold ? '' : '';
+  const safeVal = Math.abs(value) < threshold ? 0 : value;
+  const formatted = formatNumber(safeVal, lang, {
+    minimumFractionDigits: autoDecimals,
+    maximumFractionDigits: autoDecimals,
   });
   return `${sign}${formatted} ${unit}`;
 }

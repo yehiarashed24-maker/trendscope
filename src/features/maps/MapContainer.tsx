@@ -45,7 +45,7 @@ const NILE_DELTA_DEFAULT_BOUNDS: [[number, number], [number, number]] = [
 export const MapContainer: React.FC<MapContainerProps> = ({
   region,
   variableId = 'ndvi',
-  unit = 'NDVI [-0.2 to 1.0]',
+  unit = 'NDVI',
   gridCells = [],
   customGeoJson,
   height = '480px',

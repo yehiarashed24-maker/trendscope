@@ -82,6 +82,22 @@ export const ReportsPage: React.FC = () => {
       ? '10.5067/MODIS/MOD13Q1.061'
       : '10.5067/MODIS/MOD11C3.061';
 
+  const reportUnit = reportAnalysis?.unit || '';
+  const reportSlopeDecimals =
+    reportUnit.toUpperCase().includes('NDVI') ||
+    (reportAnalysis &&
+      reportAnalysis.statistics.sensSlope.slopePerDecade !== 0 &&
+      Math.abs(reportAnalysis.statistics.sensSlope.slopePerDecade) < 0.05)
+      ? 4
+      : 2;
+  const reportAggregation =
+    reportAnalysis?.config?.timeRange?.aggregation || activeConfig.timeRange.aggregation || 'monthly';
+  const reportTestMethod =
+    reportAnalysis?.statistics.testMethod ||
+    (reportAggregation === 'monthly' && (reportAnalysis?.statistics.sampleCount ?? 0) >= 24
+      ? 'Seasonal Mann-Kendall (Hirsch–Slack, period = 12)'
+      : 'Two-tailed Mann-Kendall');
+
   return (
     <div className="space-y-6 pb-12">
       <PageHeader
@@ -233,23 +249,28 @@ export const ReportsPage: React.FC = () => {
                   <span className="font-mono text-[#eef0f5]">{reportAnalysis.dataSource}</span>.
                 </>
               )}{' '}
-              Non-parametric Mann-Kendall analysis yields τ ={' '}
+              {reportTestMethod} yields τ ={' '}
               <span className="font-mono tabular-nums text-[#eef0f5]">
-                {formatNumber(reportAnalysis.statistics.mannKendall.tau, lang)}
+                {formatNumber(reportAnalysis.statistics.mannKendall.tau, lang, {
+                  minimumFractionDigits: 3,
+                  maximumFractionDigits: 3,
+                })}
               </span>{' '}
               (Z = {formatNumber(reportAnalysis.statistics.mannKendall.zScore, lang)}, p ={' '}
               <span className="text-[#4cc38a] font-mono tabular-nums">
                 {formatNumber(reportAnalysis.statistics.pValue, lang, { minimumFractionDigits: 4 })}
               </span>
-              ) and a Theil-Sen slope of{' '}
+              ) and a deseasonalized Theil-Sen slope of{' '}
               <strong className="text-[#eef0f5] font-mono font-medium tabular-nums">
                 {formatSignedRate(
                   reportAnalysis.statistics.sensSlope.slopePerDecade,
                   `${reportAnalysis.unit}/decade`,
-                  lang
+                  lang,
+                  reportSlopeDecimals
                 )}
-              </strong>
-              .
+              </strong>{' '}
+              (95% CI [{formatNumber(reportAnalysis.statistics.sensSlope.ciLower, lang, { minimumFractionDigits: reportSlopeDecimals, maximumFractionDigits: reportSlopeDecimals })},{' '}
+              {formatNumber(reportAnalysis.statistics.sensSlope.ciUpper, lang, { minimumFractionDigits: reportSlopeDecimals, maximumFractionDigits: reportSlopeDecimals })}]).
             </p>
           </div>
 
@@ -263,17 +284,22 @@ export const ReportsPage: React.FC = () => {
                 <div className="text-[#eef0f5] font-medium font-mono text-[22px] leading-none mt-2 tabular-nums">
                   {formatSignedRate(
                     reportAnalysis.statistics.sensSlope.slopePerDecade,
-                    `/dec`,
-                    lang
+                    `${reportAnalysis.unit}/dec`,
+                    lang,
+                    reportSlopeDecimals
                   )}
                 </div>
               </div>
               <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
-                <div className="text-xs text-[#7a8296] font-normal">Mann-Kendall p</div>
+                <div className="text-xs text-[#7a8296] font-normal">
+                  {reportAggregation === 'monthly' && reportAnalysis.statistics.sampleCount >= 24
+                    ? 'Seasonal MK p'
+                    : 'Mann-Kendall p'}
+                </div>
                 <div className="text-[#4cc38a] font-medium font-mono text-[22px] leading-none mt-2 tabular-nums">
                   {reportAnalysis.statistics.pValue < 0.0001
                     ? '< 0.0001'
-                    : reportAnalysis.statistics.pValue}
+                    : formatNumber(reportAnalysis.statistics.pValue, lang, { minimumFractionDigits: 4, maximumFractionDigits: 4 })}
                 </div>
               </div>
               <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
@@ -285,7 +311,7 @@ export const ReportsPage: React.FC = () => {
               <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
                 <div className="text-xs text-[#7a8296] font-normal">Sample Count</div>
                 <div className="text-[#eef0f5] font-medium font-mono text-[22px] leading-none mt-2 tabular-nums">
-                  {reportAnalysis.statistics.sampleCount} mo
+                  {reportAnalysis.statistics.sampleCount} {reportAggregation === 'annual' ? 'yr' : 'mo'}
                 </div>
               </div>
             </div>
@@ -297,8 +323,10 @@ export const ReportsPage: React.FC = () => {
             </h3>
             <p className="text-[13px] text-[#a3a9b8] leading-[1.6] font-sans bg-[#07080d] p-5 rounded-xl border border-[#eef0f5]/[0.07]">
               {isCustomCsv
-                ? `Statistics in this report were computed directly from the uploaded CSV file "${customCsvFileName}" using non-parametric Mann-Kendall rank correlation and the Theil-Sen median slope estimator. Missing or non-numeric rows were excluded without synthetic interpolation, and trend validity depends on the measurement protocol and sampling consistency of the source CSV.`
-                : 'MODIS MOD13Q1.061 NDVI operates at 250 m native resolution (16-day composite; quality filtered via `_250m_16_days_pixel_reliability` retaining 0=Good and 1=Marginal), while MODIS MOD11C3.061 provides monthly Daytime (~10:30 LT) and Nighttime (~22:30 LT) radiative land surface skin temperature at 0.05° CMG (~5.5 km) — distinct from near-surface air temperature. Native resolutions are strictly preserved without artificial upsampling.'}
+                ? `Statistics in this report were computed directly from the uploaded CSV file "${customCsvFileName}" using non-parametric ${reportTestMethod} and the Theil-Sen median slope estimator. Missing or non-numeric rows were excluded without synthetic interpolation, and trend validity depends on the measurement protocol and sampling consistency of the source CSV.`
+                : activeConfig.variableId === 'ndvi'
+                ? 'MODIS MOD13Q1.061 NDVI operates at 250 m native resolution (16-day composite; quality filtered via `_250m_16_days_pixel_reliability` retaining 0=Good and 1=Marginal) paired with MOD13C2.061 (0.05° CMG) monthly historical continuity across valid range [-0.2, 1.0]. Planting and harvesting crop cycles are explicitly controlled via Hirsch–Slack Seasonal Mann-Kendall (period = 12) and deseasonalized Theil-Sen anomalies; cloud/aerosol-contaminated observations remain masked without synthetic gap-filling.'
+                : 'MODIS MOD11C3.061 provides monthly Daytime (~10:30 LT) and Nighttime (~22:30 LT) radiative land surface skin temperature at 0.05° CMG (~5.5 km), which differs physically from near-surface 2 m meteorological air temperature. Clear-sky cloud-masked retrievals exclude overcast months without gap-filling, and annual thermal seasonality is controlled via Seasonal Mann-Kendall (period = 12).'}
             </p>
           </div>
 
@@ -353,10 +381,15 @@ export const ReportsPage: React.FC = () => {
                   [2] Mann, H. B. (1945); Kendall, M. G. (1975); Sen, P. K. (1968). Non-parametric Mann-Kendall rank trend test &amp; Theil-Sen median slope estimator.
                 </div>
               </>
-            ) : (
+            ) : activeConfig.variableId === 'ndvi' ? (
               <>
                 <div>[1] Didan, K. (2021). MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid V061 (MOD13Q1.061). NASA EOSDIS LP DAAC. DOI: 10.5067/MODIS/MOD13Q1.061</div>
-                <div>[2] Wan, Z., Hook, S., Hulley, G. (2021). MODIS/Terra Land Surface Temperature/Emissivity Monthly L3 Global 0.05Deg CMG V061 (MOD11C3.061). NASA EOSDIS LP DAAC. DOI: 10.5067/MODIS/MOD11C3.061</div>
+                <div>[2] Hirsch, R. M., Slack, J. R., &amp; Smith, R. A. (1982). Techniques of trend analysis for monthly water quality data (Seasonal Mann-Kendall). Water Resources Research, 18(1), 107–121.</div>
+              </>
+            ) : (
+              <>
+                <div>[1] Wan, Z., Hook, S., Hulley, G. (2021). MODIS/Terra Land Surface Temperature/Emissivity Monthly L3 Global 0.05Deg CMG V061 (MOD11C3.061). NASA EOSDIS LP DAAC. DOI: 10.5067/MODIS/MOD11C3.061</div>
+                <div>[2] Hirsch, R. M., Slack, J. R., &amp; Smith, R. A. (1982). Techniques of trend analysis for monthly water quality data (Seasonal Mann-Kendall). Water Resources Research, 18(1), 107–121.</div>
               </>
             )}
           </div>

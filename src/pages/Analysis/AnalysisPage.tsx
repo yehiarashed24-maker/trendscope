@@ -25,7 +25,8 @@ import { ErrorState } from '../../components/common/ErrorState';
 import { ScientificChart } from '../../components/common/ScientificChart';
 import { useAppStore } from '../../store/useAppStore';
 import { analysisService } from '../../services/analysis/analysisService';
-import { LstMode, TrendAnalysisResponse, SupportedLanguage } from '../../types/scientific';
+import { calculatePettittChangePoint } from '../../services/statistics/trendStatistics';
+import { LstMode, TemporalAggregation, TrendAnalysisResponse, SupportedLanguage } from '../../types/scientific';
 import {
   formatNumber,
   formatScientificPValue,
@@ -189,6 +190,19 @@ export const AnalysisPage: React.FC = () => {
   const isSig = statistics.mannKendall.significant;
   const slopeDecade = statistics.sensSlope.slopePerDecade;
   const slopeYear = statistics.sensSlope.slopePerYear;
+  const ciLower = statistics.sensSlope.ciLower;
+  const ciUpper = statistics.sensSlope.ciUpper;
+  const isNdviUnit = unit.toUpperCase().includes('NDVI');
+  const slopeDecimals = isNdviUnit || (slopeDecade !== 0 && Math.abs(slopeDecade) < 0.05) ? 4 : 2;
+  const activeAggregation = analysisData.config?.timeRange?.aggregation || activeConfig.timeRange.aggregation || 'monthly';
+  const testMethodLabel =
+    statistics.testMethod ||
+    (activeAggregation === 'monthly' && statistics.sampleCount >= 24
+      ? 'Seasonal Mann-Kendall (Hirsch–Slack, period = 12)'
+      : activeAggregation === 'annual'
+      ? 'Annual Mann-Kendall (de-seasonalized by year)'
+      : 'Two-tailed Mann-Kendall');
+
   const direction =
     statistics.mannKendall.trendDirection === 'INCREASING'
       ? 'up'
@@ -205,7 +219,7 @@ export const AnalysisPage: React.FC = () => {
 
   const nativeRes =
     activeConfig.variableId === 'ndvi'
-      ? '250 m (MOD13Q1.061)'
+      ? '250 m (MOD13Q1.061) / 0.05° (MOD13C2.061)'
       : '0.05° CMG (~5.5 km, MOD11C3.061)';
   const displayVariable = customFileLoaded
     ? customFileLoaded.replace(/\.[^/.]+$/, '')
@@ -215,33 +229,31 @@ export const AnalysisPage: React.FC = () => {
     : t(`regions.${activeConfig.regionId}` as any) || activeConfig.regionId;
   const displayResolution = customFileLoaded ? 'Tabular CSV (Monthly)' : nativeRes;
 
-  // Compute Net Change, Most Significant Shift Date ("When"), and Hotspot/Target ("Where")
-  const windowSize = Math.min(12, Math.max(1, Math.floor(series.length / 3)));
-  const startWindow = series.slice(0, windowSize);
-  const endWindow = series.slice(-windowSize);
-  const startMean =
-    startWindow.length > 0 ? startWindow.reduce((sum, p) => sum + p.value, 0) / startWindow.length : 0;
-  const endMean =
-    endWindow.length > 0 ? endWindow.reduce((sum, p) => sum + p.value, 0) / endWindow.length : 0;
-  const netChange = endMean - startMean;
-  const pctChange = startMean !== 0 ? (netChange / Math.abs(startMean)) * 100 : 0;
+  // Compute Theil-Sen period change (sign-consistent with slope & Mann-Kendall tau) & Pettitt change-point test
+  const seriesMean =
+    typeof statistics.mean === 'number'
+      ? statistics.mean
+      : series.length > 0
+      ? series.reduce((sum, p) => sum + p.value, 0) / series.length
+      : 0;
+  const startMs = Date.parse(analysisData.config.timeRange.startDate);
+  const endMs = Date.parse(analysisData.config.timeRange.endDate);
+  const spanYears =
+    Number.isFinite(startMs) && Number.isFinite(endMs) && endMs > startMs
+      ? Math.max(1, (endMs - startMs) / (365.25 * 86400000))
+      : Math.max(1, activeAggregation === 'annual' ? statistics.sampleCount : statistics.sampleCount / 12);
+  const netChange = slopeYear * spanYears;
+  const pctChange = seriesMean !== 0 ? (netChange / Math.abs(seriesMean)) * 100 : 0;
+  const pctPerDecade = seriesMean !== 0 ? (slopeDecade / Math.abs(seriesMean)) * 100 : 0;
 
-  let changePointDate = series[0]?.timestamp || analysisData.config.timeRange.startDate;
-  if (series.length >= 4) {
-    const totalSum = series.reduce((acc, p) => acc + p.value, 0);
-    let prefixSum = 0;
-    let bestScore = -1;
-    for (let k = 1; k < series.length; k++) {
-      prefixSum += series[k - 1].value;
-      const meanLeft = prefixSum / k;
-      const meanRight = (totalSum - prefixSum) / (series.length - k);
-      const score = Math.abs(meanRight - meanLeft) * Math.sqrt((k * (series.length - k)) / series.length);
-      if (score > bestScore) {
-        bestScore = score;
-        changePointDate = series[k].timestamp;
-      }
-    }
-  }
+  const changePoint =
+    statistics.changePoint && statistics.changePoint.date
+      ? statistics.changePoint
+      : calculatePettittChangePoint(
+          series.map((p) => p.timestamp),
+          series.map((p) => (activeAggregation === 'monthly' && series.length >= 24 ? p.anomaly : p.value))
+        );
+  const changePointDate = changePoint.date || series[0]?.timestamp || analysisData.config.timeRange.startDate;
 
   const hotspotCell =
     Array.isArray(gridCells) && gridCells.length > 0
@@ -505,78 +517,47 @@ export const AnalysisPage: React.FC = () => {
                     {lang === 'ar' ? 'كامل الفترة' : 'Full'}
                   </button>
                 </div>
+
+                {!customFileLoaded && (
+                  <div
+                    className="inline-flex rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] p-0.5 gap-0.5 border-s ms-1"
+                    title="Switch between Monthly Seasonal Mann-Kendall (period=12) and Annual aggregated Mann-Kendall"
+                  >
+                    {(['monthly', 'annual'] as TemporalAggregation[]).map((agg) => {
+                      const active = activeAggregation === agg;
+                      return (
+                        <button
+                          key={agg}
+                          type="button"
+                          onClick={() =>
+                            setTimeRange({
+                              ...activeConfig.timeRange,
+                              aggregation: agg,
+                            })
+                          }
+                          className={`h-7 px-2.5 rounded-md text-xs font-mono transition-colors duration-150 cursor-pointer ${
+                            active
+                              ? 'bg-[#1a1e28] text-[#eef0f5] font-medium'
+                              : 'text-[#7a8296] hover:text-[#eef0f5]'
+                          }`}
+                        >
+                          {agg === 'monthly'
+                            ? lang === 'ar'
+                              ? 'شهري (موسمي)'
+                              : 'Monthly (Seasonal MK)'
+                            : lang === 'ar'
+                            ? 'سنوي'
+                            : 'Annual MK'}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           );
         })()}
       </div>
-
-      {/* Scientific Interpretation & Limitations (Above Chart) */}
-      <DataCard
-        title={t('analysis.interpretation.title')}
-        subtitle={
-          customFileLoaded
-            ? 'Synthesized evaluation strictly grounded in uploaded CSV statistics'
-            : 'Synthesized evaluation strictly grounded in computed Nile Delta evidence'
-        }
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-sans text-[#a3a9b8]">
-          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
-            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 font-sans">
-              {t('analysis.interpretation.what')}
-            </div>
-            <p className="leading-5 text-[#a3a9b8]">
-              {displayVariable} in <strong className="text-[#eef0f5] font-medium">{displayRegion}</strong> shows{' '}
-              <strong className="text-[#eef0f5] font-medium">{trendText}</strong> across{' '}
-              <span className="font-mono tabular-nums text-[#eef0f5]">{statistics.sampleCount}</span> monthly observations.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
-            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 font-sans">
-              {lang === 'ar' ? 'أين ومتى حدث التغير' : 'Where and when it changed'}
-            </div>
-            <p className="leading-5 text-[#a3a9b8]">
-              <strong className="text-[#38bdf8] font-mono font-normal">{whereChangedLabel}</strong> (
-              <span className="font-mono tabular-nums">
-                {netChange >= 0 ? '+' : ''}
-                {pctChange.toFixed(1)}%
-              </span>{' '}
-              net change, strongest shift around{' '}
-              <strong className="text-[#eef0f5] font-mono font-normal tabular-nums">{formatDate(changePointDate, lang)}</strong>).
-            </p>
-          </div>
-
-          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
-            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 font-sans">
-              {t('analysis.interpretation.magnitude')} · {t('analysis.interpretation.significance')}
-            </div>
-            <p className="leading-5 text-[#a3a9b8]">
-              Theil-Sen slope is{' '}
-              <strong className="text-[#eef0f5] font-mono font-medium tabular-nums">
-                {formatSignedRate(slopeDecade, `${unit}/decade`, lang)}
-              </strong>{' '}
-              (two-tailed Mann-Kendall p ={' '}
-              <span className="font-mono text-[#4cc38a] tabular-nums">
-                {formatScientificPValue(statistics.pValue, lang)}
-              </span>
-              , τ = <span className="font-mono tabular-nums">{formatNumber(statistics.mannKendall.tau, lang)}</span>).
-            </p>
-          </div>
-
-          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
-            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 flex items-center gap-1.5 font-sans">
-              <AlertCircle className="w-3.5 h-3.5 text-[#7a8296]" strokeWidth={1.5} />
-              <span>{t('analysis.interpretation.limitations')}</span>
-            </div>
-            <p className="text-xs text-[#7a8296] leading-5 font-sans">
-              {customFileLoaded
-                ? 'Custom CSV series are resampled to monthly means prior to Mann-Kendall and Theil-Sen estimation. Ensure your date and numeric value columns represent comparable measurement conditions across time.'
-                : 'MODIS MOD13Q1.061 operates at 250 m spatial resolution (16-day composite), while MODIS MOD11C3.061 provides 0.05° CMG (~5.5 km) monthly daytime (~10:30 LT) and nighttime (~22:30 LT) land surface skin temperature.'}
-            </p>
-          </div>
-        </div>
-      </DataCard>
 
       {/* Main Chart ("التحليل") — Full Width */}
       <DataCard
@@ -697,6 +678,96 @@ export const AnalysisPage: React.FC = () => {
         )}
       </DataCard>
 
+      {/* Scientific Interpretation & Limitations (Below Chart) */}
+      <DataCard
+        title={t('analysis.interpretation.title')}
+        subtitle={
+          customFileLoaded
+            ? 'Synthesized evaluation strictly grounded in uploaded CSV statistics'
+            : 'Synthesized evaluation strictly grounded in computed Nile Delta evidence'
+        }
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-sans text-[#a3a9b8]">
+          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
+            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 font-sans">
+              {t('analysis.interpretation.what')}
+            </div>
+            <p className="leading-5 text-[#a3a9b8]">
+              {displayVariable} in <strong className="text-[#eef0f5] font-medium">{displayRegion}</strong> shows{' '}
+              <strong className="text-[#eef0f5] font-medium">{trendText}</strong> across{' '}
+              <span className="font-mono tabular-nums text-[#eef0f5]">{statistics.sampleCount}</span>{' '}
+              {activeAggregation === 'annual' ? 'annual' : 'monthly'} observations ({testMethodLabel}).
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
+            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 font-sans">
+              {lang === 'ar' ? 'الموقع واختبار نقطة التحول' : 'Location & regime-shift test'}
+            </div>
+            <p className="leading-5 text-[#a3a9b8]">
+              <strong className="text-[#38bdf8] font-mono font-normal">{whereChangedLabel}</strong>{' '}
+              (<span className="font-mono tabular-nums">{netChange >= 0 ? '+' : ''}{pctChange.toFixed(1)}%</span> Theil-Sen
+              period change over <span className="font-mono tabular-nums">{spanYears.toFixed(1)}</span> yrs;{' '}
+              {changePoint.significant ? (
+                <>
+                  Pettitt step change around{' '}
+                  <strong className="text-[#eef0f5] font-mono font-normal tabular-nums">
+                    {formatDate(changePointDate, lang)}
+                  </strong>
+                  , p = {formatScientificPValue(changePoint.pValue, lang)}
+                </>
+              ) : (
+                <>
+                  no significant step change, Pettitt p ={' '}
+                  <span className="font-mono tabular-nums text-[#eef0f5]">
+                    {formatNumber(changePoint.pValue, lang, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+                  </span>
+                </>
+              )}
+              ).
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
+            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 font-sans">
+              {t('analysis.interpretation.magnitude')} · {t('analysis.interpretation.significance')}
+            </div>
+            <p className="leading-5 text-[#a3a9b8]">
+              Deseasonalized Theil-Sen slope is{' '}
+              <strong className="text-[#eef0f5] font-mono font-medium tabular-nums">
+                {formatSignedRate(slopeDecade, `${unit}/decade`, lang, slopeDecimals)}
+              </strong>{' '}
+              (<span className="font-mono tabular-nums">{pctPerDecade >= 0 ? '+' : ''}{pctPerDecade.toFixed(1)}%/dec</span>;
+              95% CI [{formatNumber(ciLower, lang, { minimumFractionDigits: slopeDecimals, maximumFractionDigits: slopeDecimals })},{' '}
+              {formatNumber(ciUpper, lang, { minimumFractionDigits: slopeDecimals, maximumFractionDigits: slopeDecimals })}]) ·{' '}
+              {activeAggregation === 'monthly' && statistics.sampleCount >= 24 ? 'Seasonal MK' : 'MK'} p ={' '}
+              <span className="font-mono text-[#4cc38a] tabular-nums">
+                {formatScientificPValue(statistics.pValue, lang)}
+              </span>
+              , τ ={' '}
+              <span className="font-mono tabular-nums">
+                {formatNumber(statistics.mannKendall.tau, lang, { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+              </span>
+              .
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-[#07080d] border border-[#eef0f5]/[0.07]">
+            <div className="text-xs font-medium text-[#eef0f5] mb-1.5 flex items-center gap-1.5 font-sans">
+              <AlertCircle className="w-3.5 h-3.5 text-[#7a8296]" strokeWidth={1.5} />
+              <span>{t('analysis.interpretation.limitations')}</span>
+            </div>
+            <p className="text-xs text-[#7a8296] leading-5 font-sans">
+              {customFileLoaded
+                ? 'Custom CSV series are resampled to monthly means and tested with Seasonal Mann-Kendall (when ≥ 24 months) and deseasonalized Theil-Sen estimation. Ensure columns reflect consistent units across time.'
+                : activeConfig.variableId === 'ndvi'
+                ? 'MODIS MOD13Q1.061 (250 m, 16-day) and MOD13C2.061 (0.05° CMG monthly continuity) measure canopy greenness (valid range -0.2 to 1.0); cloud/aerosol pixels are masked via pixel_reliability without gap-filling, and Nile Delta crop cycles are controlled via Seasonal Mann-Kendall (period = 12).'
+                : 'MODIS MOD11C3.061 (0.05° CMG, ~5.5 km) measures monthly clear-sky daytime (~10:30 LT) and nighttime (~22:30 LT) radiative land surface skin temperature (distinct from 2 m air temperature); cloudy passes are masked and annual cycles are controlled via Seasonal Mann-Kendall (period = 12).'}
+            </p>
+          </div>
+        </div>
+      </DataCard>
+
       {/* Unified Statistical Metrics Row Below Chart */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* 1. Direction (Increase or Not) & MK Tau */}
@@ -740,50 +811,62 @@ export const AnalysisPage: React.FC = () => {
           </div>
         </div>
 
-        {/* 2. Change Magnitude & Where / When It Changed */}
+        {/* 2. Trend-Implied Change & Pettitt Change-Point */}
         <div className="p-5 rounded-xl border border-[#eef0f5]/[0.08] bg-[#11141c] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-between gap-2">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-normal text-[#a3a9b8] font-sans">
-              {lang === 'ar' ? `صافي التغير في ${unit}` : `Net change (${unit})`}
+              {lang === 'ar' ? `تغير الاتجاه خلال الفترة (${unit})` : `Period trend change (${unit})`}
             </span>
             <MapPin className="w-4 h-4 text-[#7a8296] shrink-0" strokeWidth={1.5} />
           </div>
           <div className="flex items-baseline gap-2 flex-wrap my-1">
             <span
               className={`text-[28px] leading-none font-medium font-mono tabular-nums ${
-                netChange > 0 ? 'text-[#4cc38a]' : netChange < 0 ? 'text-[#e5484d]' : 'text-[#eef0f5]'
+                !isSig ? 'text-[#eef0f5]' : netChange > 0 ? 'text-[#4cc38a]' : netChange < 0 ? 'text-[#e5484d]' : 'text-[#eef0f5]'
               }`}
             >
-              {netChange >= 0 ? '+' : ''}
-              {netChange.toFixed(4)}
+              {netChange > 0 ? '+' : ''}
+              {netChange.toFixed(slopeDecimals)}
             </span>
             <span className="text-xs font-mono text-[#7a8296] tabular-nums">
-              ({pctChange >= 0 ? '+' : ''}
-              {pctChange.toFixed(1)}% vs baseline)
+              ({pctChange > 0 ? '+' : ''}
+              {pctChange.toFixed(1)}% over {spanYears.toFixed(1)} yrs)
             </span>
           </div>
           <div className="text-xs font-sans text-[#7a8296] flex items-center justify-between gap-2 border-t border-[#eef0f5]/[0.07] pt-2">
             <span className="truncate font-mono text-[#a3a9b8]" title={whereChangedLabel}>
               {whereChangedLabel}
             </span>
-            <span className="font-mono tabular-nums shrink-0">{formatDate(changePointDate, lang)}</span>
+            <span className="font-mono tabular-nums shrink-0">
+              {changePoint.significant
+                ? `Shift ${formatDate(changePointDate, lang)}`
+                : `No shift (p=${changePoint.pValue.toFixed(2)})`}
+            </span>
           </div>
         </div>
 
         {/* 3. Sen's Slope */}
         <StatisticalResultCard
           label={t('analysis.statistics.sensSlopeDecade')}
-          value={formatSignedRate(slopeDecade, unit, lang)}
-          unit={`/ decade (${slopeYear >= 0 ? '+' : ''}${slopeYear.toFixed(5)}/yr)`}
-          subtext="Non-parametric Theil-Sen median slope"
+          value={formatSignedRate(slopeDecade, unit, lang, slopeDecimals)}
+          unit={`/ dec (${pctPerDecade > 0 ? '+' : ''}${pctPerDecade.toFixed(1)}%/dec)`}
+          subtext={`Deseasonalized Theil-Sen (${slopeYear >= 0 ? '+' : ''}${slopeYear.toFixed(5)}/yr)`}
           direction={direction}
-          statusBadge={<span className="text-xs font-mono text-[#7a8296]">SciPy</span>}
+          statusBadge={
+            <span className="text-xs font-mono text-[#7a8296]">
+              {activeAggregation === 'monthly' && statistics.sampleCount >= 24 ? 'Seasonal' : 'SciPy'}
+            </span>
+          }
         />
 
         {/* 4. P-Value + 95% CI, Samples & Spatial Coverage */}
         <div className="p-5 rounded-xl border border-[#eef0f5]/[0.08] bg-[#11141c] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-between gap-2 text-xs font-sans text-[#a3a9b8]">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-normal text-[#a3a9b8]">{t('analysis.statistics.pValueText')}</span>
+            <span className="text-xs font-normal text-[#a3a9b8]">
+              {activeAggregation === 'monthly' && statistics.sampleCount >= 24
+                ? 'Seasonal MK p-value'
+                : t('analysis.statistics.pValueText')}
+            </span>
             <span className="text-xs font-mono tabular-nums text-[#7a8296]">α = 0.05</span>
           </div>
           <div className="flex items-baseline justify-between gap-2 my-1">
@@ -796,7 +879,8 @@ export const AnalysisPage: React.FC = () => {
           </div>
           <div className="flex items-center justify-between gap-2 border-t border-[#eef0f5]/[0.07] pt-2 text-xs font-mono tabular-nums text-[#7a8296]">
             <span>
-              CI [{formatNumber(statistics.sensSlope.ciLower, lang)}, {formatNumber(statistics.sensSlope.ciUpper, lang)}]
+              CI [{formatNumber(ciLower, lang, { minimumFractionDigits: slopeDecimals, maximumFractionDigits: slopeDecimals })},{' '}
+              {formatNumber(ciUpper, lang, { minimumFractionDigits: slopeDecimals, maximumFractionDigits: slopeDecimals })}]
             </span>
             <span>n = {statistics.sampleCount}</span>
           </div>

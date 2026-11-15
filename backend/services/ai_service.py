@@ -193,11 +193,18 @@ def _generate_deterministic_grounded_response(grounded: Dict[str, Any], language
         },
     ]
 
-    limitations = [
-        "Land Surface Temperature (MOD11C3.061) measures the radiative skin temperature of the ground/canopy surface, NOT meteorological 2-meter air temperature; bare desert fringes heat faster by day than irrigated delta foliage.",
-        "MODIS MOD13Q1.061 (250 m) and MOD11C3.061 (0.05° ~5.5 km) differ in native pixel footprint and are aggregated regionally rather than upsampling thermal pixels to 250 m.",
-        "Clear-sky thermal infrared retrievals omit cloud-obscured passes; correlation between NDVI and LST reflects seasonal biophysical energy coupling rather than isolated single-factor causation.",
-    ]
+    if var_id == "ndvi":
+        limitations = [
+            "Optical vegetation retrievals (MOD13Q1.061 250 m / MOD13C2.061 0.05° CMG; valid NDVI range -0.2 to 1.0) omit cloud/aerosol-masked pixels via pixel_reliability QC without synthetic interpolation.",
+            "Nile Delta agricultural planting/harvesting seasonality is explicitly controlled using the Hirsch–Slack Seasonal Mann-Kendall test (period=12) and deseasonalized Theil-Sen anomalies.",
+            f"Spatial comparison with MODIS LST (0.05° CMG) in coupled diagnostics preserves native resolution without artificial thermal upsampling.",
+        ]
+    else:
+        limitations = [
+            "Land Surface Temperature (MOD11C3.061, 0.05° ~5.5 km) measures the radiative skin temperature of the ground/canopy surface, NOT meteorological 2-meter air temperature.",
+            "Clear-sky thermal infrared retrievals omit cloud-obscured passes (~10:30 LT daytime and ~22:30 LT nighttime); missing months remain excluded without gap-filling.",
+            "Seasonal Mann-Kendall (period=12) and deseasonalized anomalies control for annual solar/thermal cycles prior to long-term trend inference.",
+        ]
 
     citations = [
         ds["citation"],

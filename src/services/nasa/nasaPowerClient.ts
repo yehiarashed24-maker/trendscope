@@ -8,7 +8,7 @@ const NASA_POWER_BASE = 'https://power.larc.nasa.gov/api/temporal/monthly/point'
 
 const VARIABLE_PARAM_MAP: Record<VariableId, { param: string; scale: number; unit: string }> = {
   lst: { param: 'TS', scale: 1.0, unit: '°C' },
-  ndvi: { param: 'GWETROOT', scale: 0.85, unit: 'NDVI [-0.2 to 1.0]' },
+  ndvi: { param: 'GWETROOT', scale: 0.85, unit: 'NDVI' },
 };
 
 export interface FetchNasaTimeSeriesResult {

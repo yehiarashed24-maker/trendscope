@@ -9,7 +9,7 @@ export const ENVIRONMENTAL_VARIABLES: EnvironmentalVariable[] = [
   {
     id: 'ndvi',
     code: 'MOD13Q1.061',
-    unit: 'NDVI [-0.2 to 1.0]',
+    unit: 'NDVI',
     temporalResolution: '16-Day Composite (Monthly Aggregated)',
     spatialResolution: '250 m (Sinusoidal Grid)',
     primarySource: 'NASA LP DAAC Terra MODIS Vegetation Indices (MOD13Q1.061)',

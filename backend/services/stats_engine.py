@@ -193,6 +193,49 @@ def build_monthly_series(
     return df_slice, meta
 
 
+def compute_pettitt_changepoint(
+    dates: pd.Series, values: np.ndarray
+) -> Dict[str, Any]:
+    """
+    Runs the non-parametric Pettitt (1979) single change-point test on interior
+    indices (trimming edge segments so short boundaries cannot trigger spurious shifts).
+    """
+    n = len(values)
+    default_date = str(pd.to_datetime(dates.iloc[0]).strftime("%Y-%m-%d")) if n > 0 else ""
+    if n < 10 or float(np.ptp(values)) == 0.0:
+        return {
+            "changePointDate": default_date,
+            "changePointPValue": 1.0,
+            "changePointSignificant": False,
+            "changePointMethod": "Pettitt (1979) non-parametric change-point test",
+        }
+
+    ranks = stats.rankdata(values, method="average")
+    edge = max(4, int(np.floor(0.1 * n)))
+    if edge * 2 >= n:
+        edge = max(2, n // 4)
+
+    cum_ranks = np.cumsum(ranks)
+    best_k = edge
+    max_u = -1.0
+    for k in range(edge, n - edge + 1):
+        u_k = abs(2.0 * cum_ranks[k - 1] - k * (n + 1.0))
+        if u_k > max_u:
+            max_u = u_k
+            best_k = k
+
+    denom = float(n ** 3 + n ** 2)
+    p_val = float(min(1.0, max(0.0001, 2.0 * np.exp((-6.0 * (max_u ** 2)) / denom)))) if denom > 0 else 1.0
+    best_date = pd.to_datetime(dates.iloc[best_k]).strftime("%Y-%m-%d")
+
+    return {
+        "changePointDate": best_date,
+        "changePointPValue": round(p_val, 4),
+        "changePointSignificant": bool(p_val < 0.05),
+        "changePointMethod": "Pettitt (1979) non-parametric change-point test",
+    }
+
+
 def compute_mann_kendall_and_sens_slope(df: pd.DataFrame, aggregation: str = "monthly") -> Dict[str, Any]:
     """
     Runs real non-parametric Mann-Kendall trend test (`pymannkendall`) and Theil-Sen slope
@@ -210,6 +253,8 @@ def compute_mann_kendall_and_sens_slope(df: pd.DataFrame, aggregation: str = "mo
             "trendDirection": "no_trend",
             "significant": False,
             "confidenceLevel": "Not Statistically Significant",
+            "testMethod": "Mann-Kendall (Original)",
+            "deseasonalized": False,
             "sensSlope": 0.0,
             "sensSlopePerYear": 0.0,
             "sensIntercept": 0.0,
@@ -224,6 +269,10 @@ def compute_mann_kendall_and_sens_slope(df: pd.DataFrame, aggregation: str = "mo
             "median": 0.0,
             "iqr": 0.0,
             "anomaliesCount": 0,
+            "changePointDate": "",
+            "changePointPValue": 1.0,
+            "changePointSignificant": False,
+            "changePointMethod": "Pettitt (1979) non-parametric change-point test",
         }
 
     y = clean["value"].to_numpy(dtype=float)
@@ -233,21 +282,26 @@ def compute_mann_kendall_and_sens_slope(df: pd.DataFrame, aggregation: str = "mo
 
     # Use Seasonal Mann-Kendall when monthly cycle is present and n >= 24, otherwise original Mann-Kendall
     seasonal_sen_yr = None
+    used_seasonal_mk = False
     try:
         if aggregation == "monthly" and n >= 24:
             mk_res = mk.seasonal_test(y, period=12)
             # pymannkendall seasonal_test.slope is in units per 12-month cycle -> /1 for annual step
             seasonal_sen_yr = float(mk_res.slope)
+            used_seasonal_mk = True
         else:
             mk_res = mk.original_test(y)
     except Exception:
         mk_res = mk.original_test(y)
+        used_seasonal_mk = False
 
     # Deseasonalized Theil-Sen Estimator with 95% CI when monthly seasonal cycle is active
     y_anom = clean["anomaly"].to_numpy(dtype=float) if "anomaly" in clean.columns else y
-    slope_target = y_anom if (aggregation == "monthly" and n >= 24 and np.any(y_anom != 0)) else y
+    is_deseasonalized = bool(aggregation == "monthly" and n >= 24 and np.any(y_anom != 0))
+    slope_target = y_anom if is_deseasonalized else y
     sen_slope_yr, _anom_intercept, lo_slope_yr, hi_slope_yr = stats.theilslopes(slope_target, t_years, 0.95)
     sen_intercept = float(np.median(y) - sen_slope_yr * np.median(t_years))
+    pettitt_res = compute_pettitt_changepoint(dates, slope_target)
 
     # Diagnostic lag-1 autocorrelation (raw and deseasonalized)
     acf1_raw = pd.Series(y).autocorr(lag=1)
@@ -293,6 +347,8 @@ def compute_mann_kendall_and_sens_slope(df: pd.DataFrame, aggregation: str = "mo
         "trendDirection": direction,
         "significant": significant,
         "confidenceLevel": conf_label,
+        "testMethod": "Seasonal Mann-Kendall (Hirsch–Slack, period=12)" if used_seasonal_mk else "Mann-Kendall (Original)",
+        "deseasonalized": is_deseasonalized,
         "sensSlope": round(float(sen_slope_yr * 10.0), 4),       # Per decade (preserved for existing UI cards)
         "sensSlopePerYear": round(float(sen_slope_yr), 5),       # Per year
         "seasonalSensSlopePerYear": round(float(seasonal_sen_yr), 5) if seasonal_sen_yr is not None else None,
@@ -312,6 +368,7 @@ def compute_mann_kendall_and_sens_slope(df: pd.DataFrame, aggregation: str = "mo
         "median": round(float(np.median(y)), 4),
         "iqr": round(float(q75 - q25), 4),
         "anomaliesCount": anom_count,
+        **pettitt_res,
     }
 
 

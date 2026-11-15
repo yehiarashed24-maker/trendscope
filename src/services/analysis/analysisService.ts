@@ -10,7 +10,8 @@ import {
 } from '../../types/scientific';
 import { ENVIRONMENTAL_VARIABLES, PREDEFINED_REGIONS } from '../nasa/constants';
 import {
-  calculateMannKendall,
+  calculateSeasonalMannKendall,
+  calculatePettittChangePoint,
   calculateSensSlope,
   calculateLinearRegression,
 } from '../statistics/trendStatistics';
@@ -159,6 +160,17 @@ export const analysisService = {
               data.rasterStatistics?.missingCoveragePercent ?? 1.2
             ),
             dataStatus: resolvedStatus,
+            testMethod: st.testMethod,
+            deseasonalized: st.deseasonalized,
+            mean: typeof st.mean === 'number' ? Number(st.mean) : undefined,
+            changePoint: st.changePointMethod
+              ? {
+                  date: String(st.changePointDate || ''),
+                  pValue: Number(st.changePointPValue ?? 1),
+                  significant: Boolean(st.changePointSignificant),
+                  method: String(st.changePointMethod),
+                }
+              : undefined,
           },
           rasterStatistics: data.rasterStatistics,
           seasonal: data.seasonal,
@@ -202,10 +214,17 @@ export const analysisService = {
       }
     }
 
+    const anomalies = series.map((p) => p.anomaly);
     const values = series.map((p) => p.value);
-    const mk = calculateMannKendall(values);
-    const sens = calculateSensSlope(values, 12);
-    const ols = calculateLinearRegression(values, 12);
+    const mk = calculateSeasonalMannKendall(values, 12);
+    const sens = calculateSensSlope(anomalies, 12);
+    const ols = calculateLinearRegression(anomalies, 12);
+    const pettitt = calculatePettittChangePoint(
+      series.map((p) => p.timestamp),
+      anomalies
+    );
+    const meanVal =
+      values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
 
     return {
       config: { ...config, status: 'DEMO_DATA' },
@@ -222,6 +241,10 @@ export const analysisService = {
         sampleCount: series.length,
         missingDataPercentage: 0.8,
         dataStatus: 'DEMO_DATA',
+        testMethod: mk.testMethod,
+        deseasonalized: true,
+        mean: Number(meanVal.toFixed(4)),
+        changePoint: pettitt,
       },
       gridCells: [],
     };
@@ -514,6 +537,17 @@ export const analysisService = {
         sampleCount: Number(st.sampleSize),
         missingDataPercentage: 0,
         dataStatus: 'VERIFIED',
+        testMethod: st.testMethod,
+        deseasonalized: st.deseasonalized,
+        mean: typeof st.mean === 'number' ? Number(st.mean) : undefined,
+        changePoint: st.changePointMethod
+          ? {
+              date: String(st.changePointDate || ''),
+              pValue: Number(st.changePointPValue ?? 1),
+              significant: Boolean(st.changePointSignificant),
+              method: String(st.changePointMethod),
+            }
+          : undefined,
       },
       rasterStatistics: data.rasterStatistics,
       seasonal: data.seasonal,

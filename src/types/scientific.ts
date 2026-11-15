@@ -118,6 +118,15 @@ export interface StatisticalMetrics {
   sampleCount: number;
   missingDataPercentage: number;
   dataStatus: DataIntegrityStatus;
+  testMethod?: string;
+  deseasonalized?: boolean;
+  mean?: number;
+  changePoint?: {
+    date: string;
+    pValue: number;
+    significant: boolean;
+    method: string;
+  };
 }
 
 export interface RasterStatisticsSummary {

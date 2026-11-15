@@ -45,6 +45,18 @@ def test_math_ground_truth_mann_kendall_and_theil_sen():
     assert abs(res["slopeCiLower"] - round(float(ref_lo * 10.0), 4)) < 1e-3
     assert abs(res["slopeCiUpper"] - round(float(ref_hi * 10.0), 4)) < 1e-3
     assert abs(res["rSquared"] - round(float(ref_lin.rvalue ** 2), 4)) < 1e-4
+    assert "Seasonal Mann-Kendall" in res["testMethod"]
+    assert res["deseasonalized"] is True
+    assert "changePointDate" in res and "changePointPValue" in res
+
+    # Step change at midpoint should trigger significant Pettitt shift
+    shift_dates = pd.date_range("2015-01-01", periods=60, freq="MS")
+    shift_vals = np.array([0.40 if i < 30 else 0.70 for i in range(60)], dtype=float)
+    df_shift = pd.DataFrame({"date": shift_dates.strftime("%Y-%m-%d"), "value": shift_vals, "anomaly": shift_vals})
+    res_shift = compute_mann_kendall_and_sens_slope(df_shift, aggregation="monthly")
+    assert res_shift["changePointSignificant"] is True
+    assert res_shift["changePointPValue"] < 0.05
+    assert res_shift["changePointDate"].startswith("2017-0")
 
 
 def test_short_csv_r_squared_and_semicolon_bom_parsing():

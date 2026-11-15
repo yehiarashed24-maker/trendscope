@@ -386,11 +386,18 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
     story.append(t_meta)
 
     # Section 2: Non-Parametric Mann-Kendall & Sen's Slope Results (Items 10-12)
-    story.append(Paragraph("2. Non-Parametric Mann-Kendall Trend & Theil-Sen Slope Results", sec_style))
+    test_method = st.get("testMethod", "Seasonal Mann-Kendall (Hirsch-Slack, period=12)")
+    pettitt_summary = (
+        f"Pettitt step change at {st['changePointDate']} (p = {st['changePointPValue']:.4f})"
+        if st.get("changePointSignificant")
+        else f"No significant shift (Pettitt p = {st.get('changePointPValue', 1.0):.4f})"
+    )
+    story.append(Paragraph("2. Non-Parametric Trend, Seasonality Control & Sen's Slope Results", sec_style))
     story.append(
         Paragraph(
-            "Trend significance is evaluated using the two-tailed non-parametric Mann-Kendall rank test (`pymannkendall`), "
-            "and trend rate is quantified via the robust Theil-Sen median slope estimator (`scipy.stats.theilslopes`) with 95% confidence intervals.",
+            f"Trend significance is evaluated via <b>{test_method}</b> (`pymannkendall`), which accounts for intra-annual "
+            "crop-cycle seasonality on monthly data, and trend magnitude is quantified using the deseasonalized Theil-Sen median "
+            "slope estimator (`scipy.stats.theilslopes`) with 95% confidence intervals.",
             body_style,
         )
     )
@@ -400,7 +407,8 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
         ["Mann-Kendall Tau (τ)", f"{st['tau']:.4f}", "Mann-Kendall Z-Score", f"{st['zScore']:+.3f}"],
         ["Mann-Kendall S-Statistic", f"{st['sStatistic']:+.1f}", "Two-Tailed p-Value", f"{st['pValue']:.5f}"],
         ["Sen's Slope (per Year)", f"{st['sensSlopePerYear']:+.5f} {ds_meta['unit']}/yr", "Sen's Slope (per Decade)", f"{st['sensSlope']:+.4f} {ds_meta['unit']}/dec"],
-        ["95% CI (per Decade)", f"[{st['slopeCiLower']:+.4f}, {st['slopeCiUpper']:+.4f}]", "Sample Size (Valid Months)", f"{st['sampleSize']}"],
+        ["95% CI (per Decade)", f"[{st['slopeCiLower']:+.4f}, {st['slopeCiUpper']:+.4f}]", "Sample Size (Valid obs)", f"{st['sampleSize']}"],
+        ["Pettitt Change-Point Test", pettitt_summary, "Trend Method", test_method],
         ["Time-Series Mean ± SD", f"{st['mean']:.4f} ± {st['stdDev']:.4f} {ds_meta['unit']}", "Time-Series Min / Max", f"{st['min']:.4f} / {st['max']:.4f} {ds_meta['unit']}"],
     ]
     t_stat = Table(stat_rows, colWidths=[44 * mm, 44 * mm, 44 * mm, 44 * mm])
@@ -503,27 +511,36 @@ def generate_scientific_pdf_report(payload: Dict[str, Any]) -> bytes:
     story.append(Paragraph(f"<b>Methodological Note:</b> {str(ai_interp.get('methodologyExplanation', '')).replace('**', '')}", body_style))
 
     # Section 5: Limitations, Resolution Difference & Citations (Items 5, 18, 20)
-    story.append(Paragraph("5. Scientific Limitations, Skin-vs-Air Temperature Note & Official Citations", sec_style))
-    story.append(
-        Paragraph(
-            "• <b>Skin Temperature vs. Air Temperature & Resolution Contrast:</b> MODIS MOD11C3.061 measures radiative land surface skin temperature (0.05° CMG ~5.5 km), "
-            "which heats more intensely during daytime and cools differently at night compared with 2 m meteorological air temperature. "
-            "MOD13Q1.061 NDVI provides 250 m resolution; regional coupling never artificially upsamples 0.05° LST to 250 m.",
-            body_style,
+    if variable_id == "ndvi":
+        story.append(Paragraph("5. Dataset Limitations, Seasonality Handling & Official Citations", sec_style))
+        story.append(
+            Paragraph(
+                "• <b>Optical Vegetation Dataset Scope (MOD13Q1.061 / MOD13C2.061):</b> NDVI measures canopy greenness and photosynthetic vigor (valid physical range -0.2 to 1.0) "
+                "using 250 m 16-day composites (`_250m_16_days_pixel_reliability` retaining 0=Good and 1=Marginal) and 0.05° CMG monthly continuity. "
+                "Cloud/aerosol contamination over winter coastal zones is masked without synthetic interpolation.",
+                body_style,
+            )
         )
-    )
-    story.append(
-        Paragraph(
-            "• <b>Data Provenance & Multi-Year Satellite Disclosure:</b> Spatial rasters and multi-year monthly time series "
-            "originate directly from NASA EOSDIS Earthdata MODIS archives clipped to the Nile Delta study polygons: MOD13Q1.061 (250 m) / MOD13C2.061 (0.05° CMG) "
-            "for NDVI (2000–2024), and MOD11C3.061 (0.05° CMG, Clear-Sky Daytime & Nighttime passes, 2000–2024). Missing cloud-obscured months remain excluded without synthetic gap-filling.",
-            body_style,
+        story.append(
+            Paragraph(
+                "• <b>Crop-Cycle Seasonality Control:</b> Nile Delta croplands exhibit strong bi-modal winter (wheat/clover) and summer (rice/maize) cycles. "
+                "Trend significance is computed using the Seasonal Mann-Kendall test (period=12) and deseasonalized Theil-Sen slope rather than unadjusted monthly ranks.",
+                body_style,
+            )
         )
-    )
+    else:
+        story.append(Paragraph("5. Scientific Limitations, Skin-vs-Air Temperature Note & Official Citations", sec_style))
+        story.append(
+            Paragraph(
+                "• <b>Skin Temperature vs. Air Temperature (MOD11C3.061):</b> MODIS MOD11C3.061 measures monthly Clear-Sky radiative land surface skin temperature (0.05° CMG ~5.5 km) "
+                "at Terra daytime (~10:30 LT) and nighttime (~22:30 LT) overpasses, which heats faster by day and differs physically from 2 m meteorological air temperature.",
+                body_style,
+            )
+        )
     story.append(
         Paragraph(
-            "• <b>Correlation vs. Causation:</b> Observed correlation between NDVI and Land Surface Temperature reflects seasonal canopy cooling and land-atmosphere energy exchange "
-            "and does not establish isolated single-factor causation without ground-station microclimate measurements.",
+            "• <b>Coupled Resolution Note & Correlation vs. Causation:</b> Regional NDVI (250 m) vs. LST (0.05° CMG) comparison preserves native sensor footprints without artificial thermal upsampling; "
+            "statistical coupling does not isolate single-factor causation without ground-station validation.",
             body_style,
         )
     )

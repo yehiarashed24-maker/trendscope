@@ -48,9 +48,10 @@ export const ScientificChart: React.FC<ScientificChartProps> = ({
       return Number((startVal + stepDecade).toFixed(4));
     });
 
+    const slopeDigits = unit.toUpperCase().includes('NDVI') || (trendSlopeDecade !== undefined && Math.abs(trendSlopeDecade) > 0 && Math.abs(trendSlopeDecade) < 0.05) ? 4 : 2;
     const formattedSlope =
       trendSlopeDecade !== undefined && trendSlopeDecade !== null && Number.isFinite(trendSlopeDecade)
-        ? `${trendSlopeDecade >= 0 ? '+' : ''}${trendSlopeDecade}`
+        ? `${trendSlopeDecade > 0 ? '+' : ''}${trendSlopeDecade.toFixed(slopeDigits)}`
         : '+0.42';
 
     const hasComparison = Array.isArray(comparisonSeries) && comparisonSeries.length > 0;
