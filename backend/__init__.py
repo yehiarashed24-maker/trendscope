@@ -1,0 +1,2 @@
+# EARTHPULSE AI — NILE DELTA EDITION Backend Package
+

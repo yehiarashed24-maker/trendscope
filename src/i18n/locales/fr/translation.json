@@ -1,0 +1,414 @@
+{
+  "nav": {
+    "brand": "TrendScope",
+    "tagline": "Plateforme d'investigation des systèmes terrestres",
+    "landing": "Accueil",
+    "overview": "Vue d'ensemble",
+    "explorer": "Explorateur terrestre",
+    "analysis": "Analyse des tendances",
+    "intelligence": "Laboratoire d'intelligence",
+    "workspace": "Scientifique IA",
+    "reports": "Rapports",
+    "settings": "Paramètres",
+    "signIn": "Connexion",
+    "getStarted": "Démarrer",
+    "startInvestigation": "Lancer l'investigation",
+    "exploreEarth": "Explorer la Terre"
+  },
+  "status": {
+    "demoData": "DONNÉES DE DÉMO",
+    "demoTooltip": "Simulation illustrative. Données non vérifiées en temps réel par la NASA.",
+    "verified": "ARCHIVE VÉRIFIÉE NASA",
+    "pendingBackend": "INTÉGRATION BACKEND EN ATTENTE",
+    "unavailable": "DONNÉES INDISPONIBLES",
+    "online": "EN LIGNE",
+    "demoArchive": "ARCHIVE DE DÉMO"
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "OBSERVATION DE LA TERRE PAR LA NASA & INTELLIGENCE PLANÉTAIRE",
+      "heading": "Comprendre une planète en mutation.",
+      "subheading": "Explorez les changements environnementaux de la Terre grâce aux données scientifiques, à l'intelligence géographique et à la découverte statistique.",
+      "ctaPrimary": "Démarrer l'investigation",
+      "ctaSecondary": "Explorer la Terre",
+      "statusBadge": "Édition NASA Space Apps Challenge 2026"
+    },
+    "workflow": {
+      "title": "Cadre d'investigation scientifique",
+      "subtitle": "De l'observation satellitaire à la compréhension statistique vérifiable",
+      "steps": {
+        "discover": {
+          "title": "DÉCOUVRIR",
+          "desc": "Explorez les jeux de données d'observation de la Terre issus de constellations satellitaires étalonnées et de réanalyses."
+        },
+        "investigate": {
+          "title": "ENQUÊTER",
+          "desc": "Analysez les évolutions environnementales sur plusieurs décennies et sur des zones géographiques personnalisées."
+        },
+        "understand": {
+          "title": "COMPRENDRE",
+          "desc": "Interprétez les preuves scientifiques avec des statistiques non paramétriques et une synthèse assistée par IA."
+        }
+      }
+    },
+    "capabilities": {
+      "title": "Capacités de la plateforme",
+      "subtitle": "Conçue spécialement pour les climatologues, géoscientifiques et chercheurs en environnement",
+      "items": {
+        "explorer": {
+          "title": "Exploration géographique",
+          "desc": "Navigation géospatiale vectorielle et matricielle haute performance avec frontières étatiques et biomes."
+        },
+        "discovery": {
+          "title": "Découverte de données NASA",
+          "desc": "Indexation directe sur MODIS Terra Végétation (MOD13Q1) et Température de surface Jour/Nuit (MOD11C3)."
+        },
+        "trends": {
+          "title": "Détection des tendances",
+          "desc": "Quantification des tendances paramétriques et non paramétriques avec traitement robuste des valeurs manquantes."
+        },
+        "geographic": {
+          "title": "Analyse géographique",
+          "desc": "Découpage spatial sub-national et ingestion native de polygones GeoJSON personnalisés."
+        },
+        "significance": {
+          "title": "Signification statistique",
+          "desc": "Tests de tendance monotone de Mann-Kendall, estimateur de pente de Sen et intervalles de confiance à 95%."
+        },
+        "correlation": {
+          "title": "Analyse de corrélation",
+          "desc": "Matrices de corrélation de Pearson et de rang de Spearman avec métriques de décalage saisonnier."
+        },
+        "anomaly": {
+          "title": "Détection d'anomalies",
+          "desc": "Écarts de z-score par rapport aux moyennes climatologiques pour les épisodes de sécheresse et d'extrêmes thermiques."
+        },
+        "aiScientist": {
+          "title": "Assistant scientifique IA",
+          "desc": "Synthèse contextuelle référençant strictement les métriques satellitaires vérifiées."
+        }
+      }
+    },
+    "dataSources": {
+      "title": "Systèmes intégrés d'observation de la Terre",
+      "subtitle": "Connexion aux archives scientifiques de la NASA de niveau recherche",
+      "modis": {
+        "name": "MODIS Terra (MOD13Q1)",
+        "desc": "Indice de végétation à 250 m mesurant la densité et la vigueur des cultures."
+      },
+      "gpm": {
+        "name": "MODIS Terra LST Jour (MOD11C3)",
+        "desc": "Température radiative de surface terrestre diurne (~10h30 heure locale)."
+      },
+      "gldas": {
+        "name": "MODIS Terra LST Nuit (MOD11C3)",
+        "desc": "Refroidissement nocturne de surface et chaleur stockée (~22h30 heure locale)."
+      },
+      "merra": {
+        "name": "Couplage Jour/Nuit & NDVI",
+        "desc": "Amplitude thermique diurne (Jour − Nuit) et réponse de refroidissement végétal (2000–2024)."
+      },
+      "power": {
+        "name": "NASA EOSDIS AppEEARS",
+        "desc": "Archives satellitaires LP DAAC filtrées agrégées sur les polygones du Delta du Nil."
+      }
+    },
+    "featured": {
+      "title": "Investigations à la une",
+      "subtitle": "Études de cas préconfigurées démontrant l'analyse planétaire multivariable",
+      "badge": "MODÈLE D'INVESTIGATION EXEMPLE",
+      "items": {
+        "egyptTemp": {
+          "title": "La température de surface augmente-t-elle jour ou nuit dans le Delta ?",
+          "desc": "Détection multi-décennale MODIS MOD11C3 sur les gouvernorats du Delta du Nil.",
+          "variable": "Température de surface (LST)",
+          "region": "Égypte (Delta du Nil)"
+        },
+        "northAfricaPrecip": {
+          "title": "Comment évolue le couvert végétal du Delta entre 2000 et 2024 ?",
+          "desc": "Évaluation du verdissement et de la salinité côtière via MODIS MOD13Q1 NDVI 250 m.",
+          "variable": "Couvert végétal (NDVI)",
+          "region": "Sous-régions du Delta"
+        },
+        "soilMoisture": {
+          "title": "Comment divergent les températures diurnes et nocturnes ?",
+          "desc": "Comparaison entre l'échauffement de jour et le refroidissement de nuit sur 2000–2024.",
+          "variable": "LST Jour & Nuit",
+          "region": "Gouvernorats du Delta"
+        },
+        "anomalyDiscovery": {
+          "title": "Où se produisent les tendances environnementales les plus nettes ?",
+          "desc": "Balayage des mailles continentales avec Mann-Kendall p < 0,01 pour les signaux couplés de chaleur et de sécheresse.",
+          "variable": "Anomalie multivariable",
+          "region": "Bassin méditerranéen"
+        }
+      }
+    },
+    "cta": {
+      "title": "Prêt à enquêter sur l'évolution du climat terrestre ?",
+      "desc": "Lancez l'espace d'exploration pour analyser les données de la NASA ou générer des rapports fondés sur les preuves.",
+      "button": "Lancer l'explorateur terrestre"
+    },
+    "footer": {
+      "description": "TrendScope est une plateforme scientifique avancée pour le NASA Space Apps Challenge, dédiée à une intelligence environnementale transparente et vérifiable.",
+      "disclaimer": "Cette plateforme exploite les sources d'observation de la Terre de la NASA. Les badges démo identifient les données simulées de développement.",
+      "quickLinks": "Modules de la plateforme",
+      "dataAttribution": "Gouvernance des données",
+      "rights": "Tous droits réservés. Conçu pour la science ouverte."
+    }
+  },
+  "dashboard": {
+    "title": "Vue d'ensemble agricole du Delta du Nil",
+    "subtitle": "Suivi continu du couvert végétal (NDVI 250 m) et de la température de surface (LST 0,05°) dans le Delta du Nil",
+    "metrics": {
+      "activeInvestigations": "Investigations actives",
+      "variablesTracked": "Variables environnementales",
+      "regionsExplored": "Régions surveillées",
+      "satelliteDatasets": "Jeux de données NASA indexés"
+    },
+    "earthOverview": {
+      "title": "Moniteur géospatial du Delta du Nil",
+      "subtitle": "Projection MODIS MOD13Q1 (250 m NDVI) & MOD11C3 (0,05° LST Jour/Nuit) restreinte au Delta du Nil",
+      "layerSelect": "Couche active",
+      "projection": "Projection : Web Mercator (EPSG:3857)"
+    },
+    "indicators": {
+      "title": "Télémétrie environnementale du Delta",
+      "subtitle": "Moyennes régionales découpées sur le Delta du Nil (MODIS NDVI 250 m vs MOD11C3 LST 0,05°)"
+    },
+    "recentInvestigations": {
+      "title": "Investigations récentes",
+      "subtitle": "Flux de travail de recherche sauvegardés et analyses computationnelles",
+      "empty": "Aucune investigation enregistrée. Créez-en une depuis l'explorateur terrestre.",
+      "openAction": "Ouvrir l'analyse",
+      "statusCol": "Statut",
+      "variableCol": "Variable",
+      "regionCol": "Région",
+      "dateCol": "Date",
+      "actionsCol": "Actions"
+    },
+    "discoveries": {
+      "title": "Dernières anomalies planétaires",
+      "subtitle": "Écarts statistiquement significatifs détectés sur les mailles surveillées"
+    }
+  },
+  "explorer": {
+    "title": "Explorateur terrestre & Découverte de données",
+    "subtitle": "Sélectionnez une géographie, des indicateurs environnementaux et des archives satellitaires",
+    "geoPanel": {
+      "title": "Région géographique",
+      "searchPlaceholder": "Rechercher une région, un pays, des coordonnées...",
+      "loadGeoJson": "Charger un GeoJSON personnalisé",
+      "customAdapterActive": "Adaptateur GeoJSON actif",
+      "bbox": "Cadre de délimitation (BBox)",
+      "center": "Coordonnées du centre",
+      "area": "Zone surveillée"
+    },
+    "variablePanel": {
+      "title": "Variable environnementale",
+      "subtitle": "Sélectionnez la mesure physique à inspecter"
+    },
+    "datasetPanel": {
+      "title": "Sélection du jeu de données NASA",
+      "subtitle": "Archives satellitaires étalonnées et produits de réanalyse"
+    },
+    "timePanel": {
+      "title": "Fenêtre temporelle & Agrégation",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "aggregation": "Agrégation temporelle",
+      "daily": "Quotidien",
+      "monthly": "Moyenne mensuelle",
+      "seasonal": "Moyenne saisonnière",
+      "annual": "Moyenne annuelle"
+    },
+    "configSummary": {
+      "title": "Configuration de l'investigation",
+      "launchButton": "Lancer l'analyse des tendances",
+      "selectedRegion": "Région",
+      "selectedVariable": "Variable",
+      "selectedDataset": "Jeu de données",
+      "selectedTime": "Période",
+      "dataNotice": "L'analyse sera chargée depuis le service backend vérifié ou le cache de démonstration."
+    }
+  },
+  "analysis": {
+    "title": "Analyse des tendances & Analyse spatiale",
+    "subtitle": "Régression paramétrique, test non paramétrique de Mann-Kendall et tendances sur grille spatiale",
+    "summary": {
+      "title": "Aperçu statistique",
+      "direction": "Direction de la tendance",
+      "rate": "Taux de variation",
+      "pVal": "Valeur p de Mann-Kendall",
+      "significance": "Signification (IC 95%)",
+      "significant": "Statistiquement significatif",
+      "notSignificant": "Non statistiquement significatif",
+      "increasing": "Augmentation monotone",
+      "decreasing": "Diminution monotone",
+      "noTrend": "Aucune tendance significative"
+    },
+    "timeSeries": {
+      "title": "Série chronologique historique & Ligne de tendance",
+      "hoverDate": "Date",
+      "hoverValue": "Valeur observée",
+      "hoverClim": "Moyenne climatologique",
+      "trendlineLabel": "Ligne de tendance (Pente de Sen)",
+      "uncertaintyBand": "Bande de confiance à 95%"
+    },
+    "statistics": {
+      "title": "Vérification statistique rigoureuse",
+      "subtitle": "Valeurs issues des calculs du service backend scientifique",
+      "linearSlope": "Pente de régression linéaire",
+      "rSquared": "Coefficient de détermination (R²)",
+      "mkTau": "Tau de Mann-Kendall (τ)",
+      "mkZ": "Score Z standardisé",
+      "sensSlopeYear": "Pente de Sen (par an)",
+      "sensSlopeDecade": "Pente de Sen (par décennie)",
+      "ci95": "Intervalle de confiance à 95%",
+      "sampleCount": "Nombre d'échantillons valides",
+      "missingData": "Données manquantes ou masquées",
+      "pValueText": "Valeur p bilatérale"
+    },
+    "spatialMap": {
+      "title": "Distribution spatiale des tendances",
+      "subtitle": "Taux de variation décennal par maille géographique",
+      "legendLabel": "Magnitude de tendance / décennie"
+    },
+    "interpretation": {
+      "title": "Interprétation scientifique & Limites",
+      "what": "Qu'est-ce qui change ?",
+      "where": "Où le changement a-t-il lieu ?",
+      "magnitude": "De combien cela change-t-il ?",
+      "significance": "La tendance observée est-elle statistiquement significative ?",
+      "limitations": "Limites des données et biais observationnels connus"
+    }
+  },
+  "intelligence": {
+    "title": "Laboratoire d'intelligence environnementale",
+    "subtitle": "Matrices de corrélation multivariables, alertes d'anomalies climatologiques et synthèse comparative",
+    "tabs": {
+      "correlation": "Laboratoire de corrélation",
+      "anomalies": "Détection d'anomalies",
+      "compare": "Espace de comparaison"
+    },
+    "correlation": {
+      "title": "Matrice de corrélation multivariable",
+      "subtitle": "Quantification du couplage entre variables. La corrélation n'implique PAS la causalité.",
+      "var1": "Variable principale (Axe X)",
+      "var2": "Variable secondaire (Axe Y)",
+      "pearson": "Corrélation de Pearson (r)",
+      "spearman": "Rang de Spearman (ρ)",
+      "sampleSize": "Points couplés",
+      "lagNotice": "Calculé avec un décalage de 0 mois",
+      "scatterTitle": "Nuage de points et ajustement"
+    },
+    "anomalies": {
+      "title": "Catalogue d'anomalies climatologiques",
+      "subtitle": "Écarts standardisés (Z-Score > 2,0σ) par rapport à la climatologie 2000-2020",
+      "dateCol": "Date",
+      "varCol": "Variable",
+      "observedCol": "Observé",
+      "baselineCol": "Moyenne de référence",
+      "zScoreCol": "Z-Score",
+      "severityCol": "Sévérité",
+      "extentCol": "Étendue spatiale",
+      "moderate": "Modérée",
+      "severe": "Sévère",
+      "extreme": "Extrême"
+    },
+    "compare": {
+      "title": "Atelier d'analyse comparative",
+      "subtitle": "Comparez deux régions géographiques distinctes ou deux décennies côte à côte",
+      "regionA": "Région A",
+      "regionB": "Région B",
+      "variable": "Variable",
+      "metricComparison": "Écart des métriques clés"
+    }
+  },
+  "workspace": {
+    "title": "Scientifique IA & Espace de recherche",
+    "subtitle": "Synthèse scientifique fondée sur les preuves, bibliothèque d'études et génération de rapports PDF",
+    "tabs": {
+      "assistant": "Assistant scientifique IA",
+      "templates": "Bibliothèque d'investigations",
+      "saved": "Recherches sauvegardées",
+      "reports": "Centre de rapports"
+    },
+    "assistant": {
+      "placeholder": "Posez une question scientifique sur les tendances observées, les p-values ou les anomalies couplées...",
+      "send": "Consulter",
+      "disclaimer": "Les réponses de l'IA s'appuient uniquement sur des métriques vérifiées et des citations de la NASA.",
+      "suggestedQueries": "Questions scientifiques suggérées",
+      "query1": "Expliquez la significativité statistique des tendances NDVI à Kafr el-Cheikh et Beheira (2000–2024).",
+      "query2": "Comment évoluent les températures de surface diurnes et nocturnes (MOD11C3) dans le Delta (2000–2024) ?",
+      "query3": "Comment la température de surface (température du sol, distincte de l'air) interagit-elle avec le couvert végétal (NDVI) ?"
+    },
+    "templates": {
+      "title": "Modèles d'investigation vérifiés par les pairs",
+      "subtitle": "Protocoles d'étude standardisés prêts pour exécution immédiate",
+      "runTemplate": "Charger le modèle"
+    },
+    "saved": {
+      "title": "Configurations de recherche actives",
+      "subtitle": "Paramètres d'étude mis en cache localement (remplaçables par base de données cloud)",
+      "noSaved": "Aucune recherche enregistrée pour l'instant. Configurez-en une dans l'explorateur."
+    },
+    "reports": {
+      "title": "Rapport d'investigation scientifique",
+      "subtitle": "Synthèse automatisée prête pour publication avec attribution statistique rigoureuse",
+      "exportPdf": "Exporter le rapport PDF",
+      "exportNotice": "Interface de service prête pour intégration du moteur de génération PDF backend.",
+      "executiveSummary": "Résumé exécutif",
+      "methodology": "Méthodologie des données et statistiques",
+      "limitations": "Incertitude observationnelle et limites",
+      "citations": "Citations satellitaires et algorithmiques"
+    }
+  },
+  "variables": {
+    "ndvi": {
+      "name": "Couvert végétal (NDVI)",
+      "desc": "Mesure la densité et la santé de la végétation — des valeurs élevées indiquent des cultures plus denses.",
+      "scientificNote": "Suit les cycles agricoles hiver/été et le verdissement dans le Delta du Nil."
+    },
+    "lst": {
+      "name": "Température de surface du sol (LST)",
+      "desc": "Mesure la température de la surface terrestre elle-même (et non de l'air), de jour comme de nuit.",
+      "scientificNote": "MODIS MOD11C3.061 (0,05°, 2000–2024) capte le réchauffement diurne (~10h30), le refroidissement nocturne (~22h30) et l'amplitude."
+    }
+  },
+  "lstModes": {
+    "label": "Fenêtre de mesure",
+    "day": "Jour",
+    "daySub": "~10h30 locale",
+    "night": "Nuit",
+    "nightSub": "~22h30 locale",
+    "both": "Jour & Nuit",
+    "bothSub": "Comparer Jour vs Nuit"
+  },
+  "regions": {
+    "nile_delta": "Delta du Nil (Zone d'étude complète)",
+    "kafr_el_sheikh": "Kafr el-Cheikh (Ceinture rizicole nord)",
+    "dakahlia": "Dakahlia (Centre-Est Damiette)",
+    "gharbia": "Gharbia (Cœur alluvial central)",
+    "beheira_delta": "Beheira & Ouest Noubariya",
+    "sharqia_delta": "ach-Charqia (Bassin oriental du Delta)",
+    "monufia": "Monufia (Apex supérieur inter-branches)",
+    "qalyubia": "Qalyubia (Apex sud du Delta)",
+    "damietta": "Damiette (Estuaire nord-est)",
+    "ismailia_canal": "Corridor du canal d'Ismaïlia"
+  },
+  "common": {
+    "back": "Retour",
+    "next": "Suivant",
+    "apply": "Appliquer",
+    "reset": "Réinitialiser",
+    "loading": "Chargement des données scientifiques...",
+    "error": "Erreur de chargement des données scientifiques",
+    "retry": "Réessayer",
+    "search": "Rechercher...",
+    "select": "Sélectionner",
+    "close": "Fermer",
+    "language": "Langue",
+    "allRightsReserved": "NASA Space Apps Challenge 2026. Conçu selon les principes de la science ouverte."
+  }
+}

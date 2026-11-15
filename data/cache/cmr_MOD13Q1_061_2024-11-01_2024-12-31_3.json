@@ -1,0 +1,21 @@
+{
+  "variableId": "ndvi",
+  "productCode": "MOD13Q1.061",
+  "doi": "10.5067/MODIS/MOD13Q1.061",
+  "spatialResolution": "250 m (Sinusoidal Grid h20v05)",
+  "temporalResolution": "16-day composite (aggregated to monthly/seasonal/annual)",
+  "count": 1,
+  "granules": [
+    {
+      "id": "G3359056746-LPCLOUD",
+      "title": "MOD13Q1.A2024353.h20v05.061.2025004013120",
+      "timeStart": "2024-12-18T00:00:00.000Z",
+      "timeEnd": "2025-01-02T23:59:59.000Z",
+      "SizeMB": "128.4161787033081",
+      "dataUrl": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/MOD13Q1.A2024353.h20v05.061.2025004013120/MOD13Q1.A2024353.h20v05.061.2025004013120.hdf",
+      "opendapUrl": "https://opendap.earthdata.nasa.gov/collections/C1748066515-LPCLOUD/granules/MOD13Q1.A2024353.h20v05.061.2025004013120",
+      "collectionConceptId": "C1748066515-LPCLOUD"
+    }
+  ],
+  "retrievedAt": "2026-11-13T01:10:03.068172+00:00"
+}

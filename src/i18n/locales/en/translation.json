@@ -1,0 +1,414 @@
+{
+  "nav": {
+    "brand": "TrendScope",
+    "tagline": "Earth System Investigation",
+    "landing": "Landing",
+    "overview": "Overview",
+    "explorer": "Earth Explorer",
+    "analysis": "Trend Analysis",
+    "intelligence": "Intelligence Lab",
+    "workspace": "AI Scientist",
+    "reports": "Reports",
+    "settings": "Settings",
+    "signIn": "Sign In",
+    "getStarted": "Get Started",
+    "startInvestigation": "Start Investigation",
+    "exploreEarth": "Explore Earth"
+  },
+  "status": {
+    "demoData": "DEMO DATA",
+    "demoTooltip": "Demonstration simulation. Not verified real-time NASA observation.",
+    "verified": "VERIFIED NASA ARCHIVE",
+    "pendingBackend": "PENDING BACKEND INTEGRATION",
+    "unavailable": "DATA UNAVAILABLE",
+    "online": "ONLINE",
+    "demoArchive": "DEMO ARCHIVE"
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "NASA EARTH OBSERVATION & PLANETARY INTELLIGENCE",
+      "heading": "Understanding a Changing Planet.",
+      "subheading": "Explore Earth's environmental changes through scientific data, geographic intelligence, and statistical discovery.",
+      "ctaPrimary": "Start Investigation",
+      "ctaSecondary": "Explore Earth",
+      "statusBadge": "NASA Space Apps Challenge 2026 Edition"
+    },
+    "workflow": {
+      "title": "Scientific Investigation Framework",
+      "subtitle": "From satellite observation to peer-verifiable statistical understanding",
+      "steps": {
+        "discover": {
+          "title": "DISCOVER",
+          "desc": "Explore Earth observation datasets across calibrated satellite constellations and reanalysis models."
+        },
+        "investigate": {
+          "title": "INVESTIGATE",
+          "desc": "Analyze environmental changes across multi-decadal time spans and custom geographic regions."
+        },
+        "understand": {
+          "title": "UNDERSTAND",
+          "desc": "Interpret scientific evidence with non-parametric statistics and rigorous AI-assisted synthesis."
+        }
+      }
+    },
+    "capabilities": {
+      "title": "Platform Capabilities",
+      "subtitle": "Built specifically for climatologists, geoscientists, and environmental researchers",
+      "items": {
+        "explorer": {
+          "title": "Earth Exploration",
+          "desc": "High-performance vector and raster geospatial navigation with country and biome boundaries."
+        },
+        "discovery": {
+          "title": "NASA Data Discovery",
+          "desc": "Direct indexing across MODIS Terra Vegetation (MOD13Q1) and Day/Night Land Surface Temperature (MOD11C3)."
+        },
+        "trends": {
+          "title": "Trend Detection",
+          "desc": "Parametric & non-parametric trend quantification with missing-value resilience."
+        },
+        "geographic": {
+          "title": "Geographic Analysis",
+          "desc": "Sub-national and custom bounding box spatial slicing with polygon GeoJSON ingestion."
+        },
+        "significance": {
+          "title": "Statistical Significance",
+          "desc": "Mann-Kendall monotonic trend tests, Sen's slope estimator, and 95% confidence intervals."
+        },
+        "correlation": {
+          "title": "Correlation Analysis",
+          "desc": "Pearson r & Spearman rank cross-variable correlation matrices with seasonal lag metrics."
+        },
+        "anomaly": {
+          "title": "Anomaly Detection",
+          "desc": "Historical baseline z-score climatology departures for extreme drought and thermal events."
+        },
+        "aiScientist": {
+          "title": "Scientific AI Assistant",
+          "desc": "Context-grounded natural language synthesis strictly referencing verified satellite metrics."
+        }
+      }
+    },
+    "dataSources": {
+      "title": "Integrated Earth Observation Systems",
+      "subtitle": "Connecting to mission-grade NASA Earth science data archives",
+      "modis": {
+        "name": "MODIS Terra (MOD13Q1)",
+        "desc": "250 m vegetation index capturing crop greening, biomass vigor, and phenological cycles."
+      },
+      "gpm": {
+        "name": "MODIS Terra LST Day (MOD11C3)",
+        "desc": "Daytime radiative land surface skin temperature (~10:30 LT) measured from space."
+      },
+      "gldas": {
+        "name": "MODIS Terra LST Night (MOD11C3)",
+        "desc": "Nighttime surface skin cooling and retained thermal energy (~22:30 LT)."
+      },
+      "merra": {
+        "name": "Diurnal Surface Coupling",
+        "desc": "Joint Day vs. Night thermal spread and NDVI canopy cooling response (2000–2024)."
+      },
+      "power": {
+        "name": "NASA EOSDIS AppEEARS",
+        "desc": "Quality-filtered LP DAAC satellite archives aggregated over Nile Delta polygons."
+      }
+    },
+    "featured": {
+      "title": "Featured Investigations",
+      "subtitle": "Pre-configured case studies demonstrating cross-variable planetary analysis",
+      "badge": "EXAMPLE INVESTIGATION TEMPLATE",
+      "items": {
+        "egyptTemp": {
+          "title": "Are land surface temperatures rising day or night in the Delta?",
+          "desc": "Multi-decadal MODIS MOD11C3 land surface temperature trend detection across Nile Delta governorates.",
+          "variable": "Land Surface Temperature (LST)",
+          "region": "Egypt (Nile Delta)"
+        },
+        "northAfricaPrecip": {
+          "title": "How is Delta vegetation cover evolving over 2000–2024?",
+          "desc": "Evaluating cropland greening and coastal salinity compression using MODIS MOD13Q1 250 m NDVI.",
+          "variable": "Vegetation Cover (NDVI)",
+          "region": "Nile Delta Subregions"
+        },
+        "soilMoisture": {
+          "title": "How do Daytime and Nighttime surface temperatures diverge?",
+          "desc": "Comparing solar daytime heating (~10:30 LT) against nighttime surface cooling (~22:30 LT) across 2000–2024.",
+          "variable": "LST Day & Night",
+          "region": "Nile Delta Governorates"
+        },
+        "anomalyDiscovery": {
+          "title": "Where are significant environmental trends occurring?",
+          "desc": "Scanning continental grid cells with Mann-Kendall p < 0.01 for coupled heat and drought signals.",
+          "variable": "Multi-Variable Anomaly",
+          "region": "Mediterranean Basin"
+        }
+      }
+    },
+    "cta": {
+      "title": "Ready to Investigate Earth's Changing Climate?",
+      "desc": "Launch the exploration workbench to analyze NASA datasets or generate evidence-grounded reports.",
+      "button": "Launch Earth Explorer"
+    },
+    "footer": {
+      "description": "TrendScope is an advanced Earth system science platform built for the NASA Space Apps Challenge. Designed to provide transparent, peer-verifiable environmental intelligence.",
+      "disclaimer": "This platform utilizes NASA Earth observation data sources. Demonstration data labels indicate synthetic data for development verification.",
+      "quickLinks": "Platform Modules",
+      "dataAttribution": "Data Governance",
+      "rights": "All rights reserved. Designed for Open Science."
+    }
+  },
+  "dashboard": {
+    "title": "Nile Delta Agricultural Overview",
+    "subtitle": "Continuous monitoring of Nile Delta Vegetation Cover (NDVI 250 m) & Land Surface Temperature (LST 0.05°)",
+    "metrics": {
+      "activeInvestigations": "Active Investigations",
+      "variablesTracked": "Environmental Variables",
+      "regionsExplored": "Monitored Regions",
+      "satelliteDatasets": "NASA Datasets Indexed"
+    },
+    "earthOverview": {
+      "title": "Nile Delta Geospatial Monitor",
+      "subtitle": "Interactive MODIS MOD13Q1 (250 m NDVI) & MOD11C3 (0.05° Day/Night LST) clipped to Nile Delta",
+      "layerSelect": "Active Layer",
+      "projection": "Projection: Web Mercator (EPSG:3857)"
+    },
+    "indicators": {
+      "title": "Core Nile Delta Telemetry",
+      "subtitle": "Live regional averages clipped to the Nile Delta study area (MODIS NDVI 250 m vs MOD11C3 LST 0.05°)"
+    },
+    "recentInvestigations": {
+      "title": "Recent Investigations",
+      "subtitle": "Saved research workflows and computational analyses",
+      "empty": "No saved investigations found. Create one from the Earth Explorer.",
+      "openAction": "Open Analysis",
+      "statusCol": "Status",
+      "variableCol": "Variable",
+      "regionCol": "Region",
+      "dateCol": "Date",
+      "actionsCol": "Actions"
+    },
+    "discoveries": {
+      "title": "Latest Planetary Anomalies",
+      "subtitle": "Statistically flagged deviations detected across monitored grids"
+    }
+  },
+  "explorer": {
+    "title": "Earth Explorer & Data Discovery",
+    "subtitle": "Select geography, environmental indicators, and satellite mission archives",
+    "geoPanel": {
+      "title": "Geographic Region",
+      "searchPlaceholder": "Search region, country, coordinates...",
+      "loadGeoJson": "Load Custom GeoJSON",
+      "customAdapterActive": "GeoJSON Adapter Loaded",
+      "bbox": "Bounding Box",
+      "center": "Center Coordinates",
+      "area": "Monitored Area"
+    },
+    "variablePanel": {
+      "title": "Environmental Variable",
+      "subtitle": "Select the physical measurement to inspect"
+    },
+    "datasetPanel": {
+      "title": "NASA Dataset Selection",
+      "subtitle": "Calibrated satellite archives and reanalysis products"
+    },
+    "timePanel": {
+      "title": "Temporal Window & Aggregation",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "aggregation": "Temporal Aggregation",
+      "daily": "Daily",
+      "monthly": "Monthly Mean",
+      "seasonal": "Seasonal Mean",
+      "annual": "Annual Average"
+    },
+    "configSummary": {
+      "title": "Investigation Configuration",
+      "launchButton": "Start Trend Analysis",
+      "selectedRegion": "Region",
+      "selectedVariable": "Variable",
+      "selectedDataset": "Dataset",
+      "selectedTime": "Timeframe",
+      "dataNotice": "Analysis will pull from verified backend service or demo cache."
+    }
+  },
+  "analysis": {
+    "title": "Trend & Geographic Analysis",
+    "subtitle": "Parametric regression, non-parametric Mann-Kendall test, and spatial grid trends",
+    "summary": {
+      "title": "Statistical Overview",
+      "direction": "Trend Direction",
+      "rate": "Rate of Change",
+      "pVal": "Mann-Kendall p-value",
+      "significance": "Significance (95% CI)",
+      "significant": "Statistically Significant",
+      "notSignificant": "Not Statistically Significant",
+      "increasing": "Monotonic Increase",
+      "decreasing": "Monotonic Decrease",
+      "noTrend": "No Significant Trend"
+    },
+    "timeSeries": {
+      "title": "Historical Time Series & Trendline",
+      "hoverDate": "Date",
+      "hoverValue": "Observed Value",
+      "hoverClim": "Climatology Mean",
+      "trendlineLabel": "Sen's Slope Trendline",
+      "uncertaintyBand": "95% Confidence Band"
+    },
+    "statistics": {
+      "title": "Rigorous Statistical Verification",
+      "subtitle": "Values provided via scientific backend calculations",
+      "linearSlope": "Linear Regression Slope",
+      "rSquared": "Coefficient of Determination (R²)",
+      "mkTau": "Mann-Kendall Tau (τ)",
+      "mkZ": "Standardized Z-Score",
+      "sensSlopeYear": "Sen's Slope (per Year)",
+      "sensSlopeDecade": "Sen's Slope (per Decade)",
+      "ci95": "95% Confidence Interval",
+      "sampleCount": "Valid Sample Points",
+      "missingData": "Missing / Masked Data",
+      "pValueText": "Two-tailed p-value"
+    },
+    "spatialMap": {
+      "title": "Spatial Trend Distribution",
+      "subtitle": "Grid-cell decadal rate of change",
+      "legendLabel": "Trend Magnitude / Decade"
+    },
+    "interpretation": {
+      "title": "Scientific Interpretation & Limitations",
+      "what": "What is changing?",
+      "where": "Where is it changing?",
+      "magnitude": "How much is it changing?",
+      "significance": "Is it statistically significant?",
+      "limitations": "Data Limitations & Known Biases"
+    }
+  },
+  "intelligence": {
+    "title": "Environmental Intelligence Lab",
+    "subtitle": "Multivariate correlation matrices, climatological anomaly alerts, and comparative synthesis",
+    "tabs": {
+      "correlation": "Correlation Lab",
+      "anomalies": "Anomaly Detection",
+      "compare": "Comparison Workspace"
+    },
+    "correlation": {
+      "title": "Multivariate Correlation Matrix",
+      "subtitle": "Quantifying coupling between environmental variables. Correlation does NOT imply causation.",
+      "var1": "Primary Variable (X-axis)",
+      "var2": "Secondary Variable (Y-axis)",
+      "pearson": "Pearson Correlation (r)",
+      "spearman": "Spearman Rank (ρ)",
+      "sampleSize": "Coupled Timepoints",
+      "lagNotice": "Calculated with 0-month lag",
+      "scatterTitle": "Cross-Variable Scatter Plot & Fit"
+    },
+    "anomalies": {
+      "title": "Climatological Anomaly Catalog",
+      "subtitle": "Standardized deviation anomalies (Z-Score > 2.0σ) against 2000-2020 climatology",
+      "dateCol": "Date",
+      "varCol": "Variable",
+      "observedCol": "Observed",
+      "baselineCol": "Baseline Mean",
+      "zScoreCol": "Z-Score",
+      "severityCol": "Severity",
+      "extentCol": "Spatial Extent",
+      "moderate": "Moderate",
+      "severe": "Severe",
+      "extreme": "Extreme"
+    },
+    "compare": {
+      "title": "Comparative Analysis Workbench",
+      "subtitle": "Compare 2 distinct geographic regions or different decades side-by-side",
+      "regionA": "Region A",
+      "regionB": "Region B",
+      "variable": "Variable",
+      "metricComparison": "Key Metric Disparity"
+    }
+  },
+  "workspace": {
+    "title": "AI Scientist & Research Workspace",
+    "subtitle": "Evidence-grounded scientific synthesis, investigation templates, and PDF report generation",
+    "tabs": {
+      "assistant": "AI Scientist Assistant",
+      "templates": "Investigation Library",
+      "saved": "Saved Research",
+      "reports": "Reports Center"
+    },
+    "assistant": {
+      "placeholder": "Ask a scientific question about observed trends, p-values, or coupled anomalies...",
+      "send": "Inquire",
+      "disclaimer": "AI answers are grounded solely on verified backend metrics and NASA citations. Hallucinations are actively constrained.",
+      "suggestedQueries": "Suggested Scientific Inquiries",
+      "query1": "Explain the statistical significance of NDVI trends in Kafr El-Sheikh and Beheira across 2000–2024.",
+      "query2": "How do Daytime and Nighttime Land Surface Temperatures (MOD11C3) differ across the Nile Delta during 2000–2024?",
+      "query3": "How does Land Surface Temperature (ground skin temperature) interact with MODIS Vegetation Cover (NDVI) across 2000–2024?"
+    },
+    "templates": {
+      "title": "Peer-Verified Investigation Templates",
+      "subtitle": "Standardized study designs ready for immediate execution",
+      "runTemplate": "Load Template"
+    },
+    "saved": {
+      "title": "Active Research Configurations",
+      "subtitle": "Locally cached study parameters (replaceable by cloud database integration)",
+      "noSaved": "No saved investigations yet. Configure one in the Earth Explorer."
+    },
+    "reports": {
+      "title": "Scientific Investigation Report",
+      "subtitle": "Automated publication-ready summary with statistical attribution",
+      "exportPdf": "Export PDF Report",
+      "exportNotice": "Report generation service interface ready for backend PDF worker integration.",
+      "executiveSummary": "Executive Summary",
+      "methodology": "Data & Statistical Methodology",
+      "limitations": "Observational Uncertainty & Limitations",
+      "citations": "Satellite & Algorithm Citations"
+    }
+  },
+  "variables": {
+    "ndvi": {
+      "name": "Vegetation Cover (NDVI)",
+      "desc": "Measures vegetation density, vigor, and greenness — higher values indicate denser, healthier crops.",
+      "scientificNote": "Tracks double-season Nile Delta crop vigor (winter wheat/berseem and summer rice/maize), reclamation greening, and stress."
+    },
+    "lst": {
+      "name": "Land Surface Temperature (LST)",
+      "desc": "Measures the radiative skin temperature of the land surface itself (distinct from air temperature), observed day and night.",
+      "scientificNote": "MODIS MOD11C3.061 (0.05° CMG, 2000–2024) captures Daytime (~10:30 LT) heating, Nighttime (~22:30 LT) cooling, and Day–Night thermal spread."
+    }
+  },
+  "lstModes": {
+    "label": "Measurement Window",
+    "day": "Daytime",
+    "daySub": "~10:30 LT pass",
+    "night": "Nighttime",
+    "nightSub": "~22:30 LT pass",
+    "both": "Day & Night",
+    "bothSub": "Compare Day vs Night"
+  },
+  "regions": {
+    "nile_delta": "Nile Delta (Full Study Area)",
+    "kafr_el_sheikh": "Kafr El-Sheikh (Northern Rice Belt)",
+    "dakahlia": "Dakahlia (East-Central Damietta Basin)",
+    "gharbia": "Gharbia (Central Alluvial Core)",
+    "beheira_delta": "Beheira & West Nubariya Reclamation",
+    "sharqia_delta": "Sharqia (Eastern Delta Basin)",
+    "monufia": "Monufia (Upper Inter-Branch Apex)",
+    "qalyubia": "Qalyubia (Southern Delta Apex)",
+    "damietta": "Damietta (Northeast Coastal & Estuary)",
+    "ismailia_canal": "Ismailia Canal Eastern Corridor"
+  },
+  "common": {
+    "back": "Back",
+    "next": "Next",
+    "apply": "Apply",
+    "reset": "Reset",
+    "loading": "Loading scientific dataset...",
+    "error": "Error loading scientific telemetry",
+    "retry": "Retry Request",
+    "search": "Search...",
+    "select": "Select",
+    "close": "Close",
+    "language": "Language",
+    "allRightsReserved": "NASA Space Apps Challenge 2026. Built with Earth Science Principles."
+  }
+}

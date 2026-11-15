@@ -1,0 +1,414 @@
+{
+  "nav": {
+    "brand": "TrendScope",
+    "tagline": "Erdsystem-Untersuchungsplattform",
+    "landing": "Startseite",
+    "overview": "Übersicht",
+    "explorer": "Erd-Explorer",
+    "analysis": "Trendanalyse",
+    "intelligence": "Intelligenzlabor",
+    "workspace": "KI-Wissenschaftler",
+    "reports": "Berichte",
+    "settings": "Einstellungen",
+    "signIn": "Anmelden",
+    "getStarted": "Loslegen",
+    "startInvestigation": "Untersuchung starten",
+    "exploreEarth": "Erde erkunden"
+  },
+  "status": {
+    "demoData": "DEMO-DATEN",
+    "demoTooltip": "Veranschaulichende Simulation. Keine verifizierte NASA-Echtzeitbeobachtung.",
+    "verified": "VERIFIZIERTES NASA-ARCHIV",
+    "pendingBackend": "AUSSTEHENDE BACKEND-INTEGRATION",
+    "unavailable": "DATEN NICHT VERFÜGBAR",
+    "online": "ONLINE",
+    "demoArchive": "DEMO-ARCHIV"
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "NASA-ERDBEOBACHTUNG & PLANETARE INTELLIGENZ",
+      "heading": "Einen sich verändernden Planeten verstehen.",
+      "subheading": "Erforschen Sie die Umweltveränderungen der Erde durch wissenschaftliche Daten, geografische Intelligenz und statistische Entdeckungen.",
+      "ctaPrimary": "Untersuchung starten",
+      "ctaSecondary": "Erde erkunden",
+      "statusBadge": "NASA Space Apps Challenge 2026 Edition"
+    },
+    "workflow": {
+      "title": "Wissenschaftlicher Untersuchungsrahmen",
+      "subtitle": "Von Satellitenbeobachtungen bis zu überprüfbaren statistischen Erkenntnissen",
+      "steps": {
+        "discover": {
+          "title": "ENTDECKEN",
+          "desc": "Erkunden Sie Erdbeobachtungsdatensätze kalibrierter Satellitenkonstellationen und Reanalysemodelle."
+        },
+        "investigate": {
+          "title": "UNTERSUCHEN",
+          "desc": "Analysieren Sie Umweltveränderungen über mehrere Jahrzehnte und in benutzerdefinierten geografischen Regionen."
+        },
+        "understand": {
+          "title": "VERSTEHEN",
+          "desc": "Interpretieren Sie wissenschaftliche Belege mit nicht-parametrischer Statistik und KI-gestützter Synthese."
+        }
+      }
+    },
+    "capabilities": {
+      "title": "Plattformfunktionen",
+      "subtitle": "Speziell entwickelt für Klimatologen, Geowissenschaftler und Umweltforscher",
+      "items": {
+        "explorer": {
+          "title": "Geografische Erkundung",
+          "desc": "Hochleistungsfähige Vektor- und Raster-Geonavigation mit Landes- und Biomgrenzen."
+        },
+        "discovery": {
+          "title": "NASA-Datenentdeckung",
+          "desc": "Direkte Indizierung über MODIS Terra Vegetation (MOD13Q1) und Tag-/Nacht-LST (MOD11C3)."
+        },
+        "trends": {
+          "title": "Trenderkennung",
+          "desc": "Parametrische und nicht-parametrische Trendquantifizierung mit robuster Fehlwertbehandlung."
+        },
+        "geographic": {
+          "title": "Geografische Analyse",
+          "desc": "Räumliche Zerlegung auf subnationaler Ebene mit nativer GeoJSON-Unterstützung."
+        },
+        "significance": {
+          "title": "Statistische Signifikanz",
+          "desc": "Monotone Mann-Kendall-Trendtests, Sen's Steigungsschätzer und 95%-Konfidenzintervalle."
+        },
+        "correlation": {
+          "title": "Korrelationsanalyse",
+          "desc": "Pearson-r- und Spearman-Rangkorrelationsmatrizen mit saisonalen Verzögerungsmetriken."
+        },
+        "anomaly": {
+          "title": "Anomalieerkennung",
+          "desc": "Z-Score-Klimatologieabweichungen für extreme Dürre- und thermische Ereignisse."
+        },
+        "aiScientist": {
+          "title": "Wissenschaftlicher KI-Assistent",
+          "desc": "Kontextbezogene Synthese unter ausschließlicher Bezugnahme auf verifizierte Satellitenmetriken."
+        }
+      }
+    },
+    "dataSources": {
+      "title": "Integrierte Erdbeobachtungssysteme",
+      "subtitle": "Direkte Anbindung an wissenschaftliche Erdbeobachtungsarchive der NASA",
+      "modis": {
+        "name": "MODIS Terra (MOD13Q1)",
+        "desc": "250-m-Vegetationsindex für Pflanzenvitalität, Dichte und Erntezyklen."
+      },
+      "gpm": {
+        "name": "MODIS Terra LST Tag (MOD11C3)",
+        "desc": "Radiometrische Landoberflächentemperatur bei Tag (~10:30 Uhr Ortszeit)."
+      },
+      "gldas": {
+        "name": "MODIS Terra LST Nacht (MOD11C3)",
+        "desc": "Nächtliche Oberflächenabkühlung und Wärmespeicherung (~22:30 Uhr Ortszeit)."
+      },
+      "merra": {
+        "name": "Tag-Nacht & NDVI-Kopplung",
+        "desc": "Tagesgang-Spreizung (Tag − Nacht) und Kühlungswirkung durch Pflanzenbedeckung (2000–2024)."
+      },
+      "power": {
+        "name": "NASA EOSDIS AppEEARS",
+        "desc": "Qualitätsgeprüfte LP DAAC Satellitenarchive für Nildelta-Polygone."
+      }
+    },
+    "featured": {
+      "title": "Ausgewählte Untersuchungen",
+      "subtitle": "Vorkonfigurierte Fallstudien zur Demonstration multivariater planetarer Analysen",
+      "badge": "BEISPIEL-UNTERSUCHUNGSVORLAGE",
+      "items": {
+        "egyptTemp": {
+          "title": "Steigt die Oberflächentemperatur im Delta tags oder nachts?",
+          "desc": "Mehrdekadische MODIS MOD11C3 Trendanalyse in den Gouvernements des Nildeltas.",
+          "variable": "Landoberflächentemperatur (LST)",
+          "region": "Ägypten (Nildelta)"
+        },
+        "northAfricaPrecip": {
+          "title": "Wie entwickelt sich die Vegetation im Nildelta 2000–2024?",
+          "desc": "Bewertung von Begrünung und Küstendruck mit MODIS MOD13Q1 250 m NDVI.",
+          "variable": "Vegetationsbedeckung (NDVI)",
+          "region": "Nildelta-Subregionen"
+        },
+        "soilMoisture": {
+          "title": "Wie unterscheiden sich Tag- und Nachttemperaturen der Oberfläche?",
+          "desc": "Direkter Vergleich zwischen Tagesaufheizung und nächtlicher Abkühlung 2000–2024.",
+          "variable": "LST Tag & Nacht",
+          "region": "Nildelta-Gouvernements"
+        },
+        "anomalyDiscovery": {
+          "title": "Wo treten signifikante Umwelttrends auf?",
+          "desc": "Kontinentales Gitterzellen-Scanning mit Mann-Kendall p < 0.01 für gekoppelte Hitze- und Dürresignale.",
+          "variable": "Multivariate Anomalie",
+          "region": "Mittelmeerraum"
+        }
+      }
+    },
+    "cta": {
+      "title": "Bereit, den Klimawandel unseres Planeten zu untersuchen?",
+      "desc": "Starten Sie die Analyse-Workbench, um NASA-Datensätze zu erforschen oder evidenzbasierte Berichte zu erstellen.",
+      "button": "Erd-Explorer starten"
+    },
+    "footer": {
+      "description": "TrendScope ist eine fortschrittliche Erdsystemwissenschafts-Plattform für die NASA Space Apps Challenge zur transparenten, reproduzierbaren Umweltanalyse.",
+      "disclaimer": "Diese Plattform nutzt NASA-Erdbeobachtungsdaten. Demo-Kennzeichnungen weisen auf synthetische Entwicklungsdaten hin.",
+      "quickLinks": "Plattformmodule",
+      "dataAttribution": "Datengovernance",
+      "rights": "Alle Rechte vorbehalten. Entwickelt für Open Science."
+    }
+  },
+  "dashboard": {
+    "title": "Nildelta Agrar- & Systemübersicht",
+    "subtitle": "Kontinuierliche Überwachung von Nildelta Vegetationsdecke (NDVI 250 m) & Landoberflächentemperatur (LST 0.05°)",
+    "metrics": {
+      "activeInvestigations": "Aktive Untersuchungen",
+      "variablesTracked": "Umweltvariablen",
+      "regionsExplored": "Überwachte Regionen",
+      "satelliteDatasets": "Indizierte NASA-Datensätze"
+    },
+    "earthOverview": {
+      "title": "Geospatialer Nildelta-Monitor",
+      "subtitle": "Interaktive MODIS MOD13Q1 (250 m NDVI) & MOD11C3 (0.05° Tag/Nacht LST) Projektion für das Nildelta",
+      "layerSelect": "Aktive Ebene",
+      "projection": "Projektion: Web Mercator (EPSG:3857)"
+    },
+    "indicators": {
+      "title": "Nildelta Kerntelemetrie",
+      "subtitle": "Räumliche Mittelwerte über das Nildelta (MODIS NDVI 250 m vs. MOD11C3 LST 0.05°)"
+    },
+    "recentInvestigations": {
+      "title": "Kürzliche Untersuchungen",
+      "subtitle": "Gespeicherte Forschungsabläufe und Berechnungsanalysen",
+      "empty": "Keine gespeicherten Untersuchungen gefunden. Erstellen Sie eine im Erd-Explorer.",
+      "openAction": "Analyse öffnen",
+      "statusCol": "Status",
+      "variableCol": "Variable",
+      "regionCol": "Region",
+      "dateCol": "Datum",
+      "actionsCol": "Aktionen"
+    },
+    "discoveries": {
+      "title": "Neueste planetare Anomalien",
+      "subtitle": "Statistisch signifikante Abweichungen in überwachten Gitterzellen"
+    }
+  },
+  "explorer": {
+    "title": "Erd-Explorer & Datenentdeckung",
+    "subtitle": "Wählen Sie Geografie, Umweltindikatoren und Satellitenmissionen",
+    "geoPanel": {
+      "title": "Geografische Region",
+      "searchPlaceholder": "Region, Land oder Koordinaten suchen...",
+      "loadGeoJson": "Eigenes GeoJSON laden",
+      "customAdapterActive": "GeoJSON-Adapter aktiv",
+      "bbox": "Begrenzungsrahmen (BBox)",
+      "center": "Zentrumskoordinaten",
+      "area": "Überwachte Fläche"
+    },
+    "variablePanel": {
+      "title": "Umweltvariable",
+      "subtitle": "Wählen Sie den zu untersuchenden physikalischen Parameter"
+    },
+    "datasetPanel": {
+      "title": "NASA-Datensatzauswahl",
+      "subtitle": "Kalibrierte Satellitenarchive und Reanalyseprodukte"
+    },
+    "timePanel": {
+      "title": "Zeitfenster & Aggregation",
+      "startDate": "Startdatum",
+      "endDate": "Enddatum",
+      "aggregation": "Zeitliche Aggregation",
+      "daily": "Täglich",
+      "monthly": "Monatsmittel",
+      "seasonal": "Saisonales Mittel",
+      "annual": "Jahresdurchschnitt"
+    },
+    "configSummary": {
+      "title": "Untersuchungskonfiguration",
+      "launchButton": "Trendanalyse starten",
+      "selectedRegion": "Region",
+      "selectedVariable": "Variable",
+      "selectedDataset": "Datensatz",
+      "selectedTime": "Zeitraum",
+      "dataNotice": "Die Analyse wird vom verifizierten Backend oder dem Demo-Cache geladen."
+    }
+  },
+  "analysis": {
+    "title": "Trend- & Geografische Analyse",
+    "subtitle": "Parametrische Regression, nicht-parametrischer Mann-Kendall-Test und räumliche Trends",
+    "summary": {
+      "title": "Statistische Übersicht",
+      "direction": "Trendrichtung",
+      "rate": "Änderungsrate",
+      "pVal": "Mann-Kendall p-Wert",
+      "significance": "Signifikanz (95% KI)",
+      "significant": "Statistisch signifikant",
+      "notSignificant": "Nicht statistisch signifikant",
+      "increasing": "Monoton steigend",
+      "decreasing": "Monoton fallend",
+      "noTrend": "Kein signifikanter Trend"
+    },
+    "timeSeries": {
+      "title": "Historische Zeitreihe & Trendlinie",
+      "hoverDate": "Datum",
+      "hoverValue": "Messwert",
+      "hoverClim": "Klimatologisches Mittel",
+      "trendlineLabel": "Sen's Steigungstrendlinie",
+      "uncertaintyBand": "95%-Konfidenzband"
+    },
+    "statistics": {
+      "title": "Wissenschaftliche Verifikation",
+      "subtitle": "Werte stammen aus den Berechnungen des wissenschaftlichen Backends",
+      "linearSlope": "Lineare Regressionssteigung",
+      "rSquared": "Bestimmtheitsmaß (R²)",
+      "mkTau": "Mann-Kendall Tau (τ)",
+      "mkZ": "Standardisierter Z-Wert",
+      "sensSlopeYear": "Sen's Steigung (pro Jahr)",
+      "sensSlopeDecade": "Sen's Steigung (pro Dekade)",
+      "ci95": "95%-Konfidenzintervall",
+      "sampleCount": "Gültige Stichprobenanzahl",
+      "missingData": "Fehlende / maskierte Daten",
+      "pValueText": "Zweiseitiger p-Wert"
+    },
+    "spatialMap": {
+      "title": "Räumliche Trendverteilung",
+      "subtitle": "Dekadische Änderungsrate pro Rasterzelle",
+      "legendLabel": "Trendstärke / Dekade"
+    },
+    "interpretation": {
+      "title": "Wissenschaftliche Interpretation & Limitationen",
+      "what": "Was ändert sich?",
+      "where": "Wo findet die Veränderung statt?",
+      "magnitude": "Wie stark ist die Veränderung?",
+      "significance": "Ist der Trend statistisch signifikant?",
+      "limitations": "Datenlimitationen und bekannte Verzerrungen"
+    }
+  },
+  "intelligence": {
+    "title": "Umwelt-Intelligenzlabor",
+    "subtitle": "Multivariate Korrelationsmatrizen, Klimaanomalie-Alarme und vergleichende Synthese",
+    "tabs": {
+      "correlation": "Korrelationslabor",
+      "anomalies": "Anomalieerkennung",
+      "compare": "Vergleichs-Workspace"
+    },
+    "correlation": {
+      "title": "Multivariate Korrelationsmatrix",
+      "subtitle": "Quantifizierung von Kopplungen. Korrelation impliziert KEINE Kausalität.",
+      "var1": "Primäre Variable (X-Achse)",
+      "var2": "Sekundäre Variable (Y-Achse)",
+      "pearson": "Pearson-Korrelation (r)",
+      "spearman": "Spearman-Rangkorrelation (ρ)",
+      "sampleSize": "Gekoppelte Zeitpunkte",
+      "lagNotice": "Berechnet mit 0 Monaten Verzögerung",
+      "scatterTitle": "Kreuzvariablen-Streudiagramm & Ausgleich"
+    },
+    "anomalies": {
+      "title": "Katalog klimatologischer Anomalien",
+      "subtitle": "Standardisierte Abweichungen (Z-Score > 2.0σ) gegenüber der Klimatologie 2000-2020",
+      "dateCol": "Datum",
+      "varCol": "Variable",
+      "observedCol": "Beobachtet",
+      "baselineCol": "Basismittelwert",
+      "zScoreCol": "Z-Score",
+      "severityCol": "Schweregrad",
+      "extentCol": "Räumliche Ausdehnung",
+      "moderate": "Moderat",
+      "severe": "Schwerwiegend",
+      "extreme": "Extrem"
+    },
+    "compare": {
+      "title": "Vergleichende Analyse-Workbench",
+      "subtitle": "Vergleichen Sie 2 unterschiedliche Regionen oder Dekaden nebeneinander",
+      "regionA": "Region A",
+      "regionB": "Region B",
+      "variable": "Variable",
+      "metricComparison": "Kennzahlen-Vergleich"
+    }
+  },
+  "workspace": {
+    "title": "KI-Wissenschaftler & Forschungsarbeitsplatz",
+    "subtitle": "Evidenzbasierte Synthese, Untersuchungsvorlagen und PDF-Berichtserstellung",
+    "tabs": {
+      "assistant": "Wissenschaftlicher KI-Assistent",
+      "templates": "Untersuchungsbibliothek",
+      "saved": "Gespeicherte Forschung",
+      "reports": "Berichtszentrum"
+    },
+    "assistant": {
+      "placeholder": "Stellen Sie eine wissenschaftliche Frage zu Trends, p-Werten oder Anomalien...",
+      "send": "Anfragen",
+      "disclaimer": "Antworten basieren ausschließlich auf verifizierten Metriken und NASA-Zitationen.",
+      "suggestedQueries": "Vorgeschlagene Forschungsfragen",
+      "query1": "Erklären Sie die statistische Signifikanz der NDVI-Trends in Kafr asch-Schaich und al-Buhaira (2000–2024).",
+      "query2": "Wie unterscheiden sich Tag- und Nacht-Landoberflächentemperaturen (MOD11C3) im Nildelta (2000–2024)?",
+      "query3": "Wie hängt die Landoberflächentemperatur (Hauttemperatur, nicht Lufttemperatur) mit der Vegetationsdecke (NDVI) zusammen?"
+    },
+    "templates": {
+      "title": "Verifizierte Untersuchungsvorlagen",
+      "subtitle": "Standardisierte Studiendesigns zur sofortigen Ausführung",
+      "runTemplate": "Vorlage laden"
+    },
+    "saved": {
+      "title": "Aktive Forschungskonfigurationen",
+      "subtitle": "Lokal zwischengespeicherte Studienparameter (später per Cloud-Datenbank ersetzbar)",
+      "noSaved": "Noch keine Untersuchungen gespeichert. Konfigurieren Sie eine im Erd-Explorer."
+    },
+    "reports": {
+      "title": "Wissenschaftlicher Untersuchungsbericht",
+      "subtitle": "Publikationsreife Zusammenfassung mit vollständiger statistischer Dokumentation",
+      "exportPdf": "PDF-Bericht exportieren",
+      "exportNotice": "Die Berichtsschnittstelle ist für die Anbindung an den PDF-Generierungsdienst vorbereitet.",
+      "executiveSummary": "Zusammenfassung",
+      "methodology": "Daten- & Analysemethodik",
+      "limitations": "Beobachtungsunsicherheiten & Limitationen",
+      "citations": "Satelliten- & Algorithmenzitate"
+    }
+  },
+  "variables": {
+    "ndvi": {
+      "name": "Vegetationsdecke (NDVI)",
+      "desc": "Misst Vegetationsdichte und Pflanzengesundheit – höhere Werte bedeuten dichtere, gesündere Vegetation.",
+      "scientificNote": "Erfasst Winter- und Sommerfruchtfolgen sowie Neulandbegrünung im ägyptischen Nildelta."
+    },
+    "lst": {
+      "name": "Landoberflächentemperatur (LST)",
+      "desc": "Misst die Strahlungstemperatur der Landoberfläche selbst (nicht die Lufttemperatur), gemessen bei Tag und Nacht.",
+      "scientificNote": "MODIS MOD11C3.061 (0.05° CMG, 2000–2024) erfasst Tageserwärmung (~10:30), Nachtabkühlung (~22:30) und die Tag-Nacht-Spanne."
+    }
+  },
+  "lstModes": {
+    "label": "Messzeitraum",
+    "day": "Tagsüber",
+    "daySub": "~10:30 Ortszeit",
+    "night": "Nachts",
+    "nightSub": "~22:30 Ortszeit",
+    "both": "Tag & Nacht",
+    "bothSub": "Tag vs. Nacht"
+  },
+  "regions": {
+    "nile_delta": "Nildelta (Gesamtes Untersuchungsgebiet)",
+    "kafr_el_sheikh": "Kafr asch-Schaich (Nördlicher Reisgürtel)",
+    "dakahlia": "ad-Daqahliyya (Östliches Zentraldelta)",
+    "gharbia": "al-Gharbiyya (Zentrales Schwemmland)",
+    "beheira_delta": "al-Buhaira & West-Nubariya",
+    "sharqia_delta": "asch-Scharqiyya (Ostdelta-Becken)",
+    "monufia": "al-Minufiyya (Oberes Zwischenstromgebiet)",
+    "qalyubia": "al-Qalyubiyya (Südlicher Deltascheitel)",
+    "damietta": "Damiette (Nordöstliche Mündungszone)",
+    "ismailia_canal": "Ismailia-Kanal Korridor"
+  },
+  "common": {
+    "back": "Zurück",
+    "next": "Weiter",
+    "apply": "Anwenden",
+    "reset": "Zurücksetzen",
+    "loading": "Wissenschaftliche Daten werden geladen...",
+    "error": "Fehler beim Laden wissenschaftlicher Daten",
+    "retry": "Erneut versuchen",
+    "search": "Suchen...",
+    "select": "Auswählen",
+    "close": "Schließen",
+    "language": "Sprache",
+    "allRightsReserved": "NASA Space Apps Challenge 2026. Entwickelt nach den Prinzipien der Open Science."
+  }
+}

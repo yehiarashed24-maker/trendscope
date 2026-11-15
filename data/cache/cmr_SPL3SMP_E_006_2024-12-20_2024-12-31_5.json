@@ -1,0 +1,61 @@
+{
+  "variableId": "soil_moisture",
+  "productCode": "SPL3SMP_E.006",
+  "doi": "10.5067/M20OXIZHY3RJ",
+  "spatialResolution": "9 km EASE-Grid 2.0",
+  "temporalResolution": "Daily L-band radiometer (aggregated to monthly/seasonal/annual)",
+  "count": 5,
+  "granules": [
+    {
+      "id": "G3355631712-NSIDC_CPRD",
+      "title": "SMAP_L3_SM_P_E_20241231_R19240_001.h5",
+      "timeStart": "2024-12-31T00:00:00.000Z",
+      "timeEnd": "2024-12-31T23:59:59.999Z",
+      "SizeMB": "628.0328731536865",
+      "dataUrl": "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/SMAP/SPL3SMP_E/006/2024/12/31/SMAP_L3_SM_P_E_20241231_R19240_001.h5",
+      "opendapUrl": "https://opendap.earthdata.nasa.gov/collections/C2938664763-NSIDC_CPRD/granules/SMAP_L3_SM_P_E_20241231_R19240_001.h5",
+      "collectionConceptId": "C2938664763-NSIDC_CPRD"
+    },
+    {
+      "id": "G3361783705-NSIDC_CPRD",
+      "title": "SMAP_L3_SM_P_E_20241230_R19240_002.h5",
+      "timeStart": "2024-12-30T00:00:00.000Z",
+      "timeEnd": "2024-12-30T23:59:59.999Z",
+      "SizeMB": "641.1033048629761",
+      "dataUrl": "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/SMAP/SPL3SMP_E/006/2024/12/30/SMAP_L3_SM_P_E_20241230_R19240_002.h5",
+      "opendapUrl": "https://opendap.earthdata.nasa.gov/collections/C2938664763-NSIDC_CPRD/granules/SMAP_L3_SM_P_E_20241230_R19240_002.h5",
+      "collectionConceptId": "C2938664763-NSIDC_CPRD"
+    },
+    {
+      "id": "G3352216634-NSIDC_CPRD",
+      "title": "SMAP_L3_SM_P_E_20241229_R19240_001.h5",
+      "timeStart": "2024-12-29T00:00:00.000Z",
+      "timeEnd": "2024-12-29T23:59:59.999Z",
+      "SizeMB": "632.5374927520752",
+      "dataUrl": "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/SMAP/SPL3SMP_E/006/2024/12/29/SMAP_L3_SM_P_E_20241229_R19240_001.h5",
+      "opendapUrl": "https://opendap.earthdata.nasa.gov/collections/C2938664763-NSIDC_CPRD/granules/SMAP_L3_SM_P_E_20241229_R19240_001.h5",
+      "collectionConceptId": "C2938664763-NSIDC_CPRD"
+    },
+    {
+      "id": "G3350880566-NSIDC_CPRD",
+      "title": "SMAP_L3_SM_P_E_20241228_R19240_001.h5",
+      "timeStart": "2024-12-28T00:00:00.000Z",
+      "timeEnd": "2024-12-28T23:59:59.999Z",
+      "SizeMB": "634.0574722290039",
+      "dataUrl": "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/SMAP/SPL3SMP_E/006/2024/12/28/SMAP_L3_SM_P_E_20241228_R19240_001.h5",
+      "opendapUrl": "https://opendap.earthdata.nasa.gov/collections/C2938664763-NSIDC_CPRD/granules/SMAP_L3_SM_P_E_20241228_R19240_001.h5",
+      "collectionConceptId": "C2938664763-NSIDC_CPRD"
+    },
+    {
+      "id": "G3349347956-NSIDC_CPRD",
+      "title": "SMAP_L3_SM_P_E_20241227_R19240_001.h5",
+      "timeStart": "2024-12-27T00:00:00.000Z",
+      "timeEnd": "2024-12-27T23:59:59.999Z",
+      "SizeMB": "633.0394992828369",
+      "dataUrl": "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/SMAP/SPL3SMP_E/006/2024/12/27/SMAP_L3_SM_P_E_20241227_R19240_001.h5",
+      "opendapUrl": "https://opendap.earthdata.nasa.gov/collections/C2938664763-NSIDC_CPRD/granules/SMAP_L3_SM_P_E_20241227_R19240_001.h5",
+      "collectionConceptId": "C2938664763-NSIDC_CPRD"
+    }
+  ],
+  "retrievedAt": "2026-11-12T18:05:30.215583+00:00"
+}

@@ -1,0 +1,20 @@
+# Dependencies & environments
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local secrets (set these in Hugging Face Space Settings -> Variables and secrets)
+.env
+backend/.env
+*.db
+data/investigations.db
+
+# Note: dist/ is intentionally NOT ignored so Hugging Face Python/Gradio Spaces
+# can serve the pre-built React/Vite frontend directly via backend/main.py.
+
+# Logs & OS files
+*.log
+.DS_Store

@@ -1,0 +1,41 @@
+{
+  "variableId": "ndvi",
+  "productCode": "MOD13Q1.061",
+  "doi": "10.5067/MODIS/MOD13Q1.061",
+  "spatialResolution": "250 m (Sinusoidal Grid h20v05)",
+  "temporalResolution": "16-day composite (aggregated to monthly/seasonal/annual)",
+  "count": 3,
+  "granules": [
+    {
+      "id": "G3359056746-LPCLOUD",
+      "title": "MOD13Q1.A2024353.h20v05.061.2025004013120",
+      "timeStart": "2024-12-18T00:00:00.000Z",
+      "timeEnd": "2025-01-02T23:59:59.000Z",
+      "SizeMB": "128.4161787033081",
+      "dataUrl": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/MOD13Q1.A2024353.h20v05.061.2025004013120/MOD13Q1.A2024353.h20v05.061.2025004013120.hdf",
+      "opendapUrl": "https://opendap.earthdata.nasa.gov/collections/C1748066515-LPCLOUD/granules/MOD13Q1.A2024353.h20v05.061.2025004013120",
+      "collectionConceptId": "C1748066515-LPCLOUD"
+    },
+    {
+      "id": "G3342962788-LPCLOUD",
+      "title": "MOD13Q1.A2024337.h20v05.061.2024358224357",
+      "timeStart": "2024-12-02T00:00:00.000Z",
+      "timeEnd": "2024-12-17T23:59:59.000Z",
+      "SizeMB": "123.97810173034668",
+      "dataUrl": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/MOD13Q1.A2024337.h20v05.061.2024358224357/MOD13Q1.A2024337.h20v05.061.2024358224357.hdf",
+      "opendapUrl": "https://opendap.earthdata.nasa.gov/collections/C1748066515-LPCLOUD/granules/MOD13Q1.A2024337.h20v05.061.2024358224357",
+      "collectionConceptId": "C1748066515-LPCLOUD"
+    },
+    {
+      "id": "G3361018644-LPCLOUD",
+      "title": "MOD13Q1.A2024321.h20v05.061.2025005223123",
+      "timeStart": "2024-11-16T00:00:00.000Z",
+      "timeEnd": "2024-12-01T23:59:59.000Z",
+      "SizeMB": "126.41213893890381",
+      "dataUrl": "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/MOD13Q1.A2024321.h20v05.061.2025005223123/MOD13Q1.A2024321.h20v05.061.2025005223123.hdf",
+      "opendapUrl": "https://opendap.earthdata.nasa.gov/collections/C1748066515-LPCLOUD/granules/MOD13Q1.A2024321.h20v05.061.2025005223123",
+      "collectionConceptId": "C1748066515-LPCLOUD"
+    }
+  ],
+  "retrievedAt": "2026-11-12T18:05:27.864236+00:00"
+}
