@@ -3,10 +3,14 @@ import uvicorn
 
 try:
     import spaces
+    from spaces.config import Config as _SpacesConfig
 
     @spaces.GPU(duration=10)
     def _hf_zerogpu_probe() -> str:
         return "ready"
+
+    if getattr(_SpacesConfig, "zero_gpu", False):
+        spaces.zero.startup()
 except ImportError:
     pass
 
