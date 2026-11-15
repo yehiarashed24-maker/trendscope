@@ -107,7 +107,7 @@ app.add_middleware(
 # ==========================================
 # 1. HEALTH & CREDENTIAL STATUS
 # ==========================================
-@app.get("/api/health")
+@app.api_route("/api/health", methods=["GET", "HEAD"])
 def health_check() -> Dict[str, Any]:
     token_status = settings.inspect_earthdata_token()
     return {
@@ -537,7 +537,7 @@ def api_not_found(full_path: str) -> None:
     raise HTTPException(status_code=404, detail=f"API endpoint '/api/{full_path}' not found.")
 
 
-@app.get("/{full_path:path}")
+@app.api_route("/{full_path:path}", methods=["GET", "HEAD"])
 def serve_unified_frontend(full_path: str) -> FileResponse:
     """
     Serves built Vite/React production assets (`dist/`) and SPA client routes from the single FastAPI server.
