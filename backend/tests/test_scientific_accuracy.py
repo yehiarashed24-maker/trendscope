@@ -176,3 +176,76 @@ def test_all_api_endpoints_and_custom_csv_pdf():
     assert r_csv_pdf.content.startswith(b"%PDF-")
     assert "farm_A_B_data_2024" in r_csv_pdf.headers["content-disposition"]
 
+
+def test_analyzer_seasonal_year_csv_and_ai_question_grounding():
+    """Verify seasonal aggregation, integer Year CSV parsing, outside-Delta trend polygon fallback, and question-aware AI Scientist."""
+    from backend.services.stats_engine import run_full_variable_analysis
+    from backend.services.ai_service import generate_ai_scientific_explanation
+
+    # 1. Seasonal aggregation (period=4)
+    res_seas = run_full_variable_analysis("nile_delta", "ndvi", "2010-01-01", "2024-12-31", aggregation="seasonal")
+    assert res_seas["config"]["timeRange"]["aggregation"] == "seasonal"
+    assert 50 <= len(res_seas["points"]) <= 65
+    assert "period=4" in res_seas["statistics"]["testMethod"]
+
+    # 2. Integer Year column CSV
+    yr_csv = "Year,NDVI_Mean\n2018,0.41\n2019,0.43\n2020,0.45\n2021,0.47\n2022,0.50\n"
+    res_yr = analyze_custom_csv_series(yr_csv, title="Annual_Crop_Table")
+    assert res_yr["statistics"]["sampleSize"] == 5
+    assert res_yr["statistics"]["trendDirection"] == "increasing"
+
+    # 3. Outside-Delta customGeoJson on /api/analysis/trend gracefully resolves to world_lat_... instead of 422
+    r_world_poly = client.post(
+        "/api/analysis/trend",
+        json={
+            "config": {
+                "regionId": "custom_world_test",
+                "variableId": "ndvi",
+                "customGeoJson": {
+                    "type": "Polygon",
+                    "coordinates": [[[-62.5, -4.0], [-61.5, -4.0], [-61.5, -3.0], [-62.5, -3.0], [-62.5, -4.0]]],
+                },
+                "timeRange": {"startDate": "2015-01-01", "endDate": "2024-12-31", "aggregation": "monthly"},
+            }
+        },
+    )
+    assert r_world_poly.status_code == 200
+    assert r_world_poly.json()["config"]["regionId"].startswith("world_lat_")
+
+    # 4. Question-aware AI Scientist: detects California + Day/Night LST even when activeConfig is nile_delta + ndvi
+    ai_lst = generate_ai_scientific_explanation(
+        prompt="How do Daytime and Nighttime Land Surface Temperatures differ in California Central Valley?",
+        language="en",
+        region_id="nile_delta",
+        variable_id="ndvi",
+        use_llm=False,
+    )
+    assert ai_lst["groundedMetrics"]["region"]["id"] == "california_central_valley"
+    assert "California Central Valley" in ai_lst["summary"]
+    assert "Daytime" in ai_lst["summary"] and "Nighttime" in ai_lst["summary"]
+
+    # 5. Question-aware AI Scientist: detects multi-region comparison (Kafr El-Sheikh and Beheira)
+    ai_cmp = generate_ai_scientific_explanation(
+        prompt="Explain the statistical significance of NDVI trends in Kafr El-Sheikh and Beheira across 2000-2024.",
+        language="en",
+        region_id="nile_delta",
+        variable_id="ndvi",
+        use_llm=False,
+    )
+    assert "kafr_el_sheikh" in ai_cmp["groundedMetrics"]["comparedRegions"]
+    assert "beheira_delta" in ai_cmp["groundedMetrics"]["comparedRegions"]
+    assert "Kafr El-Sheikh" in ai_cmp["summary"] and "Beheira" in ai_cmp["summary"]
+
+    # 6. Question-aware AI Scientist: detects Arabic question and Amazon region automatically
+    ai_ar = generate_ai_scientific_explanation(
+        prompt="ما هي دلالة اتجاه الغطاء النباتي في الأمازون؟",
+        language="en",
+        region_id="nile_delta",
+        variable_id="ndvi",
+        use_llm=False,
+    )
+    assert ai_ar["language"] == "ar"
+    assert ai_ar["groundedMetrics"]["region"]["id"] == "amazon_basin"
+    assert "الأمازون" in ai_ar["summary"]
+
+

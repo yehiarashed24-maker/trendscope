@@ -60,6 +60,42 @@ def _validate_custom_region_or_422(raw_geom: Dict[str, Any], name: str = "Custom
     return res
 
 
+def _resolve_region_and_custom_geom(
+    region_id: str,
+    custom_geom: Optional[Dict[str, Any]],
+) -> tuple[str, Optional[Dict[str, Any]]]:
+    """
+    If a custom GeoJSON geometry is provided, validate it against the Nile Delta boundary;
+    if it lies outside the Nile Delta (e.g., a worldwide custom polygon or after switching region),
+    gracefully convert its centroid into a worldwide NASA POWER / MODIS region (`world_lat_<lat>_lon_<lon>`)
+    instead of failing the analysis request with HTTP 422.
+    """
+    if not custom_geom:
+        return region_id, None
+    # If the user explicitly switched regionId to a known predefined or world region, ignore stale customGeoJson
+    if region_id and not region_id.startswith("custom_") and region_id in geography_service._regions_by_id:
+        return region_id, None
+    try:
+        geography_service.validate_and_clip_custom_geometry(custom_geom)
+        return region_id, custom_geom
+    except ValueError:
+        try:
+            from shapely.geometry import shape
+            g_type = custom_geom.get("type")
+            if g_type == "FeatureCollection":
+                geom_obj = shape(custom_geom["features"][0]["geometry"])
+            elif g_type == "Feature":
+                geom_obj = shape(custom_geom["geometry"])
+            else:
+                geom_obj = shape(custom_geom)
+            c = geom_obj.centroid
+            lat = max(-85.0, min(85.0, float(c.y)))
+            lon = max(-179.0, min(179.0, float(c.x)))
+            return f"world_lat_{lat:.2f}_lon_{lon:.2f}", None
+        except Exception:
+            return (region_id if not str(region_id).startswith("custom_") else "nile_delta"), None
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     init_db()
@@ -302,8 +338,7 @@ def analyze_ndvi(payload: Dict[str, Any]) -> Dict[str, Any]:
     region_id = payload.get("regionId", "nile_delta")
     tr = payload.get("timeRange") or {}
     custom_geom = payload.get("customGeometry") or payload.get("customGeoJson")
-    if custom_geom:
-        _validate_custom_region_or_422(custom_geom)
+    region_id, custom_geom = _resolve_region_and_custom_geom(region_id, custom_geom)
     return run_full_variable_analysis(
         region_id=region_id,
         variable_id="ndvi",
@@ -320,8 +355,7 @@ def analyze_lst(payload: Dict[str, Any]) -> Dict[str, Any]:
     tr = payload.get("timeRange") or {}
     lst_mode = payload.get("lstMode") or payload.get("lst_mode") or "day"
     custom_geom = payload.get("customGeometry") or payload.get("customGeoJson")
-    if custom_geom:
-        _validate_custom_region_or_422(custom_geom)
+    region_id, custom_geom = _resolve_region_and_custom_geom(region_id, custom_geom)
     return run_full_variable_analysis(
         region_id=region_id,
         variable_id="lst",
@@ -376,15 +410,14 @@ async def upload_and_analyze_csv(
 def analyze_trend(req: TrendAnalysisRequest) -> Dict[str, Any]:
     cfg = req.config
     var_id = cfg.variableId if cfg.variableId in ("ndvi", "lst") else "ndvi"
-    if cfg.customGeoJson:
-        _validate_custom_region_or_422(cfg.customGeoJson)
+    eff_region_id, eff_custom_geom = _resolve_region_and_custom_geom(cfg.regionId, cfg.customGeoJson)
     return run_full_variable_analysis(
-        region_id=cfg.regionId,
+        region_id=eff_region_id,
         variable_id=var_id,
         start_date=cfg.timeRange.startDate,
         end_date=cfg.timeRange.endDate,
         aggregation=cfg.timeRange.aggregation,
-        custom_geometry=cfg.customGeoJson,
+        custom_geometry=eff_custom_geom,
         lst_mode=cfg.lstMode,
     )
 
@@ -392,13 +425,12 @@ def analyze_trend(req: TrendAnalysisRequest) -> Dict[str, Any]:
 @app.post("/api/analysis/correlation")
 @app.post("/api/v1/analysis/correlation")
 def analyze_correlation(req: CorrelationRequest) -> Dict[str, Any]:
-    if req.customGeometry:
-        _validate_custom_region_or_422(req.customGeometry)
+    eff_region_id, eff_custom_geom = _resolve_region_and_custom_geom(req.regionId, req.customGeometry)
     combined = run_combined_nile_delta_investigation(
-        region_id=req.regionId,
+        region_id=eff_region_id,
         start_date=req.timeRange.startDate,
         end_date=req.timeRange.endDate,
-        custom_geometry=req.customGeometry,
+        custom_geometry=eff_custom_geom,
         lst_mode=req.lstMode,
     )
     return combined["correlation"]
@@ -434,13 +466,12 @@ def analyze_anomalies(req: AnomalyRequest) -> Dict[str, Any]:
 
 @app.post("/api/analysis/combined-investigation")
 def combined_agricultural_investigation(req: CombinedInvestigationRequest) -> Dict[str, Any]:
-    if req.customGeometry:
-        _validate_custom_region_or_422(req.customGeometry)
+    eff_region_id, eff_custom_geom = _resolve_region_and_custom_geom(req.regionId, req.customGeometry)
     return run_combined_nile_delta_investigation(
-        region_id=req.regionId,
+        region_id=eff_region_id,
         start_date=req.timeRange.startDate,
         end_date=req.timeRange.endDate,
-        custom_geometry=req.customGeometry,
+        custom_geometry=eff_custom_geom,
         lst_mode=req.lstMode,
     )
 

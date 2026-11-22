@@ -537,7 +537,7 @@ export const AnalysisPage: React.FC = () => {
                     className="inline-flex rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.08] p-0.5 gap-0.5 border-s ms-1"
                     title="Switch between Monthly Seasonal Mann-Kendall (period=12) and Annual aggregated Mann-Kendall"
                   >
-                    {(['monthly', 'annual'] as TemporalAggregation[]).map((agg) => {
+                    {(['monthly', 'seasonal', 'annual'] as TemporalAggregation[]).map((agg) => {
                       const active = activeAggregation === agg;
                       return (
                         <button
@@ -559,6 +559,10 @@ export const AnalysisPage: React.FC = () => {
                             ? lang === 'ar'
                               ? 'شهري (موسمي)'
                               : 'Monthly (Seasonal MK)'
+                            : agg === 'seasonal'
+                            ? lang === 'ar'
+                              ? 'فصلي'
+                              : 'Seasonal MK'
                             : lang === 'ar'
                             ? 'سنوي'
                             : 'Annual MK'}
@@ -710,7 +714,12 @@ export const AnalysisPage: React.FC = () => {
               {displayVariable} in <strong className="text-[#eef0f5] font-medium">{displayRegion}</strong> shows{' '}
               <strong className="text-[#eef0f5] font-medium">{trendText}</strong> across{' '}
               <span className="font-mono tabular-nums text-[#eef0f5]">{statistics.sampleCount}</span>{' '}
-              {activeAggregation === 'annual' ? 'annual' : 'monthly'} observations ({testMethodLabel}).
+              {activeAggregation === 'annual'
+                ? 'annual'
+                : activeAggregation === 'seasonal'
+                ? 'seasonal'
+                : 'monthly'}{' '}
+              observations ({testMethodLabel}).
             </p>
           </div>
 

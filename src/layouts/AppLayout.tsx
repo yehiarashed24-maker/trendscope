@@ -8,6 +8,7 @@ import { useAppStore } from '../store/useAppStore';
 export const AppLayout: React.FC = () => {
   const location = useLocation();
   const isExplorer = location.pathname === '/explorer';
+  const isAnalysis = location.pathname === '/analysis';
   const {
     pendingTourOnExplorer,
     setPendingTourOnExplorer,
@@ -53,7 +54,7 @@ export const AppLayout: React.FC = () => {
       <DetectiveTopShell
         tourStep={tourStep}
         setTourStep={setTourStep}
-        showControlBar={isExplorer}
+        showControlBar={isExplorer || isAnalysis}
       />
 
       {isExplorer ? (

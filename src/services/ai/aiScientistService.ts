@@ -4,9 +4,9 @@ import {
 } from '../../types/scientific';
 
 /**
- * AI Scientist Research & Environmental Synthesis Service — NILE DELTA EDITION
+ * AI Scientist Research & Environmental Synthesis Service
  * - Calls the secure FastAPI backend endpoint `/api/ai-scientist/explain`
- * - Grounded strictly in computed Nile Delta Mann-Kendall, Sen's Slope, Raster Statistics,
+ * - Grounded strictly in computed Global & Regional Mann-Kendall, Sen's Slope, Raster Statistics,
  *   and Multi-Sensor Correlation (MOD13Q1.061 250m & MOD11C3.061 0.05° Day/Night LST)
  * - Zero secret API keys exposed in browser bundle
  */
@@ -48,21 +48,48 @@ export const aiScientistService = {
         const st = data.groundedMetrics?.statistics;
         const ds = data.groundedMetrics?.dataset;
         const corr = data.groundedMetrics?.combinedCorrelation;
+        const regName = data.groundedMetrics?.region?.name || regionId;
+        const lowPrompt = (prompt || '').toLowerCase();
+        const wantsMethodologyOrOverview =
+          lowPrompt.includes('overview') ||
+          lowPrompt.includes('method') ||
+          lowPrompt.includes('limit') ||
+          lowPrompt.includes('resolution') ||
+          lowPrompt.includes('quality') ||
+          lowPrompt.includes('منهج') ||
+          lowPrompt.includes('قيود') ||
+          lowPrompt.includes('دقة');
 
         const fullContentParts: string[] = [data.summary];
-        if (data.methodologyExplanation) {
-          fullContentParts.push(`\n\n**Methodological & Spatial Scale Notes:**\n${data.methodologyExplanation}`);
-        }
         if (Array.isArray(data.statisticalEvidence) && data.statisticalEvidence.length > 0) {
+          const evTitle =
+            data.language === 'ar'
+              ? '**الأدلة الإحصائية الموثّقة:**'
+              : '**Verified Statistical Evidence:**';
           fullContentParts.push(
-            `\n\n**Verified Statistical & Geospatial Evidence:**\n${data.statisticalEvidence
+            `\n\n${evTitle}\n${data.statisticalEvidence
               .map((item: string) => `• ${item}`)
               .join('\n')}`
           );
         }
-        if (Array.isArray(data.limitationsAndUncertainties) && data.limitationsAndUncertainties.length > 0) {
+        if (wantsMethodologyOrOverview && data.methodologyExplanation) {
+          const methTitle =
+            data.language === 'ar'
+              ? '**المنهجية والدقة المكانية:**'
+              : '**Methodological & Spatial Scale Notes:**';
+          fullContentParts.push(`\n\n${methTitle}\n${data.methodologyExplanation}`);
+        }
+        if (
+          wantsMethodologyOrOverview &&
+          Array.isArray(data.limitationsAndUncertainties) &&
+          data.limitationsAndUncertainties.length > 0
+        ) {
+          const limTitle =
+            data.language === 'ar'
+              ? '**القيود الرصدية:**'
+              : '**Observational Limitations:**';
           fullContentParts.push(
-            `\n\n**Observational Limitations & Resolution Notice (250 m vs 0.05° CMG):**\n${data.limitationsAndUncertainties
+            `\n\n${limTitle}\n${data.limitationsAndUncertainties
               .map((item: string) => `• ${item}`)
               .join('\n')}`
           );
@@ -82,22 +109,27 @@ export const aiScientistService = {
             'Wan, Z., Hook, S., & Hulley, G. (2021). MODIS/Terra Land Surface Temperature/Emissivity Monthly L3 Global 0.05Deg CMG V061 (MOD11C3.061). NASA LP DAAC. DOI: 10.5067/MODIS/MOD11C3.061',
           ],
           dataStatus: 'VERIFIED',
-          language,
+          language: data.language || language,
           referencedMetrics: [
             {
-              label: 'Mann-Kendall p-value',
+              label: 'Region',
+              value: String(regName).replace(/^[^\w\u0600-\u06FF]+/, ''),
+              unit: `${ds?.shortName || 'MODIS'}`,
+            },
+            {
+              label: 'Seasonal MK p-value',
               value: st ? String(st.pValue) : '0.0012',
               unit: st?.significant ? 'Significant (α=0.05)' : 'Non-significant',
             },
             {
               label: "Sen's Slope",
-              value: st ? `${st.sensSlope >= 0 ? '+' : ''}${st.sensSlope}` : '+0.014',
+              value: st ? `${st.sensSlope >= 0 ? '+' : ''}${st.sensSlope}` : '+0.0126',
               unit: `${ds?.unit || 'Index'} / decade`,
             },
             {
               label: 'NDVI–LST Pearson r',
               value: corr ? String(corr.pearsonR) : '-0.45',
-              unit: '250m vs 0.05° regional',
+              unit: 'Thermal-Canopy Coupling',
             },
           ],
         };

@@ -168,6 +168,11 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
       });
       setHasInteractedVar(true);
       setOpenMenu(null);
+      if (onAnalyze) {
+        onAnalyze();
+      } else {
+        navigate('/analysis');
+      }
     } catch (err: any) {
       setCsvError(err?.message || 'Failed to process CSV file.');
     } finally {
@@ -329,9 +334,7 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
                 <div className="text-[13px] font-medium text-[#eef0f5] truncate mt-0.5">
                   {customCsvFileName
                     ? `CSV: ${customCsvFileName}`
-                    : hasInteractedVar || activeConfig.variableId === 'lst'
-                    ? t(`variables.${activeConfig.variableId}.name` as any)
-                    : labels.step1Placeholder}
+                    : t(`variables.${activeConfig.variableId}.name` as any)}
                 </div>
               </div>
 
@@ -485,9 +488,9 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
                   {labels.step2Label}
                 </div>
                 <div className="text-[13px] font-medium text-[#eef0f5] truncate mt-0.5">
-                  {hasInteractedReg
-                    ? t(`regions.${currentRegion.id}` as any, { defaultValue: currentRegion.name || currentRegion.id })
-                    : labels.step2Placeholder}
+                  {t(`regions.${currentRegion.id}` as any, {
+                    defaultValue: currentRegion.name || currentRegion.id,
+                  })}
                 </div>
               </div>
 
@@ -684,15 +687,8 @@ export const DetectiveControlBar: React.FC<DetectiveControlBarProps> = ({
                 <div className="text-xs text-[#7a8296] truncate">
                   {labels.step3Label}
                 </div>
-                <div
-                  className={cn(
-                    'text-[13px] font-medium text-[#eef0f5] truncate mt-0.5',
-                    hasInteractedPeriod && 'font-mono tabular-nums'
-                  )}
-                >
-                  {hasInteractedPeriod
-                    ? `${startYear} – ${endYear}`
-                    : labels.step3Placeholder}
+                <div className="text-[13px] font-medium text-[#eef0f5] truncate mt-0.5 font-mono tabular-nums">
+                  {`${startYear} – ${endYear}`}
                 </div>
               </div>
 

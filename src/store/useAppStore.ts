@@ -226,8 +226,20 @@ export const useAppStore = create<AppStoreState>((set, get) => ({
       PREDEFINED_REGIONS.find((r) => r.id === regionId) ||
       buildDynamicWorldRegion(regionId) ||
       PREDEFINED_REGIONS[0];
-    const updatedConfig = { ...get().activeConfig, regionId: region.id };
-    set({ currentRegion: region, activeConfig: updatedConfig });
+    const isCustomGeo = String(region.id).startsWith('custom_');
+    const updatedConfig: InvestigationConfig = {
+      ...get().activeConfig,
+      regionId: region.id,
+      customGeoJson: isCustomGeo ? get().activeConfig.customGeoJson : undefined,
+    };
+    set({
+      currentRegion: region,
+      activeConfig: updatedConfig,
+      customCsvFile: null,
+      customCsvFileName: null,
+      customCsvAnalysis: null,
+      customCsvAvailableRange: null,
+    });
   },
 
   setVariable: (varId) => {

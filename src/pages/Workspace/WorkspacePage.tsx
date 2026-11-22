@@ -17,8 +17,12 @@ import { DemoDataBadge } from '../../components/common/DemoDataBadge';
 import { EmptyState } from '../../components/common/EmptyState';
 import { useAppStore } from '../../store/useAppStore';
 import { aiScientistService } from '../../services/ai/aiScientistService';
-import { FEATURED_INVESTIGATION_TEMPLATES, ENVIRONMENTAL_VARIABLES } from '../../services/nasa/constants';
-import { AiScientistMessage, SupportedLanguage } from '../../types/scientific';
+import {
+  FEATURED_INVESTIGATION_TEMPLATES,
+  ENVIRONMENTAL_VARIABLES,
+  PREDEFINED_REGIONS,
+} from '../../services/nasa/constants';
+import { AiScientistMessage, LstMode, SupportedLanguage, VariableId } from '../../types/scientific';
 import { formatDate } from '../../utils/formatters';
 import { cn } from '../../utils/cn';
 
@@ -30,11 +34,68 @@ export const WorkspacePage: React.FC = () => {
 
   const {
     activeConfig,
+    currentRegion,
     setActiveConfig,
+    setRegion,
+    setVariable,
+    setLstMode,
+    customCsvFileName,
+    customCsvAnalysis,
     savedInvestigations,
     deleteSavedInvestigation,
     loadSavedInvestigation,
   } = useAppStore();
+
+  const activeRegionDisplayName = customCsvFileName
+    ? `CSV: ${customCsvFileName}`
+    : t(`regions.${activeConfig.regionId}` as any, {
+        defaultValue: currentRegion?.name || activeConfig.regionId,
+      });
+
+  const buildContextPayload = () => ({
+    regionId: activeConfig.regionId,
+    variableId: activeConfig.variableId,
+    lstMode: activeConfig.lstMode,
+    timeRange: activeConfig.timeRange,
+    ...(customCsvFileName && customCsvAnalysis
+      ? {
+          customCsv: {
+            fileName: customCsvFileName,
+            unit: customCsvAnalysis.unit,
+            sampleCount: customCsvAnalysis.statistics.sampleCount,
+            pValue: customCsvAnalysis.statistics.pValue,
+            slopeDecade: customCsvAnalysis.statistics.sensSlope.slopePerDecade,
+            trendDirection: customCsvAnalysis.statistics.mannKendall.trendDirection,
+            startDate: customCsvAnalysis.config.timeRange.startDate,
+            endDate: customCsvAnalysis.config.timeRange.endDate,
+          },
+        }
+      : {}),
+  });
+
+  const dynamicSuggestedQueries = customCsvFileName
+    ? lang === 'ar'
+      ? [
+          `اشرح الدلالة الإحصائية وميل ثيل-سين في ملف البيانات المرفوع (${customCsvFileName}).`,
+          `ما هي أبرز نقاط التحول أو الشذوذ الإحصائي في بيانات (${customCsvFileName})؟`,
+          `كيف يقارن اتجاه الملف المرفوع مع بيانات وكالة ناسا المرجعية؟`,
+        ]
+      : [
+          `Explain the Seasonal Mann-Kendall significance and Sen's slope for uploaded dataset ${customCsvFileName}.`,
+          `Are there any significant Pettitt regime shifts or extreme anomalies in ${customCsvFileName}?`,
+          `How does the trend in ${customCsvFileName} compare against NASA global and regional baselines?`,
+        ]
+    : lang === 'ar'
+    ? [
+        `اشرح الدلالة الإحصائية لاتجاه الغطاء النباتي (NDVI) وميل سين في ${activeRegionDisplayName} مقارنة بالمتوسط العالمي (2000–2024).`,
+        `كيف تختلف حرارة سطح الأرض النهارية والليلية (MOD11C3) في ${activeRegionDisplayName} خلال الفترة 2000–2024؟`,
+        `ما هي علاقة الارتباط بين حرارة سطح الأرض (LST) والغطاء النباتي (NDVI) وحالات الإجهاد المتزامن في ${activeRegionDisplayName}؟`,
+      ]
+    : [
+        `Explain the statistical significance of NDVI trends in ${activeRegionDisplayName} and how it compares to the Global Land Mean (2000–2024).`,
+        `How do Daytime and Nighttime Land Surface Temperatures (MOD11C3) differ across ${activeRegionDisplayName} during 2000–2024?`,
+        `How does Land Surface Temperature (ground skin temperature) interact with MODIS Vegetation Cover (NDVI) in ${activeRegionDisplayName}?`,
+      ];
 
   const currentTab =
     (searchParams.get('tab') as 'assistant' | 'templates' | 'saved') || 'assistant';
@@ -44,20 +105,15 @@ export const WorkspacePage: React.FC = () => {
   const [inputPrompt, setInputPrompt] = useState('');
   const [isAsking, setIsAsking] = useState(false);
 
-  // Initialize welcome assistant message on language change or first render
+  // Initialize welcome assistant message on language change or active study change
   useEffect(() => {
     let isMounted = true;
+    const overviewPrompt =
+      lang === 'ar'
+        ? `قدم ملخصاً علمياً موثقاً لاتجاه المؤشر النشط والدلالة الإحصائية في ${activeRegionDisplayName}.`
+        : `Provide a concise scientific overview of the active study region metrics and statistical significance for ${activeRegionDisplayName}.`;
     aiScientistService
-      .askQuestion(
-        'Provide a concise scientific overview of the active study region metrics and spatial resolution.',
-        lang,
-        {
-          regionId: activeConfig.regionId,
-          variableId: activeConfig.variableId,
-          lstMode: activeConfig.lstMode,
-          timeRange: activeConfig.timeRange,
-        }
-      )
+      .askQuestion(overviewPrompt, lang, buildContextPayload())
       .then((initialMsg) => {
         if (isMounted) {
           setMessages([initialMsg]);
@@ -67,7 +123,7 @@ export const WorkspacePage: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [lang, activeConfig.regionId, activeConfig.variableId, activeConfig.lstMode]);
+  }, [lang, activeConfig.regionId, activeConfig.variableId, activeConfig.lstMode, customCsvFileName]);
 
   const handleSendMessage = async (customText?: string) => {
     const textToSend = customText || inputPrompt;
@@ -87,12 +143,11 @@ export const WorkspacePage: React.FC = () => {
     setIsAsking(true);
 
     try {
-      const assistantReply = await aiScientistService.askQuestion(textToSend, lang, {
-        regionId: activeConfig.regionId,
-        variableId: activeConfig.variableId,
-        lstMode: activeConfig.lstMode,
-        timeRange: activeConfig.timeRange,
-      });
+      const assistantReply = await aiScientistService.askQuestion(
+        textToSend,
+        lang,
+        buildContextPayload()
+      );
       setMessages((prev) => [...prev, assistantReply]);
     } catch {
       // handled inside service
@@ -288,11 +343,7 @@ export const WorkspacePage: React.FC = () => {
               subtitle="Pre-calibrated inquiries grounded on current study region"
             >
               <div className="space-y-2">
-                {[
-                  t('workspace.assistant.query1'),
-                  t('workspace.assistant.query2'),
-                  t('workspace.assistant.query3'),
-                ].map((q, idx) => (
+                {dynamicSuggestedQueries.map((q, idx) => (
                   <button
                     key={idx}
                     type="button"
@@ -307,27 +358,73 @@ export const WorkspacePage: React.FC = () => {
 
             <DataCard
               title="Active Grounding Context"
-              subtitle="Telemetry bounds fed into synthesizer"
+              subtitle="Select or switch study region & variable fed into synthesizer"
               badge={<span className="text-xs font-mono text-[#7a8296]">Grounded</span>}
             >
-              <div className="space-y-2.5 text-xs font-sans text-[#a3a9b8]">
-                <div className="flex justify-between py-1.5 border-b border-[#eef0f5]/[0.06]">
-                  <span className="text-[#7a8296]">Selected Region</span>
-                  <span className="text-[#eef0f5] font-medium">
-                    {t(`regions.${activeConfig.regionId}` as any) || activeConfig.regionId}
-                  </span>
+              <div className="space-y-3 text-xs font-sans text-[#a3a9b8]">
+                <div className="space-y-1">
+                  <span className="text-[#7a8296] block">Selected Region</span>
+                  <select
+                    value={activeConfig.regionId}
+                    onChange={(e) => setRegion(e.target.value)}
+                    className="w-full h-8 px-2.5 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.1] text-xs text-[#eef0f5] focus:outline-none focus:border-[#38bdf8]"
+                  >
+                    {!PREDEFINED_REGIONS.some((r) => r.id === activeConfig.regionId) && (
+                      <option value={activeConfig.regionId}>{activeRegionDisplayName}</option>
+                    )}
+                    {PREDEFINED_REGIONS.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {t(`regions.${r.id}` as any, { defaultValue: r.name })}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-[#eef0f5]/[0.06]">
-                  <span className="text-[#7a8296]">Active Variable</span>
-                  <span className="text-[#eef0f5] font-medium font-mono">
-                    {t(`variables.${activeConfig.variableId}.name` as any)}
-                  </span>
+
+                <div className="space-y-1">
+                  <span className="text-[#7a8296] block">Active Variable</span>
+                  <select
+                    value={activeConfig.variableId}
+                    onChange={(e) => setVariable(e.target.value as VariableId)}
+                    className="w-full h-8 px-2.5 rounded-lg bg-[#07080d] border border-[#eef0f5]/[0.1] text-xs text-[#eef0f5] focus:outline-none focus:border-[#38bdf8]"
+                  >
+                    {ENVIRONMENTAL_VARIABLES.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        {t(`variables.${v.id}.name` as any)}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div className="flex justify-between py-1.5 border-b border-[#eef0f5]/[0.06]">
+
+                {activeConfig.variableId === 'lst' && (
+                  <div className="space-y-1">
+                    <span className="text-[#7a8296] block">LST Measurement Window</span>
+                    <div className="grid grid-cols-3 gap-1">
+                      {(['day', 'night', 'both'] as LstMode[]).map((m) => (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={() => setLstMode(m)}
+                          className={cn(
+                            'h-7 rounded-md text-[11px] font-mono capitalize border cursor-pointer',
+                            (activeConfig.lstMode || 'day') === m
+                              ? 'bg-[#1a1e28] text-[#eef0f5] border-[#38bdf8]/45'
+                              : 'bg-[#07080d] text-[#7a8296] border-[#eef0f5]/[0.08]'
+                          )}
+                        >
+                          {m}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex justify-between py-1.5 border-t border-b border-[#eef0f5]/[0.06]">
                   <span className="text-[#7a8296]">Mission Dataset</span>
-                  <span className="text-[#a3a9b8] font-mono tabular-nums text-[11px]">{activeConfig.datasetId}</span>
+                  <span className="text-[#a3a9b8] font-mono tabular-nums text-[11px]">
+                    {customCsvFileName ? `CSV (${customCsvFileName})` : activeConfig.datasetId}
+                  </span>
                 </div>
-                <div className="flex justify-between py-1.5">
+                <div className="flex justify-between py-1">
                   <span className="text-[#7a8296]">Target Language</span>
                   <span className="text-[#38bdf8] font-mono font-medium text-[11px]">{lang.toUpperCase()}</span>
                 </div>

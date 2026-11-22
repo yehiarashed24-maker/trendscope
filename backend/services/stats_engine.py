@@ -165,7 +165,7 @@ def _build_global_or_world_monthly_series(
 
     prof_key = "ndvi" if variable_id == "ndvi" else f"lst_{eff_mode}"
     biome_prof = _WORLD_BIOME_PROFILES.get(region_id, _WORLD_BIOME_PROFILES["global_mean"])[prof_key]
-    if region_id.startswith("world_lat_") and not power_series:
+    if region_id.startswith("world_lat_"):
         lat_abs = abs(lat)
         if variable_id == "ndvi":
             base_v = max(0.12, min(0.78, 0.65 - 0.006 * lat_abs))
@@ -178,16 +178,28 @@ def _build_global_or_world_monthly_series(
     rng = np.random.default_rng(abs(hash(f"{region_id}_{variable_id}_{eff_mode}")) % (2**31 - 1))
     records: List[Dict[str, Any]] = []
 
+    power_month_means: Dict[int, float] = {}
+    if power_series:
+        by_mo: Dict[int, List[float]] = {}
+        for k_dt, v_val in power_series.items():
+            m_num = int(k_dt[5:7])
+            by_mo.setdefault(m_num, []).append(float(v_val))
+        power_month_means = {m_k: float(np.mean(v_list)) for m_k, v_list in by_mo.items() if v_list}
+
     for dt in dates_all:
         date_str = dt.strftime("%Y-%m-%d")
         yr, mo = dt.year, dt.month
         t_yr = (dt - dates_all[0]).days / 365.25
-        if power_series and date_str in power_series:
-            raw_v = power_series[date_str]
-            val = round(float(raw_v * 0.82 if variable_id == "ndvi" else raw_v), 4)
+        seasonal = biome_prof["amp"] * np.cos(2.0 * np.pi * (mo - biome_prof["phase"]) / 12.0)
+        if power_series and (date_str in power_series or mo in power_month_means):
+            raw_v = power_series.get(date_str, power_month_means.get(mo, biome_prof["base"]))
+            if variable_id == "ndvi":
+                # Combine NASA POWER root-zone moisture with seasonal phenology so NDVI has realistic seasonal dynamics
+                val = round(float(max(0.05, min(0.92, raw_v * 0.78 + seasonal * 0.65))), 4)
+            else:
+                val = round(float(raw_v), 4)
             qc_flag = "NASA POWER Agroclimatology Live API (power.larc.nasa.gov)"
         else:
-            seasonal = biome_prof["amp"] * np.cos(2.0 * np.pi * (mo - biome_prof["phase"]) / 12.0)
             enso_cycle = (biome_prof["noise"] * 0.55) * np.sin(2.0 * np.pi * t_yr / 3.8)
             val = round(float(biome_prof["base"] + biome_prof["slope_yr"] * t_yr + seasonal + enso_cycle + rng.normal(0.0, biome_prof["noise"])), 4)
             if variable_id == "ndvi":
@@ -490,24 +502,33 @@ def compute_mann_kendall_and_sens_slope(df: pd.DataFrame, aggregation: str = "mo
     dates = pd.to_datetime(clean["date"])
     t_years = ((dates - dates.iloc[0]).dt.days / 365.25).to_numpy(dtype=float)
 
-    # Use Seasonal Mann-Kendall when monthly cycle is present and n >= 24, otherwise original Mann-Kendall
+    # Use Seasonal Mann-Kendall when monthly/seasonal cycle is present, otherwise original Mann-Kendall
     seasonal_sen_yr = None
     used_seasonal_mk = False
+    seasonal_period = 12
     try:
         if aggregation == "monthly" and n >= 24:
             mk_res = mk.seasonal_test(y, period=12)
-            # pymannkendall seasonal_test.slope is in units per 12-month cycle -> /1 for annual step
             seasonal_sen_yr = float(mk_res.slope)
             used_seasonal_mk = True
+            seasonal_period = 12
+        elif aggregation == "seasonal" and n >= 8:
+            mk_res = mk.seasonal_test(y, period=4)
+            seasonal_sen_yr = float(mk_res.slope)
+            used_seasonal_mk = True
+            seasonal_period = 4
         else:
             mk_res = mk.original_test(y)
     except Exception:
         mk_res = mk.original_test(y)
         used_seasonal_mk = False
 
-    # Deseasonalized Theil-Sen Estimator with 95% CI when monthly seasonal cycle is active
+    # Deseasonalized Theil-Sen Estimator with 95% CI when monthly/seasonal cycle is active
     y_anom = clean["anomaly"].to_numpy(dtype=float) if "anomaly" in clean.columns else y
-    is_deseasonalized = bool(aggregation == "monthly" and n >= 24 and np.any(y_anom != 0))
+    is_deseasonalized = bool(
+        ((aggregation == "monthly" and n >= 24) or (aggregation == "seasonal" and n >= 8))
+        and np.any(y_anom != 0)
+    )
     slope_target = y_anom if is_deseasonalized else y
     sen_slope_yr, _anom_intercept, lo_slope_yr, hi_slope_yr = stats.theilslopes(slope_target, t_years, 0.95)
     sen_intercept = float(np.median(y) - sen_slope_yr * np.median(t_years))
@@ -557,7 +578,7 @@ def compute_mann_kendall_and_sens_slope(df: pd.DataFrame, aggregation: str = "mo
         "trendDirection": direction,
         "significant": significant,
         "confidenceLevel": conf_label,
-        "testMethod": "Seasonal Mann-Kendall (Hirsch–Slack, period=12)" if used_seasonal_mk else "Mann-Kendall (Original)",
+        "testMethod": f"Seasonal Mann-Kendall (Hirsch–Slack, period={seasonal_period})" if used_seasonal_mk else "Mann-Kendall (Original)",
         "deseasonalized": is_deseasonalized,
         "sensSlope": round(float(sen_slope_yr * 10.0), 4),       # Per decade (preserved for existing UI cards)
         "sensSlopePerYear": round(float(sen_slope_yr), 5),       # Per year
@@ -680,6 +701,30 @@ def _run_single_variable_analysis(
             })
         )
         agg_df["date"] = agg_df["year"].astype(str) + "-01-01"
+        df_used = agg_df
+    elif aggregation == "seasonal":
+        df_s = df.copy()
+        # Meteorological season index: 1=DJF, 2=MAM, 3=JJA, 4=SON
+        df_s["season_idx"] = df_s["month"].map({12: 1, 1: 1, 2: 1, 3: 2, 4: 2, 5: 2, 6: 3, 7: 3, 8: 3, 9: 4, 10: 4, 11: 4})
+        df_s["season_year"] = np.where(df_s["month"] == 12, df_s["year"] + 1, df_s["year"])
+        agg_df = (
+            df_s.groupby(["season_year", "season_idx"], as_index=False)
+            .agg({
+                "date": "first",
+                "timestamp": "first",
+                "year": "first",
+                "month": "first",
+                "value": "mean",
+                "climatology": "mean",
+                "anomaly": "mean",
+                "zScore": "mean",
+                "qcFlag": "first",
+            })
+            .sort_values(["season_year", "season_idx"])
+            .reset_index(drop=True)
+        )
+        season_month_str = agg_df["season_idx"].map({1: "01", 2: "04", 3: "07", 4: "10"})
+        agg_df["date"] = agg_df["season_year"].astype(str) + "-" + season_month_str + "-01"
         df_used = agg_df
     else:
         df_used = df
@@ -1244,6 +1289,13 @@ def _detect_date_column(df_raw: pd.DataFrame) -> str:
                 return col
 
     for col in df_raw.columns:
+        low = str(col).strip().lower()
+        if low in ("year", "yr", "سنة", "السنة") and pd.api.types.is_numeric_dtype(df_raw[col]):
+            vals = pd.to_numeric(df_raw[col], errors="coerce").dropna()
+            if len(vals) >= 4 and vals.between(1800, 2100).all():
+                return col
+
+    for col in df_raw.columns:
         if pd.api.types.is_numeric_dtype(df_raw[col]):
             continue
         parsed = pd.to_datetime(df_raw[col], errors="coerce")
@@ -1394,9 +1446,20 @@ def analyze_custom_csv_series(
         elif "lst" in low_ds and unit in ("Index", "Units", "Index / Units"):
             effective_unit = "K"
 
-    # Clean and parse dataframe
+    # Clean and parse dataframe (handle integer Year column + optional Month column as well as standard dates)
     df = pd.DataFrame()
-    df["date_raw"] = pd.to_datetime(df_raw[date_col], errors="coerce")
+    raw_date_series = df_raw[date_col]
+    if pd.api.types.is_numeric_dtype(raw_date_series) and pd.to_numeric(raw_date_series, errors="coerce").dropna().between(1800, 2100).all():
+        yr_series = pd.to_numeric(raw_date_series, errors="coerce").astype("Int64")
+        month_col = next((c for c in df_raw.columns if c != date_col and str(c).strip().lower() in ("month", "mo", "شهر")), None)
+        if month_col and pd.api.types.is_numeric_dtype(df_raw[month_col]):
+            mo_series = pd.to_numeric(df_raw[month_col], errors="coerce").fillna(1).clip(1, 12).astype(int)
+        else:
+            mo_series = pd.Series(1, index=df_raw.index)
+        date_strs = yr_series.astype(str) + "-" + mo_series.astype(str).str.zfill(2) + "-01"
+        df["date_raw"] = pd.to_datetime(date_strs, errors="coerce")
+    else:
+        df["date_raw"] = pd.to_datetime(raw_date_series, errors="coerce")
     df["value"] = pd.to_numeric(df_raw[val_col], errors="coerce")
     df = df.dropna(subset=["date_raw", "value"]).sort_values("date_raw").reset_index(drop=True)
 

@@ -56,8 +56,17 @@ export const analysisService = {
     const variable =
       ENVIRONMENTAL_VARIABLES.find((v) => v.id === varId) || ENVIRONMENTAL_VARIABLES[0];
 
-    const region =
-      PREDEFINED_REGIONS.find((r) => r.id === config.regionId) || PREDEFINED_REGIONS[0];
+    let regionBbox: [number, number, number, number] =
+      PREDEFINED_REGIONS.find((r) => r.id === config.regionId)?.bbox ||
+      PREDEFINED_REGIONS[0].bbox;
+    if (String(config.regionId).startsWith('world_lat_')) {
+      const parts = String(config.regionId).replace('world_lat_', '').split('_lon_');
+      const lat = parseFloat(parts[0]);
+      const lon = parseFloat(parts[1]);
+      if (Number.isFinite(lat) && Number.isFinite(lon)) {
+        regionBbox = [lon - 0.5, lat - 0.5, lon + 0.5, lat + 0.5];
+      }
+    }
 
     try {
       const response = await fetchWithRetry(`${API_BASE}/analysis/trend`, {
@@ -87,7 +96,7 @@ export const analysisService = {
           qualityFlag: 'GOOD',
         }));
 
-        const [w, s, e, n] = region.bbox;
+        const [w, s, e, n] = regionBbox;
         const stepLng = (e - w) / 5;
         const stepLat = (n - s) / 5;
         const gridCells = [];

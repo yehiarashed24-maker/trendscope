@@ -169,11 +169,22 @@ export const MapContainer: React.FC<MapContainerProps> = ({
       });
       const data = await res.json();
       if (!res.ok) {
-        const msg =
-          data?.detail?.error ||
-          data?.error ||
-          'Polygon lies outside the Nile Delta study area.';
-        setCustomValidationMsg({ type: 'error', text: msg });
+        // Polygon lies outside the Nile Delta high-res bounds — automatically analyze it via NASA POWER / MODIS Global coordinates
+        const avgLng = closed.reduce((acc, pt) => acc + pt[0], 0) / Math.max(1, closed.length);
+        const avgLat = closed.reduce((acc, pt) => acc + pt[1], 0) / Math.max(1, closed.length);
+        const worldId = `world_lat_${avgLat.toFixed(2)}_lon_${avgLng.toFixed(2)}`;
+        setRegion(worldId);
+        setCustomValidationMsg({
+          type: 'success',
+          text: `Selected Worldwide Polygon (${avgLat.toFixed(2)}°, ${avgLng.toFixed(2)}°) · NASA POWER / MODIS Global ready`,
+          geoJson: {
+            type: 'Feature',
+            properties: { id: worldId, name: `World Polygon (${avgLat.toFixed(2)}°, ${avgLng.toFixed(2)}°)` },
+            geometry: polyGeom,
+          },
+        });
+        setDraftPoints([]);
+        setDrawMode('inspect');
         return;
       }
 
